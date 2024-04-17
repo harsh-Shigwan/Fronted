@@ -94,7 +94,7 @@ useEffect(()=>{
               <div className="self-stretch relative h-[60px] overflow-hidden shrink-0">
                 <div className="absolute w-full top-[60px] right-[0px] left-[0px] bg-gray-200 box-border h-0 border-t-[1px] border-solid border-border-light" />
                 <div className="absolute top-[18px] left-[22px] text-[20px] leading-[24px] font-medium">
-                  Patients
+                Outpatient Department.
                 </div>
                 <input
                   className="absolute top-[11px] left-[588px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid pl-5 text-[15px]  border-black"
@@ -131,7 +131,7 @@ useEffect(()=>{
                   className="absolute top-[11px] left-[765px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
                   onClick={() =>
                     generatePDF(targetRef, {
-                      filename: "Dishcharged_Patient_List.pdf",
+                      filename: "Outpatient Department List.pdf",
                     })
                   }
                 >
@@ -171,7 +171,7 @@ useEffect(()=>{
                               <TableCell style={{ paddingRight: "140px" }}>
                                 {user.visit_id}
                               </TableCell>
-                              <TableCell style={{ paddingRight: "140px" }}>
+                              <TableCell style={{ paddingRight: "100px" }}>
                                 {user.visit_date}{" "}
                               </TableCell>
                               <TableCell style={{ paddingRight: "135px" }}>

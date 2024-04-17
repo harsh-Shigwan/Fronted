@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import Plus from "../../Data/Plus.png";
 import download from "../../Data/download.png";
-import search from "../../Data/search.png";
+import searh from "../../Data/search.png";
 import edit from "../../Data/edit.png";
 import { useParams } from "react-router-dom";
 import { Chart as ChartJS, defaults } from "chart.js/auto";
@@ -78,7 +78,7 @@ const Patient_Detail = () => {
 
   const targetRef = useRef();
 
-  const [searh, setSearch] = useState("");
+  const [search, setSearch] = useState("");
   //const urlName = user.FirstName.replace(/\s+/g, "-").toLowerCase();
   defaults.responsive = true;
   defaults.plugins.title.display = true;
@@ -100,16 +100,16 @@ const Patient_Detail = () => {
                   </div>
                   <input
                     className="absolute top-[11px] left-[405px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-5"
-                    defaultValue={searh}
+                    defaultValue={ search}
                     onChange={(e) => {
                       setSearch(e.target.value);
                     }}
                   />
-                  <div className="absolute top-[18px] left-[305px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
+                  <div className="absolute top-[18px] left-[425px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
                     <img
                       className="w-5 relative h-5  overflow-hidden shrink-0"
                       alt=""
-                      src={search}
+                      src={searh}
                     />
                   </div>
 
@@ -143,7 +143,7 @@ const Patient_Detail = () => {
                     className="absolute top-[11px] left-[585px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
                     onClick={() =>
                       generatePDF(targetRef, {
-                        filename: "Dishcharged_Patient_List.pdf",
+                        filename: "Patient_List.pdf",
                       })
                     }
                   >
@@ -179,9 +179,21 @@ const Patient_Detail = () => {
                               page * rowperpage + rowperpage
                             )
                             .filter(
-                              (item) =>
-                                searh.toLowerCase() === "" ||
-                                item.FirstName.toLowerCase().includes(searh)
+                              (item) =>{
+                                const tosearch = search.toLowerCase();
+                                const patientIdString = item.PatientID ? String(item.PatientID) : '';
+                                const phoneNoString = item.phone_no ? String(item.phone_no) : '';
+                                const dobString = item.DOB ? String(item.DOB) : '';
+                                return (
+                                tosearch=== "" ||
+                                item.fullname.toLowerCase().includes(tosearch) || 
+                                item.Gender.toLowerCase().includes(tosearch)||
+                                item.blood.toLowerCase().includes(tosearch) ||
+                                patientIdString.includes(tosearch) ||  
+                                phoneNoString.includes(tosearch) ||
+                                dobString.includes(tosearch) 
+                                )
+                              }
                             )
                             .map((user) => (
                               <TableRow key={user.PatientID}>

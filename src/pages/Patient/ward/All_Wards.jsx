@@ -75,24 +75,22 @@ const All_Wards = () => {
   return (
     <div>
    
-    <div className="w-[1000px] ml-[70px] mt-0 relative bg-whitesmoke h-[984px] flex flex-col items-center justify-start pt-0 px-[30px] pb-[30px] box-border text-left text-xs text-f2d3d font-table-body-heading">
+    <div className="w-[1000px] ml-[55px] mt-0 relative bg-whitesmoke h-[984px] flex flex-col items-center justify-start pt-0 px-[30px] pb-[30px] box-border text-left text-xs text-f2d3d font-table-body-heading">
       <div className="flex flex-col items-center justify-start pt-5 px-0 pb-0">
         <div className="h-[692px] flex flex-col items-start justify-start">
           <div className="w-[1110px] relative bg-theme-white-default h-[692px] overflow-hidden shrink-0">
             <div className="absolute top-[0px] left-[0px] w-[1110px] flex flex-col items-start justify-start">
               <div className="self-stretch relative h-[60px] overflow-hidden shrink-0">
                 <div className="absolute w-full top-[60px] right-[0px] left-[0px] bg-gray-200 box-border h-0 border-t-[1px] border-solid border-border-light" />
-                <div className="absolute top-[18px] left-[22px] text-[20px] leading-[24px] font-medium">
-                  Patients
-                </div>
+              
                 <input
-                  className="absolute top-[11px] left-[588px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-5"
+                  className="absolute top-[11px] left-[718px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-10"
                   defaultValue={searh}
                   onChange={(e) => {
                     setSearch(e.target.value);
                   }}
                 />
-                <div className="absolute top-[18px] left-[600px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
+                <div className="absolute top-[18px] left-[620px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
                   <img
                     className="w-5 relative h-5  overflow-hidden shrink-0"
                     alt=""
@@ -103,10 +101,10 @@ const All_Wards = () => {
                
                  
                 <button
-                  className="absolute top-[11px] left-[765px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
+                  className="absolute top-[11px] left-[905px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
                   onClick={() =>
                     generatePDF(targetRef, {
-                      filename: "Dishcharged_Patient_List.pdf",
+                      filename: "Ward_List.pdf",
                     })
                   }
                 >
@@ -139,11 +137,19 @@ const All_Wards = () => {
                             page * rowperpage,
                             page * rowperpage + rowperpage
                           )
-                          .filter(
-                            (item) =>
-                              searh.toLowerCase() === "" ||
-                              item.FirstName.toLowerCase().includes(searh)
-                          )
+                          .filter((item) => {
+                            const searchLowerCase = searh.toLowerCase();
+                            // Check if total_beds is defined before using includes
+                            const totalBedsString = item.total_beds ? String(item.total_beds) : '';
+                            const idString = item.id ? String(item.id) : '';
+                            return (
+                              searchLowerCase === "" ||
+                              item.name.toLowerCase().includes(searchLowerCase) || 
+                              totalBedsString.includes(searchLowerCase) ||  
+          
+                              idString.includes(searchLowerCase)
+                            );
+                          })
                           .map((user) => (
                             <TableRow key={user.id}>
                               <TableCell>{user.id}</TableCell>

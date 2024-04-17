@@ -12,6 +12,9 @@ const TotalWard = () => {
         total_beds:""
     })
     const navigate = useNavigate()
+    const handle =()=>{
+      navigate('/Patient/Patient_Details');
+    }
     const handleChange = (event) => {
         setFormData({ ...formData, [event.target.name]: event.target.value });
       };
@@ -38,40 +41,6 @@ const TotalWard = () => {
     <div className="absolute top-[18px] left-[22px] text-[20px] text-slate-700 leading-[24px] font-medium">
       Add Ward
     </div>
-    <input
-      className="absolute top-[11px] left-[700px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-8 text-slate-700"
-      defaultValue=""
-      onChange={(e) => {
-        setSearch(e.target.value);
-      }}
-    />
-    <div className="absolute top-[18px] left-[600px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
-      <img
-        className="w-5 relative h-5  overflow-hidden shrink-0"
-        alt=""
-        src={search}
-      />
-    </div>
-
-   
-     
-    <button
-      className="absolute top-[11px] left-[905px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
-      onClick={() =>
-        generatePDF(targetRef, {
-          filename: "Dishcharged_Patient_List.pdf",
-        })
-      }
-    >
-      <div className="w-24 my-0 mx-[!important] absolute top-[calc(50%_-_8px)] left-[calc(50%_-_48px)] flex flex-row items-center justify-start gap-[8px] z-[0]">
-        <img
-          className="w-4 relative h-4 overflow-hidden shrink-0"
-          alt=""
-          src={download}
-        />
-        <div className="relative font-semibold">Download </div>
-      </div>
-    </button>
   </div>
 
   </div>
@@ -108,9 +77,9 @@ const TotalWard = () => {
         
         
   <div className="flex items-stretch justify-between gap-5 mt-8 self-end">
-  <div className="text-blue-700 text-base font-semibold leading-4 items-stretch border grow justify-center px-8 py-4 rounded-lg border-solid border-blue-700 max-md:px-5">
+  <button onClick={handle} className="text-blue-700 text-base font-semibold leading-4 items-stretch border grow justify-center px-8 py-4 rounded-lg border-solid border-blue-700 max-md:px-5">
     Cancel
-  </div>
+  </button>
   <button
     className="text-white text-base font-semibold leading-4 items-stretch border border-[color:var(--Theme-Primary-Default,#4C6FFF)] bg-blue-700 grow justify-center px-7 py-4 rounded-lg border-solid max-md:px-5"
     type="submit"

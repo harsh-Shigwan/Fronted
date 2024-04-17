@@ -123,10 +123,7 @@ useEffect(()=>{
     }
   }
   
-  const handleDischarge = (admission_id) => {
-    // Add the logic to handle discharge button click here
-    // You can use 'patient' here to pass it to another page
-  };
+
   return (
     <div>
       <Breadcrumb></Breadcrumb>
@@ -138,16 +135,16 @@ useEffect(()=>{
                 <div className="self-stretch relative h-[60px] overflow-hidden shrink-0">
                   <div className="absolute w-full top-[60px] right-[0px] left-[0px] bg-gray-200 box-border h-0 border-t-[1px] border-solid border-border-light" />
                   <div className="absolute top-[18px] left-[22px] text-[20px] leading-[24px] font-medium">
-                    In Patient Discharged
+                    In Patient Department
                   </div>
                   <input
-                    className="absolute top-[11px] left-[588px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid pl-5  border-black"
+                    className="absolute top-[11px] left-[358px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid pl-5  border-black"
                     defaultValue={searh}
                     onChange={(e) => {
                       setSearch(e.target.value);
                     }}
                   />
-                  <div className="absolute  top-[18px] left-[600px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
+                  <div className="absolute  top-[18px] left-[500px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
                     <img
                       className="w-5 relative h-5  overflow-hidden shrink-0"
                       alt=""
@@ -156,10 +153,10 @@ useEffect(()=>{
                   </div>
 
                   <button
-                    className="absolute top-[11px] left-[937px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
+                    className="absolute top-[11px] left-[937px] rounded-md bg-theme-primary-dark w-[146px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
                     onClick={handle}
                   >
-                    <div className="w-24 my-0 mx-[!important] absolute top-[10px] left-[30px] flex flex-row items-center justify-start gap-[8px] z-[0]">
+                    <div className="w-22 my-0 mx-[!important] absolute top-[10px] left-[15px] flex flex-row items-center justify-start gap-[8px] z-[0]">
                       <img
                         className="w-5 relative h-5 object-cover"
                         alt=""
@@ -169,10 +166,23 @@ useEffect(()=>{
                     </div>
                   </button>
                   <button
-                    className="absolute top-[11px] left-[765px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
+                  className="absolute top-[11px] left-[717px] rounded-md bg-theme-primary-dark w-[206px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
+                  onClick={handle}
+                >
+                  <div className="w-22 my-0 mx-[!important] absolute top-[10px] left-[15px] flex flex-row items-center justify-start gap-[8px] z-[0]">
+                    <img
+                      className="w-5 relative h-5 object-cover"
+                      alt=""
+                      src={Plus}
+                    />
+                    <div className="relative font-semibold">List of Discharged Patient</div>
+                  </div>
+                </button>
+                  <button
+                    className="absolute top-[11px] left-[545px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
                     onClick={() =>
                       generatePDF(targetRef, {
-                        filename: "Dishcharged_Patient_List.pdf",
+                        filename: "In Patient Department List.pdf",
                       })
                     }
                   >
@@ -207,11 +217,22 @@ useEffect(()=>{
                               page * rowperpage,
                               page * rowperpage + rowperpage
                             )
-                            .filter(
-                              (item) =>
-                                searh.toLowerCase() === "" ||
-                                item.ward.toLowerCase().includes(searh)
-                            )
+                            .filter((item) => {
+                              const searchLowerCase = searh.toLowerCase();
+                              // Check if the property is defined before using includes
+                              const admissionIdString = item.admission_id ? String(item.admission_id) : '';
+                              const admissionDateString = item.admission_date ? item.admission_date : '';
+                              const wardString = item.ward ? String(item.ward) : '';
+                              const bedNumberString = item.bed_number ? String(item.bed_number) : '';
+                              return (
+                                searchLowerCase === "" ||
+                               
+                                admissionIdString.includes(searchLowerCase) ||  
+                                admissionDateString.includes(searchLowerCase) ||  
+                                wardString.includes(searchLowerCase) ||  
+                                bedNumberString.includes(searchLowerCase)
+                              );
+                            })
                             .map((user, index) => (
                               <TableRow key={index}>
                                 <TableCell>{user.admission_id}</TableCell>

@@ -117,7 +117,7 @@ const BillDetails = ({ onAddItem }) => {
 
 
     return (
-        <div className=' bg-slate-600'>
+        <div className=''>
             <form onSubmit={handleSubmit}>
                 <div className='flex'>
                     <div className='h-20 w-80 b'>
@@ -145,12 +145,12 @@ const BillDetails = ({ onAddItem }) => {
                 <div className='text-slate-600 text-sm font-medium mt-9 max-md:max-w-full ml-10'>Price</div>
                 <input type="number" className='justify-center items-start py-3 pr-16 pl-4 mt-3 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 w-[400px] ml-10' value={selectedItemPrice} onChange={(e) => setSelectedItemPrice(e.target.value)}  readOnly />
 
-                <button className='top-[13px] ml-10 rounded items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue w-28 mt-3 gap-[6px] leading-[10px] font-medium bg-btn text-white' type="submit"  onClick={handleAddItem}>Add Item</button>
+                <button className='top-[13px] ml-10 rounded-xl h-12 items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue w-28 mt-3 gap-[6px] leading-[10px] font-medium bg-btn text-white' type="submit"  onClick={handleAddItem}>Add Item</button>
               
                 <p style={{ color: 'red', marginLeft: '10px' }}>{errorMessage}</p>
                
             </form>
-            <button className='top-[410px] ml-10 rounded items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue w-36 mt-3 gap-[6px] leading-[10px] left-[880px]  absolute font-medium bg-btn text-white' type="submit" onClick={handleGenerateBill} > Generate Bill</button>
+            <button className='top-[410px] ml-10 items-center justify-start  px-4 border-[1px] border-solid border-royalblue h-12  rounded-xl w-36 mt-1 gap-[6px] leading-[10px] left-[880px]  absolute font-medium bg-btn text-white' type="submit" onClick={handleGenerateBill} > Generate Bill</button>
         </div>
     );
 };
