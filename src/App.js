@@ -54,6 +54,7 @@ import TotalWard from './pages/Patient/ward/TotalWard';
 import All_Wards from './pages/Patient/ward/All_Wards';
 import Generate_Bill from './pages/Records/Generate_Bill';
 import Discharged from './pages/Patient/Discharged';
+import DischargedList from './pages/Patient/DischargedList';
 
 //import Medicine from './pages/Pharmacy/Medicine';
 const App = () => {
@@ -79,6 +80,7 @@ const App = () => {
             <Route path="/Patient/IPD/Add_Patient/IPD_View/:admission_id" element={<IPD_View />}></Route>
             <Route path="/Patient/IPD/EditIPD/:pk" element={<EditIPD/>} />{" "}
             <Route path='/IPD/IPD_Dishcharged/:admission_id' element={<Discharged/>}></Route>
+            <Route path = '/patient/IPD/Discharged_List/' element={<DischargedList/>}></Route>
             <Route
               path="/Patient/Patient_Details/EditPatient/:pk"
               element={<EditPatient />}

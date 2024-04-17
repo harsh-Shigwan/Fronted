@@ -4,7 +4,6 @@ import Plus from "../../Data/Plus.png";
 import download from "../../Data/download.png";
 import search from "../../Data/search.png";
 import edit from "../../Data/edit.png";
-
 import generatePDF from 'react-to-pdf';
 import {
   Table,

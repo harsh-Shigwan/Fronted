@@ -90,7 +90,7 @@ useEffect(()=>{
   };
   const navigate1 = useNavigate();
   const handle1 = () => {
-    navigate1("/Patient/Patient_Details/Patient_Profile");
+    navigate1("/patient/IPD/Discharged_List/");
   };
 
   const handlechangepage = (event, newpage) => {
@@ -167,7 +167,7 @@ useEffect(()=>{
                   </button>
                   <button
                   className="absolute top-[11px] left-[717px] rounded-md bg-theme-primary-dark w-[206px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
-                  onClick={handle}
+                  onClick={handle1}
                 >
                   <div className="w-22 my-0 mx-[!important] absolute top-[10px] left-[15px] flex flex-row items-center justify-start gap-[8px] z-[0]">
                     <img
