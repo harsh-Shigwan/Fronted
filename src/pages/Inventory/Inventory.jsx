@@ -32,7 +32,12 @@ const Inventory = () => {
 
   const getApiData = async (api) => {
     try {
-      const res = await axios.get(api);
+      const res = await axios.get(api, {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: JSON.parse(localStorage.getItem("Token")),
+        },
+      });
       setMyData(res.data);
     } catch (error) {
       setIsError(error.toJSON().message);
@@ -45,7 +50,12 @@ const Inventory = () => {
   async function deleteData(id) {
     const deleteUrl = `http://127.0.0.1:8000/inventory/api/medicines/"${id}/`;
     try {
-      const response = await axios.delete(deleteUrl);
+      const response = await axios.delete(deleteUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: JSON.parse(localStorage.getItem("Token")),
+        },
+      });
       console.log("Data deleted successfully:", response.data);
       // After deletion, you can update the state to remove the deleted row from the UI
       setMyData((prevData) =>

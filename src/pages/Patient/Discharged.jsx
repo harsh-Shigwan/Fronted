@@ -19,7 +19,7 @@ const navigate = useNavigate()
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Form Data Submitted:", discharge); 
-
+    const token = JSON.parse(localStorage.getItem("Token"));
     const postData = {
       admission: parseInt(admission_id), 
       discharge_date: discharge.discharge_date, 
@@ -27,7 +27,12 @@ const navigate = useNavigate()
     };
 
     axios
-      .post(`${baseURL}/ipd/ipd-discharges/`, postData)
+      .post(`${baseURL}/ipd/ipd-discharges/`, postData, {
+        headers: {
+          "Content-Type": "application/json",    'Authorization': token,
+          authorization: JSON.parse(localStorage.getItem("Token")),
+        },
+      })
       .then((res) => {
         console.log("Discharge data sent:", res.data);
         navigate("/Patient/IPD");

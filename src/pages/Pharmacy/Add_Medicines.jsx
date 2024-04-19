@@ -55,7 +55,12 @@ export default function Add_Medicines() {
     console.log('Form Data Submitted:', formData);
 
    // Use Axios to send a POST request with the form data
-    axios.post('http://127.0.0.1:8000/api/patient/api/patients/', formData)
+    axios.post('http://127.0.0.1:8000/api/patient/api/patients/', formData, {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: JSON.parse(localStorage.getItem("Token")),
+      },
+    })
       .then((response) => {
         console.log('API Response:', response.data);
         // Add logic to handle the API response, if needed

@@ -14,7 +14,12 @@ const Appointment_form = () => {
  
 useEffect(()=>{
   
-  axios.get(`${baseURL}/patient/api/patients/`)
+  axios.get(`${baseURL}/patient/api/patients/`, {
+    headers: {
+      "Content-Type": "application/json",
+      authorization: JSON.parse(localStorage.getItem("Token")),
+    },
+  })
   .then(response => {
       setPatientsList(response.data);
   })
@@ -22,7 +27,12 @@ useEffect(()=>{
       console.error('Error fetching patients:', error);
   });
 
-  axios.get(`${baseURL}/doctor/api/doctors/`).then(response => {
+  axios.get(`${baseURL}/doctor/api/doctors/`, {
+    headers: {
+      "Content-Type": "application/json",
+      authorization: JSON.parse(localStorage.getItem("Token")),
+    },
+  }).then(response => {
     setDoctorList(response.data);
   }).catch(error => {
     console.error('Error fetching patients:', error);
@@ -37,6 +47,11 @@ useEffect(()=>{
     axios.post('http://127.0.0.1:8000/appointments/appointments/', {
       patient: selectedPatient,
       doctor: selectedDoctor,
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: JSON.parse(localStorage.getItem("Token")),
+      },
     })
       .then((response) => {
         console.log('API Response:', response.data);

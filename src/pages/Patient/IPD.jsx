@@ -75,7 +75,12 @@ const IPD = () => {
   const [isError, setIsError] = useState("");
 
 useEffect(()=>{
-  axios.get(`${baseURL}/api/ipd/ipd-registrations/`, ).then((res =>{
+  axios.get(`${baseURL}/api/ipd/ipd-registrations/`, {
+    headers: {
+      "Content-Type": "application/json",
+      authorization: JSON.parse(localStorage.getItem("Token")),
+    },
+  } ).then((res =>{
     setMyData(res.data);
   console.log(res.data);
 
@@ -108,20 +113,6 @@ useEffect(()=>{
   console.log(searh);
   console.log(setMyData)
 
-  async function deleteData(admission_id) {
-    const deleteUrl = `http://127.0.0.1:8000/api/ipd/ipd-registrations/${admission_id}/`;
-    try {
-      const response = await axios.delete(deleteUrl);
-      console.log("Data deleted successfully:", response.data);
-      // After deletion, you can update the state to remove the deleted row from the UI
-      setMyData((prevData) =>
-        prevData.filter((row) => row.admission_id !== admission_id)
-      );
-    } catch (error) {
-      console.error("Error deleting data:", error);
-      console.log("Error response data:", error.response?.data);
-    }
-  }
   
 
   return (

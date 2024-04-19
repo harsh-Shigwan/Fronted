@@ -17,7 +17,12 @@ const BillDetails = ({ onAddItem }) => {
     const [ medi , setMedi] = useState([]);
 
     useEffect(() => {
-        axios.get(`${baseURL}/inventory/api/equipment/`)
+        axios.get(`${baseURL}/inventory/api/equipment/`, {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          })
             .then(response => {
                 setItemsList(response.data);
                 console.log("itemsList", itemsList)
@@ -26,7 +31,12 @@ const BillDetails = ({ onAddItem }) => {
                 console.error('Error fetching items:', error);
             });
 
-        axios.get(`${baseURL}/api/patient/api/patients/`)
+        axios.get(`${baseURL}/api/patient/api/patients/`, {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          })
             .then(response => {
                 setPatientsList(response.data);
             })
@@ -34,7 +44,12 @@ const BillDetails = ({ onAddItem }) => {
                 console.error('Error fetching patients:', error);
             });
 
-            axios.get(`${baseURL}/inventory/api/medicines/`)
+            axios.get(`${baseURL}/inventory/api/medicines/`, {
+                headers: {
+                  "Content-Type": "application/json",
+                  authorization: JSON.parse(localStorage.getItem("Token")),
+                },
+              })
             .then(response => {
                 setMedi(response.data);
                 console.log("itemsList", itemsList)
@@ -70,7 +85,12 @@ const BillDetails = ({ onAddItem }) => {
             quantity_used: quantity,
             usage_date: usage_date,
             unit_price: selectedItemPrice
-        })
+        }, {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          })
        
         .then((response) => {
             console.log('API Response:', response.data);

@@ -20,7 +20,12 @@ const CashBook_Form = () => {
         const handleSubmit = (event) => {
           event.preventDefault();
           console.log('Form Data Submitted:', formData);
-          axios.post('http://127.0.0.1:8000/api/accounts/cashbooks/', formData)
+          axios.post('http://127.0.0.1:8000/api/accounts/cashbooks/', formData, {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          })
             .then((response) => {
               console.log('API Response:', response.data);
              

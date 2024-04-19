@@ -12,7 +12,12 @@ const Accounts = () => {
         navigate("/Accounts/Account_Profile")
     }
     useEffect(() => {
-      axios.get('http://127.0.0.1:8000/inventory/api/equipment/')
+      axios.get('http://127.0.0.1:8000/inventory/api/equipment/', {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: JSON.parse(localStorage.getItem("Token")),
+        },
+      })
           .then(response => {
               setInventoryData(response.data);
               calculateTotal(response.data);
@@ -21,7 +26,12 @@ const Accounts = () => {
               console.error('Error fetching inventory data:', error);
           });
 
-          axios.get('http://127.0.0.1:8000/inventory/api/patient-equipment-usage/')
+          axios.get('http://127.0.0.1:8000/inventory/api/patient-equipment-usage/', {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          })
           .then(response => {
               const equipmentData = response.data;
               let sum = 0;

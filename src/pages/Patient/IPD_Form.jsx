@@ -40,7 +40,12 @@ const IPD_Form = () => {
     console.log('Form Data Submitted:', formData);
 
    // Use Axios to send a POST request with the form data
-    axios.post('http://127.0.0.1:8000/api/ipd/ipd-registrations/', formData)
+    axios.post('http://127.0.0.1:8000/api/ipd/ipd-registrations/', formData , {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: JSON.parse(localStorage.getItem("Token")),
+      },
+    })
       .then((response) => {
         console.log('API Response:', response.data);
         // Add logic to handle the API response, if needed
@@ -60,7 +65,12 @@ const IPD_Form = () => {
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/api/ipd/beds/?ward_id=${selectedWardId}`
-        );
+          , {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          });
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -89,7 +99,12 @@ const IPD_Form = () => {
         if (searchQuery.length > 0) {
           const response = await axios.get(
             `http://127.0.0.1:8000/api/patient/api/patients/?search=${searchQuery}`
-          );
+            , {
+              headers: {
+                "Content-Type": "application/json",
+                authorization: JSON.parse(localStorage.getItem("Token")),
+              },
+            });
           setPatients(response.data);
         }
       } catch (error) {
@@ -105,7 +120,12 @@ const IPD_Form = () => {
       try {
         const response = await axios.get(
           `http://127.0.0.1:8000/api/ipd/wards/`
-        );
+          , {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          });
         console.log("ward data:", response.data);
         setWardsData(response.data);
       } catch (error) {

@@ -29,7 +29,12 @@ const [ admissionID , setAdmissionID] = useState(null)
   useEffect(() => {
     
     // Fetch patient data based on patientId
-    axios.get(`${baseURL}/api/patient/api/patients/`)
+    axios.get(`${baseURL}/api/patient/api/patients/`, {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: JSON.parse(localStorage.getItem("Token")),
+      },
+    })
       .then(response => {
         // Filter the patientData array to find the patient with matching PatientID
         const patient = response.data.find(patient => patient.PatientID === parseInt(patientId));
@@ -41,7 +46,12 @@ const [ admissionID , setAdmissionID] = useState(null)
   }, [patientId]);
   useEffect(() => {
     // Fetch IPD registration data based on patientId
-    axios.get(`${baseURL}/api/ipd/ipd-registrations/`)
+    axios.get(`${baseURL}/api/ipd/ipd-registrations/`, {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: JSON.parse(localStorage.getItem("Token")),
+      },
+    })
       .then(response => {
         // Filter the IPD registration data to find the entry for the patient
         const admission = response.data.filter(item => item.patient === parseInt(patientId));
@@ -62,7 +72,12 @@ const [ admissionID , setAdmissionID] = useState(null)
 
   useEffect(() => {
     // Fetch equipment data
-    axios.get(`${baseURL}/inventory/api/patient-equipment-usage/`)
+    axios.get(`${baseURL}/inventory/api/patient-equipment-usage/`, {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: JSON.parse(localStorage.getItem("Token")),
+      },
+    })
       .then(response => {
         // Filter the equipment data to find items used by the patient
         const equipmentsUsedByPatient = response.data.filter(equipment => equipment.patient === parseInt(patientId));
@@ -77,7 +92,12 @@ const [ admissionID , setAdmissionID] = useState(null)
 
   useEffect(() => {
     // Fetch equipment data to get the equipment names
-    axios.get(`${baseURL}/inventory/api/equipment/`)
+    axios.get(`${baseURL}/inventory/api/equipment/`, {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: JSON.parse(localStorage.getItem("Token")),
+      },
+    })
       .then(response => {
         setEquipmentData(response.data);
       })
@@ -94,6 +114,11 @@ const [ admissionID , setAdmissionID] = useState(null)
   const generateFinalBill = () => {
     // Make a POST request to store the total amount in patient-billings
     axios.post(`${baseURL}/patient/api/patient-billings/`, {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: JSON.parse(localStorage.getItem("Token")),
+      },
+    }, {
       InvoiceDetails: totalPrice.toFixed(0),
       PatientID: parseInt(patientId)
     })

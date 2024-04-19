@@ -9,7 +9,12 @@ const IPD_View = () => {
     })
 
     const getIPD = ()=>{
-        fetch("http://127.0.0.1:8000/api/ipd/ipd-registrations/").then(
+        fetch("http://127.0.0.1:8000/api/ipd/ipd-registrations/" , {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          }).then(
             res=>{
                 if(res.ok){
                     return res.json();

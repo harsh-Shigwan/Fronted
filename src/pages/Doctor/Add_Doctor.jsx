@@ -48,10 +48,11 @@ export default function Add_Doctor() {
   };
   const handleSubmit = () => {
     console.log('Form Data Submitted:', formData);
-
+    const token = JSON.parse(localStorage.getItem("Token"));
     //Use Axios to send a POST request with the form data
     axios.post('http://127.0.0.1:8000/doctor/api/doctors/', formData , { headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data','Authorization': token,
+        
       }},)
       .then((response) => {
         console.log('API Response:', response.data);

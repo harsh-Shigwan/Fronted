@@ -28,7 +28,7 @@ const Login = () => {
       const token = response.data.token; // Adjust this based on your API response
 
       // Store the token in localStorage or sessionStorage
-      localStorage.setItem("token", token);
+      localStorage.setItem("Token", JSON.stringify(token));
       navigate("/");
       // Redirect to another page upon successful login
       // You can use React Router's Navigate component for navigation

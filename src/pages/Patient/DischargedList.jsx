@@ -27,7 +27,12 @@ const DischargedList = () => {
     const [ dischargeList , setDischargeList]=useState([])
     const [patientData, setPatientData] = useState([]);
     useEffect(()=>{
-        axios.get(`${baseURL}/api/ipd/ipd-DischargeHistory`).then((res)=>{
+        axios.get(`${baseURL}/api/ipd/ipd-DischargeHistory`, {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: JSON.parse(localStorage.getItem("Token")),
+          },
+        }).then((res)=>{
             console.log(res.data);
             setDischargeList(res.data);
         }).then((err)=>{
@@ -51,7 +56,12 @@ const DischargedList = () => {
       
   useEffect(() => {
     
-    axios.get(`${baseURL}/api/patient/api/patients/`)
+    axios.get(`${baseURL}/api/patient/api/patients/`, {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: JSON.parse(localStorage.getItem("Token")),
+      },
+    })
       .then(response => {
         console.log(response.data);
         setPatientData(response.data);

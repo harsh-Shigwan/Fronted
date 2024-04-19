@@ -24,7 +24,12 @@ const Home = () => {
       try {
         const response = await axios.get(
           "http://127.0.0.1:8000/api/patient/api/patients/"
-        );
+          , {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          });
 
         setTotalPatients(response.data.length);
       } catch (error) {
@@ -35,7 +40,12 @@ const Home = () => {
       try {
         const response = await axios.get(
           "http://127.0.0.1:8000/doctor/api/doctors/"
-        );
+          , {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          });
 
         setTotalDoc(response.data.length);
       } catch (error) {
@@ -46,7 +56,12 @@ const Home = () => {
       try {
         const response = await axios.get(
           "http://127.0.0.1:8000/api/ipd/ipd-registrations/"
-        );
+          , {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          });
 
         setTotalIPD(response.data.length);
       } catch (error) {
@@ -57,7 +72,12 @@ const Home = () => {
       try {
         const response = await axios.get(
           "http://127.0.0.1:8000/inventory/api/medicines/"
-        );
+          , {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: JSON.parse(localStorage.getItem("Token")),
+            },
+          });
 
         setmedi(response.data.length);
       } catch (error) {

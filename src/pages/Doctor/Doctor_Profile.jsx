@@ -12,7 +12,12 @@ const Doctor_Profile = () => {
     },[DoctorID]) 
 console.log(myData)
     const getDoctor=()=>{
-        fetch("http://127.0.0.1:8000/doctor/api/doctors/").then(
+        fetch("http://127.0.0.1:8000/doctor/api/doctors/", {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: JSON.parse(localStorage.getItem("Token")),
+          },
+        }).then(
             res =>{
                 if(res.ok){
                     return res.json()

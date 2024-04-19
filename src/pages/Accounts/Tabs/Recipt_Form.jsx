@@ -23,7 +23,12 @@ const handleChange = (event)=>{
 const handleSubmit = (event) => {
   event.preventDefault();
   console.log('Form Data Submitted:', formData);
-  axios.post('http://127.0.0.1:8000/api/accounts/api/receipt-vouchers/', formData)
+  axios.post('http://127.0.0.1:8000/api/accounts/api/receipt-vouchers/', formData, {
+    headers: {
+      "Content-Type": "application/json",
+      authorization: JSON.parse(localStorage.getItem("Token")),
+    },
+  })
     .then((response) => {
       console.log('API Response:', response.data);
      

@@ -27,7 +27,12 @@ const OPD_edit = () => {
       const response = await axios.put(
         `http://127.0.0.1:8000/opd/api/opd-register/${pk}/`,
         { patient_id, doctor_id, department: formData.department }
-      );
+        , {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: JSON.parse(localStorage.getItem("Token")),
+          },
+        } );
       console.log("API Response:", response.data);
       // Add logic to handle the API response, if needed
       navigate("/Patient/OPD");
@@ -44,7 +49,12 @@ const OPD_edit = () => {
         if (patient_id) {
           const response = await axios.get(
             `http://127.0.0.1:8000/api/patient/api/patients/${patient_id}/`
-          );
+            , {
+              headers: {
+                "Content-Type": "application/json",
+                authorization: JSON.parse(localStorage.getItem("Token")),
+              },
+            } );
           setPatientData(response.data);
         }
       } catch (error) {
@@ -58,7 +68,12 @@ const OPD_edit = () => {
         if (doctor_id) {
           const response = await axios.get(
             `http://127.0.0.1:8000/doctor/api/doctors/${doctor_id}/`
-          );
+            , {
+              headers: {
+                "Content-Type": "application/json",
+                authorization: JSON.parse(localStorage.getItem("Token")),
+              },
+            } );
           setDoctorData(response.data);
         }
       } catch (error) {

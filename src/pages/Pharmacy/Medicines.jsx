@@ -38,7 +38,12 @@ const Medicines = () => {
   
     const getApiData = async (api) => {
       try {
-        const res = await axios.get(api);
+        const res = await axios.get(api, {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: JSON.parse(localStorage.getItem("Token")),
+          },
+        });
         setMyData(res.data);
       } catch (error) {
         setIsError(error.toJSON().message);

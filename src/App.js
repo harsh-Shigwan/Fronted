@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 import "./App.css";
-import { BrowserRouter as Router , Routes , Route} from "react-router-dom"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Patient from './pages/Patient';
 import Appointment from './pages/Appointment/Appointment';
 import Doctor from './pages/Doctor/Doctor';
@@ -18,7 +23,8 @@ import Detail from './pages/Doctor/Details';
 import Details from './pages/Doctor/Details';
 import Add_Doctor from './pages/Doctor/Add_Doctor';
 import Records from './pages/Records/Records';
-//import RecordsPage2 from './pages/Records/RecordsPage2';
+import Signin from "./pages/Signin";
+import Login from "./pages/Login";
 import IPD_Form from './pages/Patient/IPD_Form';
 import Home from './pages/Patient/Home';
 import Add_Records from './pages/Pharmacy/Add_Records';
@@ -55,15 +61,18 @@ import All_Wards from './pages/Patient/ward/All_Wards';
 import Generate_Bill from './pages/Records/Generate_Bill';
 import Discharged from './pages/Patient/Discharged';
 import DischargedList from './pages/Patient/DischargedList';
+import SideBarLayout from './components/SideBarLayout';
 
 //import Medicine from './pages/Pharmacy/Medicine';
 const App = () => {
-
+  const loggedIn = !!localStorage.getItem("token");
   return (
    
       <Router>
+      {
+               loggedIn && (
         <Sidebar>
-          <Routes>
+          <Routes element={<SideBarLayout/>}>
             <Route path="/" element={<Home />}></Route>
             <Route path="/Appointment" element={<Appointment />}></Route>
             {/*Inventory */}
@@ -129,6 +138,16 @@ const App = () => {
             <Route path='/Patient/Ward' element= {<All_Wards/>}></Route>
           </Routes>
         </Sidebar>
+               )}{
+                !loggedIn && (
+                  <Routes>
+                  <Route path="/" element={<Navigate to="/Login" />} />{" "}
+                  <Route path="/Login" element={<Login />} />{" "}
+                  <Route path="/Signin" element={<Signin />} />{" "}
+                </Routes>
+        
+                )
+              }
       </Router>
   
   );
@@ -257,16 +276,16 @@ export default App
 //           </Routes>
 //         </Sidebar>
 //         )
-//       }{
-//         !loggedIn && (
-//           <Routes>
-//           <Route path="/" element={<Navigate to="/Login" />} />{" "}
-//           <Route path="/Login" element={<Login />} />{" "}
-//           <Route path="/Signin" element={<Signin />} />{" "}
-//         </Routes>
+      // }{
+      //   !loggedIn && (
+      //     <Routes>
+      //     <Route path="/" element={<Navigate to="/Login" />} />{" "}
+      //     <Route path="/Login" element={<Login />} />{" "}
+      //     <Route path="/Signin" element={<Signin />} />{" "}
+      //   </Routes>
 
-//         )
-//       }
+      //   )
+      // }
         
 //       </Router>
   

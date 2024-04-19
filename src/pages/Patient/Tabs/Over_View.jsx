@@ -18,7 +18,12 @@ const Over_View = () => {
   },[PatientID]);
 console.log(myData)
   const getPatient = () => {
-    fetch("http://127.0.0.1:8000/api/patient/api/patients/")
+    fetch("http://127.0.0.1:8000/api/patient/api/patients/", {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: JSON.parse(localStorage.getItem("Token")),
+      },
+    })
       .then((res) => {
         if (res.ok) {
           return res.json();

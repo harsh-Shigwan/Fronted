@@ -42,7 +42,12 @@ const EditPatient = () => {
     // Fetch the patient data from the API using the provided patient ID
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/patient/api/patients/${pk}/`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/patient/api/patients/${pk}/`, {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: JSON.parse(localStorage.getItem("Token")),
+          },
+        });
         setFormData(response.data); // Update the form data state with the fetched data
       } catch (error) {
         console.error('Error fetching patient data:', error);
@@ -69,7 +74,12 @@ const EditPatient = () => {
   const handleSubmit = async () => {
     try {
       // Send a PUT request to update the patient data
-      await axios.put(`http://127.0.0.1:8000/api/patient/api/patients/${pk}/`, formData);
+      await axios.put(`http://127.0.0.1:8000/api/patient/api/patients/${pk}/`, formData , {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: JSON.parse(localStorage.getItem("Token")),
+        },
+      } );
       // Redirect the user to the patient details page after successful update
       window.location.href = `/Patient/Patient_Details/${pk}`;
     } catch (error) {

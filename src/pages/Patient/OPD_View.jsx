@@ -13,7 +13,12 @@ const OPD_View = () => {
     })
   
     useEffect(() => {
-        axios.get(`${baseURL}/patient/api/patients/${visit_id}/`)
+        axios.get(`${baseURL}/patient/api/patients/${visit_id}/`, {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: JSON.parse(localStorage.getItem("Token")),
+          },
+        } )
           .then(response => {
             setPatientsList(response.data);
             console.log("patientsListccc", response.data);
@@ -26,7 +31,12 @@ const OPD_View = () => {
 
 
     const getIPD = ()=>{
-        fetch("http://127.0.0.1:8000/api/opd/api/opd-register/").then(
+        fetch("http://127.0.0.1:8000/api/opd/api/opd-register/" , {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: JSON.parse(localStorage.getItem("Token")),
+          },
+        } ).then(
             res=>{
                 if(res.ok){
                     return res.json();

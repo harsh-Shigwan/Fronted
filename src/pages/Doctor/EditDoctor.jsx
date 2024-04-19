@@ -36,7 +36,12 @@ export default function EditDoctor() {
     // Fetch the patient data from the API using the provided patient ID
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/doctor/api/doctors/${pk}/`);
+        const response = await axios.get(`http://127.0.0.1:8000/doctor/api/doctors/${pk}/`, {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: JSON.parse(localStorage.getItem("Token")),
+          },
+        });
         setFormData(response.data); // Update the form data state with the fetched data
       } catch (error) {
         console.error('Error fetching patient data:', error);
@@ -62,11 +67,12 @@ export default function EditDoctor() {
   };
   const handleSubmit = () => {
     console.log('Form Data Submitted:', formData);
-
+    const token = JSON.parse(localStorage.getItem("Token"));
     //Use Axios to send a POST request with the form data
     axios.put(`http://127.0.0.1:8000/doctor/api/doctors/${pk}`, formData , { headers: {
-        'Content-Type': 'multipart/form-data',
-      }},)
+      'Content-Type': 'multipart/form-data','Authorization': token,
+      
+    }},)
       .then((response) => {
         console.log('API Response:', response.data);
         // Add logic to handle the API response, if needed

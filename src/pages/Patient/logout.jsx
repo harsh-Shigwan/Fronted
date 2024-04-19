@@ -3,7 +3,7 @@
 
 
 
-logout() {
-    localStorage.clear();
-    window.location.href = '/';
-  }
+// logout() {
+//     localStorage.clear();
+//     window.location.href = '/';
+//   }
