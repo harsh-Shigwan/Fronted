@@ -33,17 +33,19 @@ const Patient_Detail = () => {
   const [isError, setIsError] = useState("");
 
   const getApiData = async (api) => {
+    const token =  JSON.parse(localStorage.getItem("Token"))
     try {
       const res = await axios.get(api, {
         headers: {
-          "Content-Type": "application/json",
-          authorization: JSON.parse(localStorage.getItem("Token")),
+         
+          Authorization: `Token ${token}`,
         },
       });
       setMyData(res.data);
     } catch (error) {
       setIsError(error.toJSON().message);
     }
+    console.log("token: ", token)
   };
   useEffect(() => {
     getApiData(API);
@@ -66,11 +68,12 @@ const Patient_Detail = () => {
   };
   async function deleteData(PatientID) {
     const deleteUrl = `http://127.0.0.1:8000/api/patient/api/patients/${PatientID}/`;
+    const token =  JSON.parse(localStorage.getItem("Token"))
     try {
       const response = await axios.delete(deleteUrl, {
         headers: {
           "Content-Type": "application/json",
-          authorization: JSON.parse(localStorage.getItem("Token")),
+          Authorization:`Bearer ${token}`,
         },
       });
       console.log("Data deleted successfully:", response.data);

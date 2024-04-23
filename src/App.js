@@ -65,15 +65,17 @@ import SideBarLayout from './components/SideBarLayout';
 
 //import Medicine from './pages/Pharmacy/Medicine';
 const App = () => {
-  const loggedIn = !!localStorage.getItem("token");
+  const loggedIn = !! localStorage.getItem("Token");
+  
+ //localStorage.removeItem("token");
   return (
    
       <Router>
       {
                loggedIn && (
         <Sidebar>
-          <Routes element={<SideBarLayout/>}>
-            <Route path="/" element={<Home />}></Route>
+          <Routes >
+            <Route path="/home" element={<Home />}></Route>
             <Route path="/Appointment" element={<Appointment />}></Route>
             {/*Inventory */}
             <Route path="/Inventory" element={<Inventory />}></Route>
@@ -141,7 +143,7 @@ const App = () => {
                )}{
                 !loggedIn && (
                   <Routes>
-                  <Route path="/" element={<Navigate to="/Login" />} />{" "}
+                  <Route path="/" element={<Navigate to="/home" />} />{" "}
                   <Route path="/Login" element={<Login />} />{" "}
                   <Route path="/Signin" element={<Signin />} />{" "}
                 </Routes>

@@ -29,7 +29,7 @@ const Login = () => {
 
       // Store the token in localStorage or sessionStorage
       localStorage.setItem("Token", JSON.stringify(token));
-      navigate("/");
+      navigate("/home");
       // Redirect to another page upon successful login
       // You can use React Router's Navigate component for navigation
       // For example, <Navigate to="/dashboard" />
@@ -56,7 +56,7 @@ const Login = () => {
             />
           </div>
           <div className="self-center text-lg font-semibold leading-8 text-center text-slate-600 w-[408px]">
-            Let’s see what we have new, check it out! So maybe write here
+            Lets see what we have new, check it out! So maybe write here
             something more.
           </div>
 

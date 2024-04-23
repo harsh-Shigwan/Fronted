@@ -9,7 +9,7 @@ import Breadcrumb from '../../components/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; 
 const steps = ['Basic Details', 'Emgergency Datails', 'Insurance Details'];
-
+const token = JSON.parse(localStorage.getItem("Token"));
 export default function Add_Patient() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [formData, setFormData] = React.useState({
@@ -32,7 +32,7 @@ export default function Add_Patient() {
     Insurance_name:"",
     cardnum:"",
     Insurance_Provider:"",
-
+ 
 
   });
   const navigate = useNavigate();
@@ -53,12 +53,14 @@ export default function Add_Patient() {
   };
   const handleSubmit = () => {
     console.log('Form Data Submitted:', formData);
-
+const token =  JSON.parse(localStorage.getItem("Token"))
+console.log('Token:', token);
+  formData.owner_token = token;
    // Use Axios to send a POST request with the form data
     axios.post('http://127.0.0.1:8000/api/patient/api/patients/', formData, {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+      
+        Authorization: `Token ${token}`,
       },
     })
       .then((response) => {
@@ -68,6 +70,7 @@ export default function Add_Patient() {
       })
       .catch((error) => {
         console.error('API Error:', error);
+        console.log( "Error response data:", error.response?.data)
         // Add logic to handle the API error, if needed
       });
   };

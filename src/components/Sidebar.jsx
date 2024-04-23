@@ -14,6 +14,7 @@ import { AiFillAppstore } from "react-icons/ai";
 import { FaWindowRestore } from "react-icons/fa6";
 import { FaCalendarPlus } from "react-icons/fa";
 import { VscAccount } from "react-icons/vsc";
+import Logout from "../pages/Logout";
 const routes = [
   {
     path: "/",
@@ -174,6 +175,7 @@ const Sidebar = ({ children }) => {
               </NavLink>
             );
           })}
+        <Logout></Logout>
         </section>
       </motion.div>
       <main>{children}</main>
