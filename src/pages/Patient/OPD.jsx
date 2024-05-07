@@ -29,12 +29,12 @@ const OPD = () => {
   const [myData, setMyData] = useState([]);
   const [ isError , setIsError]=useState("");
   const { pk } = useParams();
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const getApiData = async (api)=>{
     try{ 
       const res = await  axios.get(api , {
         headers: {
-          "Content-Type": "application/json",
-          authorization: JSON.parse(localStorage.getItem("Token")),
+          Authorization: `Token ${token}`,
         },
       });
     setMyData(res.data);
@@ -47,8 +47,7 @@ async function deleteData(visit_id) {
   try {
     const response = await axios.delete(deleteUrl , {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+        Authorization: `Token ${token}`,
       },
     });
     console.log("Data deleted successfully:", response.data);
@@ -206,20 +205,9 @@ useEffect(()=>{
                                     src={edit}
                                   />
                                 </Link>
-                                <button className="absolute top-[13px] left-[71px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue">
-                                  <div className="flex flex-row items-center justify-start gap-[6px]">
-                                    <img
-                                      className="w-2.5 relative h-2.5 hidden"
-                                      alt=""
-                                      src="/icon.svg"
-                                    />
-                                    <div className="relative leading-[10px] font-medium">
-                                      View
-                                    </div>
-                                  </div>
-                                </button>
+                             
                                 <button
-                                  className="absolute top-[13px] left-[151px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
+                                  className="absolute top-[13px] left-[91px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
                                   onClick={() => deleteData(user.visit_id)}
                                 >
                                   <div className="flex flex-row items-center justify-start gap-[6px]">

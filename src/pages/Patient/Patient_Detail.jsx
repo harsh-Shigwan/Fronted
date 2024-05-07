@@ -31,9 +31,9 @@ const Patient_Detail = () => {
   const API = "http://127.0.0.1:8000/api/patient/api/patients/";
   const [myData, setMyData] = useState([]);
   const [isError, setIsError] = useState("");
-
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const getApiData = async (api) => {
-    const token =  JSON.parse(localStorage.getItem("Token"))
+   
     try {
       const res = await axios.get(api, {
         headers: {
@@ -68,12 +68,10 @@ const Patient_Detail = () => {
   };
   async function deleteData(PatientID) {
     const deleteUrl = `http://127.0.0.1:8000/api/patient/api/patients/${PatientID}/`;
-    const token =  JSON.parse(localStorage.getItem("Token"))
     try {
       const response = await axios.delete(deleteUrl, {
         headers: {
-          "Content-Type": "application/json",
-          Authorization:`Bearer ${token}`,
+          Authorization: `Token ${token}`,
         },
       });
       console.log("Data deleted successfully:", response.data);

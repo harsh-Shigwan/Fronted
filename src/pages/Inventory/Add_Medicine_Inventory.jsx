@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import Breadcrumb from '../../components/Breadcrumb';
 const Add_Medicine_Inventory = () => {
+  const token =  JSON.parse(localStorage.getItem("Token"))
     const navigate = useNavigate();
     const handle =()=>{
         navigate("/Inventory")
@@ -35,8 +36,7 @@ const Add_Medicine_Inventory = () => {
     console.log('Form Data Submitted:', formData);
     axios.post('http://127.0.0.1:8000/inventory/api/medicines/', formData, {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+        Authorization: `Token ${token}`,
       },
     })
       .then((response) => {

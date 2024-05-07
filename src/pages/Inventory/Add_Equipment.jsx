@@ -4,6 +4,7 @@ import Breadcrumb from '../../components/Breadcrumb';
 import axios from 'axios';
 const Add_Equipment = () => {
     const navigate = useNavigate();
+    const token =  JSON.parse(localStorage.getItem("Token"))
     const handle =()=>{
         navigate("/Inventory/Equipment")
     }
@@ -27,8 +28,7 @@ const Add_Equipment = () => {
     console.log('Form Data Submitted:', formData);
     axios.post('http://127.0.0.1:8000/inventory/api/equipment/', formData, {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+        Authorization: `Token ${token}`,
       },
     })
       .then((response) => {

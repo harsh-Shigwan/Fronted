@@ -12,6 +12,7 @@ const IPD_Form = () => {
   const [loading, setLoading] = useState(true);
   const { pk } = useParams();
   const [error, setError] = useState(null);
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const [ formData , setFormData]= useState({
     patient: "",
     admission_id: "",
@@ -38,23 +39,18 @@ const IPD_Form = () => {
   };
   const handleSubmit = () => {
     console.log('Form Data Submitted:', formData);
-
-   // Use Axios to send a POST request with the form data
     axios.post('http://127.0.0.1:8000/api/ipd/ipd-registrations/', formData , {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+        Authorization: `Token ${token}`,
       },
     })
       .then((response) => {
         console.log('API Response:', response.data);
-        // Add logic to handle the API response, if needed
         navigate('/Patient/IPD');
       })
       .catch((error) => {
         console.error('API Error:', error);
         console.log("Error response data:", error.response?.data);
-        // Add logic to handle the API error, if needed
       });
   };
   useEffect(() => {
@@ -67,8 +63,7 @@ const IPD_Form = () => {
           `http://127.0.0.1:8000/api/ipd/beds/?ward_id=${selectedWardId}`
           , {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           });
 
@@ -101,8 +96,7 @@ const IPD_Form = () => {
             `http://127.0.0.1:8000/api/patient/api/patients/?search=${searchQuery}`
             , {
               headers: {
-                "Content-Type": "application/json",
-                authorization: JSON.parse(localStorage.getItem("Token")),
+                Authorization: `Token ${token}`,
               },
             });
           setPatients(response.data);
@@ -122,8 +116,7 @@ const IPD_Form = () => {
           `http://127.0.0.1:8000/api/ipd/wards/`
           , {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           });
         console.log("ward data:", response.data);

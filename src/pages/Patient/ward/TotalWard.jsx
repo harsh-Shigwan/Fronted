@@ -11,6 +11,7 @@ const TotalWard = () => {
         name:"",
         total_beds:""
     })
+    const token =  JSON.parse(localStorage.getItem("Token"))
     const navigate = useNavigate()
     const handle =()=>{
       navigate('/Patient/Patient_Details');
@@ -23,8 +24,7 @@ const TotalWard = () => {
         console.log('Form Data Submitted:', formData);
         axios.post('http://127.0.0.1:8000/ipd/wards/', formData, {
           headers: {
-            "Content-Type": "application/json",
-            authorization: JSON.parse(localStorage.getItem("Token")),
+            Authorization: `Token ${token}`,
           },
         }).then((response) => {
             console.log('API Response:', response.data);
@@ -87,10 +87,8 @@ const TotalWard = () => {
   </button>
   <button
     className="text-white text-base font-semibold leading-4 items-stretch border border-[color:var(--Theme-Primary-Default,#4C6FFF)] bg-blue-700 grow justify-center px-7 py-4 rounded-lg border-solid max-md:px-5"
-    type="submit"
-    onClick={() => {
-      handleSubmit(); // Manually call the submit function
-    }}
+    
+   
   >
     Submit
   </button>

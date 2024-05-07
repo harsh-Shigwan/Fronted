@@ -6,19 +6,122 @@ import { Bar, Doughnut, Line } from "react-chartjs-2";
 import sourceData from "../../Data/sourceData.json";
 import Bars from "../../components/Charts/Bars";
 import month from "../../Data/month.json";
+import DoctorCard from "../../components/DoctorCard";
 const Home = () => {
   //  defaults.maintainAspectRatio = false;
   defaults.responsive = true;
-
   // defaults.plugins.title.display = true;
   //  defaults.plugins.title.align = "center";
   //  defaults.plugins.title.font.size = 15;
   //  defaults.plugins.title.color = "black";
-
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const [totalPatients, setTotalPatients] = useState(0);
   const [totalDoc, setTotalDoc] = useState(0);
   const [totalIPD, setTotalIPD] = useState(0);
   const [ medi , setmedi] =useState(0);
+  const [ totalBeds , setTotalBeds] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+  const [data, setData] = useState({
+    admissionData: [],
+    registrationData: []
+  });
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/doctor/api/doctors/",{
+            headers: {
+             Authorization: `Token ${token}`,
+            },
+          }
+        );
+        setDoctors( response.data);
+        console.log("Doctors data:", response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch admission data
+        const admissionResponse = await axios.get('http://127.0.0.1:8000/api/patient/api/patients/', {
+          headers: {
+           Authorization: `Token ${token}`,
+          },
+        });
+        const admissionData = admissionResponse.data;
+
+        // Fetch registration data
+        const registrationResponse = await axios.get('http://127.0.0.1:8000/api/ipd/ipd-registrations/', {
+          headers: {
+           Authorization: `Token ${token}`,
+          },
+        });
+        const registrationData = registrationResponse.data;
+        
+        const opdpatient = await axios.get("http://127.0.0.1:8000/api/opd/api/opd-register/",{
+          headers: {
+            Authorization: `Token ${token}`,
+           },
+        })
+        const opdData = opdpatient.data;
+        // Process data to calculate monthly summation
+        const admissionMonthlySum = calculateMonthlySumad(admissionData);
+        const registrationMonthlySum = calculateMonthlySum(registrationData);
+        const opdMonthlySum = calculateMonthlySumopd( opdData);
+        // Update state with the processed data
+        setData({
+          admissionData: admissionMonthlySum,
+          registrationData: registrationMonthlySum,
+          opdData: opdMonthlySum
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const calculateMonthlySumopd = (data) => {
+    const monthlySum = Array.from({ length: 12 }, () => 0); 
+    data.forEach(item => {
+      const month = new Date(item.visit_date).getMonth();
+     // Extract month from admission date
+      monthlySum[month] += 1; // Increase count for the corresponding month
+    });
+
+    return monthlySum;
+  }
+  const calculateMonthlySum = (data) => {
+    const monthlySum = Array.from({ length: 12 }, () => 0); // Initialize array for monthly sum
+
+    // Iterate over data and accumulate monthly sums
+    data.forEach(item => {
+      const month = new Date(item.admission_date).getMonth();
+     // Extract month from admission date
+      monthlySum[month] += 1; // Increase count for the corresponding month
+    });
+
+    return monthlySum;
+  };
+  const calculateMonthlySumad = (data) => {
+    const monthlySum = Array.from({ length: 12 }, () => 0); // Initialize array for monthly sum
+  
+    // Iterate over data and accumulate monthly sums
+    data.forEach(item => {
+      const month = new Date(item.Register_Date).getMonth(); // Extract month from Register_Date
+      monthlySum[month] += 1; // Increase count for the corresponding month
+    });
+  
+    return monthlySum;
+  };
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -26,8 +129,7 @@ const Home = () => {
           "http://127.0.0.1:8000/api/patient/api/patients/"
           , {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           });
 
@@ -42,8 +144,7 @@ const Home = () => {
           "http://127.0.0.1:8000/doctor/api/doctors/"
           , {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           });
 
@@ -58,8 +159,7 @@ const Home = () => {
           "http://127.0.0.1:8000/api/ipd/ipd-registrations/"
           , {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           });
 
@@ -74,8 +174,7 @@ const Home = () => {
           "http://127.0.0.1:8000/inventory/api/medicines/"
           , {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           });
 
@@ -84,11 +183,70 @@ const Home = () => {
         console.error("Error fetching data:", error);
       }
     };
+    const fetchTotalBeds = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/ipd/wards/',  {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+        // Assuming the response data is an array with one object
+   // Assuming you want to get the total beds for the first ward
+          setTotalBeds(response.data);
+       
+      } catch (error) {
+        console.error('Error fetching total beds:', error);
+      }
+    };
+    fetchTotalBeds();
     fetchMedi();
     fetchIPD();
     fetchdoctor();
     fetchData();
   }, []);
+  console.log("bed" , setTotalBeds)
+  const chartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+      {
+        label: 'Total Patient ',
+        backgroundColor:["rgba(120, 149, 255, 1)"],
+        borderColor: ["rgba(255, 255, 255, 1)"],
+        borderWidth: 0,
+        hoverBackgroundColor: 'rgba(120, 149, 255,  0.8)',
+        hoverBorderColor: 'rgba(255, 99, 132, 1)',
+        borderRadius: 20,
+        barPercentage: 0.5,
+        categoryPercentage: 0.7,
+        data: data.admissionData
+      },
+      {
+        label:'IPD Patient',
+        backgroundColor:[ "rgba(243, 221, 24, 1)"],
+        borderColor: [ "rgba(243, 221, 24, 1)"],
+        borderWidth: 0,
+        hoverBackgroundColor:  [ "rgba(243, 221, 24, 0.6)"],
+        hoverBorderColor: 'rgba(54, 162, 235, 1)',
+        borderRadius: 10,
+                      barPercentage: 0.5,
+                      categoryPercentage: 0.7,
+        data: data.registrationData
+      },
+      {
+        label:'OPD Patient',
+        backgroundColor:[ "rgba(253, 129, 156, 1)"],
+        borderColor: [ "rgba(253, 129, 156, 1)"],
+        borderWidth: 0,
+        hoverBackgroundColor:  [ "rgba(253, 129, 156, 0.8)"],
+        hoverBorderColor: 'rgba(54, 162, 235, 1)',
+        borderRadius: 10,
+                      barPercentage: 0.5,
+                      categoryPercentage: 0.7,
+        data: data.opdData
+      }
+    ]
+  };
   return (
     <div>
       <div className="w-[1100px] relative bg-whitesmoke h-[870px] flex flex-col items-start justify-start p-[30px] box-border gap-[30px] text-left text-sm text-black font-text-small">
@@ -202,76 +360,31 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="top-[100px] ">
+          <div className="top-[100px]  ">
             <div className="dataCard w-[800px] customerCard rounded-2xl shadow-[0px_3px_8px_rgba(50,_50,_71,_0.05),_0px_0px_1px_rgba(12,_26,_75,_0.24)]">
-              <Bar
-                data={{
-                  labels: month.map((data) => data.label),
-                  datasets: [
-                    {
-                      label: "Dataset 1",
-                      data: month.map((data) => data.value),
-                      backgroundColor: [
-                        "rgba(120, 149, 255, 1)"
-                      ],
-                      barThickness: 8,
-                      borderWidth: 0,
-                      borderRadius: 10,
-                      barPercentage: 0.3,
-                      categoryPercentage: 0.7,
-                    },
-                    {
-                      label: "Dataset 2",
-                      data: month.map((data) => data.value),
-                      backgroundColor: [
-                    
-                       "rgba(243, 221, 24, 1)"
-                      ],
-                      barThickness: 8,
-                      borderWidth: 0,
-                      borderRadius: 10,
-                      barPercentage: 0.3,
-                      categoryPercentage: 0.7,
-                    },
-                    {
-                      label: "Dataset 3",
-                      data: month.map((data) => data.value),
-                      backgroundColor: [
-                        "rgba(253, 129, 156, 0.8)",
-                      ],
-                      barThickness: 8,
-                      borderWidth: 0,
-                      borderRadius: 10,
-                      barPercentage: 0.3,
-                      categoryPercentage: 0.7,
-                    },
-            
-                  ],
-                }}
-                options={{
-                  indexAxis: "x", // Rotate into horizontal bar chart
-                  plugins: {
-                    title: {
-                      text: "Revenue Source",
-                    },
+            <Bar data={chartData}  options={{
+              indexAxis: "x", // Rotate into horizontal bar chart
+              plugins: {
+                title: {
+                  text: "Patients",
+                },
+              },
+              scales: {
+                x: {
+                  grid: {
+                    display: false, // Remove grid background bars in x-axis
                   },
-                  scales: {
-                    x: {
-                      grid: {
-                        display: false, // Remove grid background bars in x-axis
-                      },
-                    },
-                    y: {
-                      grid: {
-                        display: false, // Remove grid background bars in y-axis
-                      },
-                      ticks: {
-                        display: true,
-                      },
-                    },
+                },
+                y: {
+                  grid: {
+                    display: false, // Remove grid background bars in y-axis
                   },
-                }}
-              />
+                  ticks: {
+                    display: true,
+                  },
+                },
+              },
+            }}/>
             </div>
           </div>
 
@@ -307,25 +420,26 @@ const Home = () => {
                   data={{
                     datasets: [
                       {
-                        label: "Count",
-                        data: sourceData.map((data) => data.value),
+                        label: "",
+                        data:totalBeds.map((data) => data.total_beds),
                         backgroundColor: [
-                          "rgba(43, 63, 229, 0.8)",
-                          "rgba(250, 192, 19, 0.8)",
-                          "rgba(253, 135, 135, 0.8)",
+                          "rgba(120, 149, 255, 1)",
+                          "rgba(255, 146, 174, 1)",
+                          "rgba(255, 239, 94, 1)",
                         ],
                         borderColor: [
-                          "rgba(43, 63, 229, 0.8)",
-                          "rgba(250, 192, 19, 0.8)",
-                          "rgba(253, 135, 135, 0.8)",
+                          "rgba(120, 149, 255, 1)",
+                          "rgba(255, 146, 174, 1)",
+                          "rgba(255, 239, 94, 1)",
                         ],
                       },
                     ],
+                    labels: totalBeds.map(data => data.name),
                   }}
                   options={{
                     plugins: {
                       title: {
-                        text: "Revenue Sources",
+                        text: "Total Department Beds",
                       },
                     },
                     cutout: "60%", // Adjust the cutout value to minimize inner width
@@ -336,165 +450,20 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div className="self-stretch relative h-[22px] text-right text-theme-primary-default">
-          <div className="absolute top-[0px] left-[0px] w-[1110px] h-[22px]">
-            <div className="absolute w-[6.31%] top-[120px] left-[92.05%] font-medium inline-block">
-              Show all
-            </div>
-            <div className="absolute w-[9.91%] top-[90px] left-[5%] text-lg font-semibold text-text-heading-dark text-left inline-block">
-              Visits
-            </div>
-          </div>
+        <div className="self-stretch relative h-[12px] text-right text-theme-primary-default">
+          <div className="absolute w-[20.91%] top-[0px]  mt-5 left-[10px] text-lg font-semibold text-text-heading-dark text-left inline-block">
+            Available Doctors
+      
         </div>
-        <div className="w-[1090px]  flex flex-row items-start justify-start gap-[30px] text-xs text-text-body-muted">
-          <div className="w-[255px] top-[100px] relative rounded-2xl shadow-[0px_3px_8px_rgba(50,_50,_71,_0.05),_0px_0px_1px_rgba(12,_26,_75,_0.24)] h-[202px] overflow-hidden shrink-0">
-            <div className="flex flex-col px-4 pt-3 pb-12 bg-white rounded-2xl shadow-md max-w-[255px]">
-              <div className="flex gap-5 justify-between w-full">
-                <div className="flex gap-3.5 justify-between text-xs font-semibold leading-3 text-slate-500">
-                  <img
-                    loading="lazy"
-                    srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/32c24cbad50e6b407141c764523ec128b351e8f67f43c7adedaf5546c0485d32?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/32c24cbad50e6b407141c764523ec128b351e8f67f43c7adedaf5546c0485d32?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/32c24cbad50e6b407141c764523ec128b351e8f67f43c7adedaf5546c0485d32?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/32c24cbad50e6b407141c764523ec128b351e8f67f43c7adedaf5546c0485d32?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/32c24cbad50e6b407141c764523ec128b351e8f67f43c7adedaf5546c0485d32?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/32c24cbad50e6b407141c764523ec128b351e8f67f43c7adedaf5546c0485d32?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/32c24cbad50e6b407141c764523ec128b351e8f67f43c7adedaf5546c0485d32?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/32c24cbad50e6b407141c764523ec128b351e8f67f43c7adedaf5546c0485d32?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-10 bg-indigo-500 rounded-full aspect-square"
-                  />
-                  <div className="my-auto">24 April ‘24</div>
-                </div>
-                <div className="flex gap-1 my-auto">
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                </div>
-              </div>
-              <div className="mt-10 text-sm font-medium leading-5 text-black whitespace-nowrap">
-                Complete Blood Count (CBC)
-              </div>
-              <div className="mt-6 text-xs font-semibold text-blue-500">
-                Dr. Shimron Hetmyer
-              </div>
-            </div>
-          </div>
-          <div className="w-[255px] top-[100px] relative rounded-2xl shadow-[0px_3px_8px_rgba(50,_50,_71,_0.05),_0px_0px_1px_rgba(12,_26,_75,_0.24)] h-[202px] overflow-hidden shrink-0">
-            <div className="flex flex-col px-4 pt-2.5 pb-12 bg-white rounded-2xl shadow-md max-w-[255px]">
-              <div className="flex gap-5 justify-between w-full">
-                <div className="flex gap-4 justify-between text-xs font-semibold leading-3 text-slate-500">
-                  <img
-                    loading="lazy"
-                    srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/61d679a8764d9b13940afe4dd30347aa1efe1632bccef35d735cb407392e189d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/61d679a8764d9b13940afe4dd30347aa1efe1632bccef35d735cb407392e189d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/61d679a8764d9b13940afe4dd30347aa1efe1632bccef35d735cb407392e189d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/61d679a8764d9b13940afe4dd30347aa1efe1632bccef35d735cb407392e189d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/61d679a8764d9b13940afe4dd30347aa1efe1632bccef35d735cb407392e189d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/61d679a8764d9b13940afe4dd30347aa1efe1632bccef35d735cb407392e189d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/61d679a8764d9b13940afe4dd30347aa1efe1632bccef35d735cb407392e189d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/61d679a8764d9b13940afe4dd30347aa1efe1632bccef35d735cb407392e189d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-10 bg-orange-600 rounded-full aspect-square"
-                  />
-                  <div className="my-auto">31 April ‘24</div>
-                </div>
-                <div className="flex gap-1 my-auto">
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                </div>
-              </div>
-              <div className="mt-10 text-sm font-medium leading-5 text-black whitespace-nowrap">
-                Clinic Visit Appointment
-              </div>
-              <div className="mt-6 text-xs font-semibold text-blue-500">
-                Dr. Shilpa Rao
-              </div>
-            </div>
-          </div>
-          <div className="w-[255px] top-[100px] relative rounded-2xl shadow-[0px_3px_8px_rgba(50,_50,_71,_0.05),_0px_0px_1px_rgba(12,_26,_75,_0.24)] h-[202px] overflow-hidden shrink-0">
-            <div className="flex flex-col px-4 pt-2 pb-12 bg-white rounded-2xl shadow-md max-w-[255px]">
-              <div className="flex gap-5 justify-between w-full">
-                <div className="flex gap-4 justify-between text-xs font-semibold leading-3 text-slate-500">
-                  <img
-                    loading="lazy"
-                    srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/656a7bf2bc85a38bb35a6f4dee5ae3ccb79b756d1616bc407e02f972ac529ce6?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/656a7bf2bc85a38bb35a6f4dee5ae3ccb79b756d1616bc407e02f972ac529ce6?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/656a7bf2bc85a38bb35a6f4dee5ae3ccb79b756d1616bc407e02f972ac529ce6?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/656a7bf2bc85a38bb35a6f4dee5ae3ccb79b756d1616bc407e02f972ac529ce6?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/656a7bf2bc85a38bb35a6f4dee5ae3ccb79b756d1616bc407e02f972ac529ce6?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/656a7bf2bc85a38bb35a6f4dee5ae3ccb79b756d1616bc407e02f972ac529ce6?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/656a7bf2bc85a38bb35a6f4dee5ae3ccb79b756d1616bc407e02f972ac529ce6?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/656a7bf2bc85a38bb35a6f4dee5ae3ccb79b756d1616bc407e02f972ac529ce6?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-10 bg-indigo-500 rounded-full aspect-square"
-                  />
-                  <div className="my-auto">2 June ‘24</div>
-                </div>
-                <div className="flex gap-1 my-auto">
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                </div>
-              </div>
-              <div className="mt-11 text-sm font-medium leading-5 text-black whitespace-nowrap">
-                Video Consultation Chat
-              </div>
-              <div className="mt-6 text-xs font-semibold text-blue-500">
-                Dr. Kartik Shukla
-              </div>
-            </div>
-          </div>
-          <div className="w-[255px] top-[100px] relative rounded-2xl shadow-[0px_3px_8px_rgba(50,_50,_71,_0.05),_0px_0px_1px_rgba(12,_26,_75,_0.24)] h-[202px] overflow-hidden shrink-0">
-            <div className="flex flex-col px-4 pt-2 pb-12 bg-white rounded-2xl shadow-md max-w-[255px]">
-              <div className="flex gap-5 justify-between w-full">
-                <div className="flex gap-4 justify-between text-xs font-semibold leading-3 text-slate-500">
-                  <img
-                    loading="lazy"
-                    srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/a618c1a2b93838c6a6f367c3283ed2474487322d2a0e0c0e45ba584b6622e134?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/a618c1a2b93838c6a6f367c3283ed2474487322d2a0e0c0e45ba584b6622e134?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/a618c1a2b93838c6a6f367c3283ed2474487322d2a0e0c0e45ba584b6622e134?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/a618c1a2b93838c6a6f367c3283ed2474487322d2a0e0c0e45ba584b6622e134?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/a618c1a2b93838c6a6f367c3283ed2474487322d2a0e0c0e45ba584b6622e134?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/a618c1a2b93838c6a6f367c3283ed2474487322d2a0e0c0e45ba584b6622e134?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/a618c1a2b93838c6a6f367c3283ed2474487322d2a0e0c0e45ba584b6622e134?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/a618c1a2b93838c6a6f367c3283ed2474487322d2a0e0c0e45ba584b6622e134?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-10 bg-orange-600 rounded-full aspect-square"
-                  />
-                  <div className="my-auto">24 April ‘24</div>
-                </div>
-                <div className="flex gap-1 my-auto">
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ca3817529e6c340a83dcd243ccf7fa540897be818e7e2039496eaad4edf99f9?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                    className="w-1 aspect-square fill-slate-600"
-                  />
-                </div>
-              </div>
-              <div className="mt-11 text-sm font-medium leading-5 text-black whitespace-nowrap">
-                Magnetic Resonance Imaging{" "}
-              </div>
-              <div className="mt-6 text-xs font-semibold text-blue-500">
-                Dr. Shirya Dutta
-              </div>
-            </div>
-          </div>
+      </div>
+        <div className="">
+         
+        <div className="flex   w-[1090px] flex-nowrap overflow-x-auto mt-10">
+        {doctors.slice(0, 4).map((doctor, index) => (
+          <DoctorCard key={index} doctor={doctor} />
+        ))}
+      </div>
+         
         </div>
       </div>
     </div>

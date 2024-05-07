@@ -1,27 +1,53 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import React from "react";
+const token = JSON.parse(localStorage.getItem("Token"));
 const Logout = () => {
   const navigate = useNavigate();
+  //const[(isLoading, setIsLoading)] = useState(false);
+  //const [error, setError] = useState(null);
+  const handleLogout = () => {
+    console.log("token:", token);
+    axios
+      .post(
+        "http://127.0.0.1:8000/api/hos_loginlogout/",
+        {}, // Body yadi zarurat ho tab yaha kuch data bheja ja sakta hai, otherwise empty object
+        {
+          headers: {
+            Authorization: `Token ${JSON.parse(localStorage.getItem("Token"))}`, // Token ko Authorization header mein set karna
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Logout successful:", response.data);
 
-  const handleLogout = async () => {
-    try {
-      // Backend logout endpoint call karna
-      await axios.post('http://127.0.0.1:8000/api/hos_loginlogout'); // Adjust endpoint according to your backend
-      // Local storage se token ko remove karna
-      localStorage.removeItem('token');
-      // Redirect user to login page
-      navigate('/Login');
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
+        // Token ko local storage se remove karna
+        localStorage.removeItem("Token");
+
+        // User ko login ya home page par redirect karna
+        navigate("/login"); // Ya phir jahan aap redirect karna chahte hain
+      })
+      .catch((error) => {
+        console.error("Logout failed:", error);
+        console.error("Error response:", error.response?.data);
+      });
   };
 
   return (
-    <button onClick={handleLogout} className=" bg-blue-800 w-44 h-9 rounded-2xl ml-0 mt-24"> 
-      Logout
-    </button>
+    <div>
+      {/* {isLoading ? (
+        <p>Logging out...</p> // Display while logout is in progress
+      ) : ( */}
+      <button
+        onClick={handleLogout}
+        className="bg-blue-800 w-44 h-9 rounded-2xl ml-0 mt-24"
+      >
+        Logout
+      </button>
+      {/* )}
+      {error && <p>Error: {error.message}</p>} // Display error message if
+      there's an error */}
+    </div>
   );
 };
 

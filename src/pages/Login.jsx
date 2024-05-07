@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import logo from "../Data/logo.png"
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -11,41 +12,63 @@ const Login = () => {
     email: "",
   });
   const [error, setError] = useState("");
-
+  const [ errorMessage , setErrorMessage] = useState("");
+  const [ isSubmit , setIsSubmit] = useState(false);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+ const validate =(val)=>{
+   const error = {};
+   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  if (!formData.hospital) {
+    error.hospital = "Hospital name is required*";
+  }
+  if (!formData.username) {
+    error.username = "Username is required*";
+  }
+  if (!formData.email) {
+    error.email = "Email is required*";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(formData.email)) {
+    error.email = "Invalid email address";
+  }
+  if (!formData.password) {
+    error.password = "Password is required*";
+  } else if (formData.password.length < 8) {
+    error.password = "Password must be at least 8 characters long";
+  }
+    return error;
+  
+ };  
+ useEffect(()=>{
+if (Object.keys(error).length === 0 && isSubmit){
+}
+ },[formData])
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setErrorMessage(validate(formData));
+    setIsSubmit(true);
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/hos_loginlogin/",
         formData
       );
-      // Assuming your API returns a token upon successful login
-      const token = response.data.token; // Adjust this based on your API response
-
-      // Store the token in localStorage or sessionStorage
+      const token = response.data.token; 
       localStorage.setItem("Token", JSON.stringify(token));
       navigate("/home");
-      // Redirect to another page upon successful login
-      // You can use React Router's Navigate component for navigation
-      // For example, <Navigate to="/dashboard" />
+ 
     } catch (error) {
-      // Handle login error
       setError(error.response.data.message || "Login failed");
       console.log("Error response data:", error.response?.data);
     }
   };
+
   return (
     <div>
       <div className="flex gap-5 justify-between pr-9 bg-white max-md:flex-wrap max-md:pr-5">
         <div className="flex flex-col flex-1 py-12 bg-slate-50 max-md:max-w-full">
           <img
             loading="lazy"
-            src=""
+            src={logo}
             className="z-10 ml-12 max-w-full aspect-[3.85] w-[189px] max-md:ml-2.5"
           />
           <div className="flex flex-col justify-center px-14 py-12 mt-4 rounded-full bg-slate-80 max-md:px-5 max-md:max-w-full">
@@ -80,49 +103,52 @@ const Login = () => {
             <div className="mt-12 text-sm font-medium text-slate-600 max-md:mt-10">
               Hospital Name
             </div>{" "}
+            <p className="text-red-500  text-sm mt-1">{ errorMessage.hospital}</p>
             <input
               type="text"
               name="hospital"
               value={formData.hospital}
               onChange={handleChange}
               placeholder="  Enter Hospital Name"
-              className="shrink-0 mt-2 border-transparent bg-white rounded-md shadow h-[46px]"
+              className="shrink-0 mt-2 border-transparent bg-white pl-3 rounded-md shadow h-[46px]"
             />{" "}
             <div className="mt-9 text-sm font-medium text-slate-600">
-              Ussername
+              Username
             </div>{" "}
+            <p className="text-red-500  text-sm mt-1">{ errorMessage.username}</p>
             <input
               type="text"
               name="username"
               value={formData.username}
               onChange={handleChange}
               placeholder="  Enter Username"
-              className="shrink-0 mt-3 border-transparent  bg-white rounded-md shadow h-[46px]"
+              className="shrink-0  mt-3 border-transparent  pl-3 bg-white rounded-md shadow h-[46px]"
             />{" "}
             <div className="mt-9 text-sm font-medium text-slate-600">Email</div>{" "}
+            <p className="text-red-500  text-sm mt-1">{ errorMessage.email}</p>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="  Enter email"
-              className="shrink-0 mt-3 border-transparent  bg-white rounded-md shadow h-[46px]"
+              className="shrink-0 mt-3 border-transparent  pl-3 bg-white rounded-md shadow h-[46px]"
             />{" "}
             <div className="mt-9 text-sm font-medium text-slate-600">
-              Passw0rd
+               Password
             </div>{" "}
+            <p className="text-red-500  text-sm mt-1">{ errorMessage.password}</p>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="  Enter Paswword"
-              className="shrink-0 mt-3 border-transparent  bg-white rounded-md shadow h-[46px]"
+              className="shrink-0 mt-3 border-transparent pl-3
+               bg-white rounded-md shadow h-[46px]"
             />{" "}
-            <div className="mt-2.5 text-xs leading-3 text-slate-500">
-              Must be 8 characters at least
-            </div>{" "}
-            <button
+           
+            <button type="submit"
               onClick={handleSubmit}
               className="justify-center items-center text-[20px] px-40 py-4 mt-8  font-semibold leading-4 text-white bg-blue-500 rounded-lg max-md:px-5"
             >

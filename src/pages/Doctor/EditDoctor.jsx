@@ -16,6 +16,7 @@ const steps = ['Step 1', 'Step 2', 'Step 3'];
 export default function EditDoctor() {
   const { pk } = useParams(); 
   const [activeStep, setActiveStep] = useState(0);
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const [formData, setFormData] = useState({
     name: '',
     Email: '',
@@ -38,8 +39,7 @@ export default function EditDoctor() {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/doctor/api/doctors/${pk}/`, {
           headers: {
-            "Content-Type": "application/json",
-            authorization: JSON.parse(localStorage.getItem("Token")),
+            Authorization: `Token ${token}`,
           },
         });
         setFormData(response.data); // Update the form data state with the fetched data
@@ -70,8 +70,7 @@ export default function EditDoctor() {
     const token = JSON.parse(localStorage.getItem("Token"));
     //Use Axios to send a POST request with the form data
     axios.put(`http://127.0.0.1:8000/doctor/api/doctors/${pk}`, formData , { headers: {
-      'Content-Type': 'multipart/form-data','Authorization': token,
-      
+      Authorization: `Token ${token}`,
     }},)
       .then((response) => {
         console.log('API Response:', response.data);

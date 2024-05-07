@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 
 const IPD_View = () => {
     const [ myData , setMyData]=useState([]);
+    const token =  JSON.parse(localStorage.getItem("Token"))
     let { admission_id} = useParams();
     useEffect(()=>{
         getIPD()
@@ -11,8 +12,7 @@ const IPD_View = () => {
     const getIPD = ()=>{
         fetch("http://127.0.0.1:8000/api/ipd/ipd-registrations/" , {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           }).then(
             res=>{

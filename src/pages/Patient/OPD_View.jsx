@@ -7,6 +7,7 @@ const OPD_View = () => {
     const [ patientsList , setPatientsList]= useState([]);
     let { visit_id} = useParams();
     let { patient_id} = useParams();
+    const token =  JSON.parse(localStorage.getItem("Token"))
     useEffect(()=>{
         getIPD()
      
@@ -15,8 +16,7 @@ const OPD_View = () => {
     useEffect(() => {
         axios.get(`${baseURL}/patient/api/patients/${visit_id}/`, {
           headers: {
-            "Content-Type": "application/json",
-            authorization: JSON.parse(localStorage.getItem("Token")),
+            Authorization: `Token ${token}`,
           },
         } )
           .then(response => {
@@ -33,8 +33,7 @@ const OPD_View = () => {
     const getIPD = ()=>{
         fetch("http://127.0.0.1:8000/api/opd/api/opd-register/" , {
           headers: {
-            "Content-Type": "application/json",
-            authorization: JSON.parse(localStorage.getItem("Token")),
+            Authorization: `Token ${token}`,
           },
         } ).then(
             res=>{

@@ -7,6 +7,7 @@ const Accounts = () => {
   const [inventoryData, setInventoryData] = useState([]);
   const [totalValue, setTotalValue] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
+  const token =  JSON.parse(localStorage.getItem("Token"))
     const navigate = useNavigate();
     const handle =()=>{
         navigate("/Accounts/Account_Profile")
@@ -14,8 +15,7 @@ const Accounts = () => {
     useEffect(() => {
       axios.get('http://127.0.0.1:8000/inventory/api/equipment/', {
         headers: {
-          "Content-Type": "application/json",
-          authorization: JSON.parse(localStorage.getItem("Token")),
+          Authorization: `Token ${token}`,
         },
       })
           .then(response => {
@@ -28,8 +28,7 @@ const Accounts = () => {
 
           axios.get('http://127.0.0.1:8000/inventory/api/patient-equipment-usage/', {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           })
           .then(response => {

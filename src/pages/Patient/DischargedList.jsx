@@ -24,13 +24,13 @@ import {
   } from "@mui/material";
   const baseURL="http://127.0.0.1:8000/"
 const DischargedList = () => {
+  const token =  JSON.parse(localStorage.getItem("Token"))
     const [ dischargeList , setDischargeList]=useState([])
     const [patientData, setPatientData] = useState([]);
     useEffect(()=>{
         axios.get(`${baseURL}/api/ipd/ipd-DischargeHistory`, {
           headers: {
-            "Content-Type": "application/json",
-            authorization: JSON.parse(localStorage.getItem("Token")),
+            Authorization: `Token ${token}`,
           },
         }).then((res)=>{
             console.log(res.data);
@@ -58,8 +58,7 @@ const DischargedList = () => {
     
     axios.get(`${baseURL}/api/patient/api/patients/`, {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+        Authorization: `Token ${token}`,
       },
     })
       .then(response => {

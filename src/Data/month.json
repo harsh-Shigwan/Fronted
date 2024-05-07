@@ -1,53 +1,57 @@
 [
   {
     "label": "Jan",
-    "value": 32
+    "value": 32,
+    "value1":65 , "value3":53
   },
   {
     "label": "feb",
-    "value": 45
+    "value": 45,
+    "value1":57 , "value3":16
   },
   {
     "label": "mar",
-    "value": 120
+    "value": 120,
+    "value1":42 , "value3":83
   },
   {
     "label": "apr",
-    "value": 32
+    "value": 32, "value1":22 , "value3":13
   },
   {
     "label": "may",
-    "value": 45
+    "value": 45,
+    "value1":52 , "value3":53
   },
   {
     "label": "jun",
-    "value": 23
+    "value": 23, "value1":92 , "value3":3
   },
 
   {
     "label": "july",
-    "value": 45
+    "value": 45, "value1":52 , "value3":31
   },
   {
     "label": "aug",
-    "value": 23
+    "value": 23, "value1":59 , "value3":24
   },
 
   {
     "label": "sep",
-    "value": 23
+    "value": 23, "value1":52 , "value3":56
   },
 
   {
     "label": "oct",
-    "value": 23
+    "value": 23, "value1":59 , "value3":33
   },
   {
     "label": "nov",
-    "value": 32
+    "value": 32, "value1":12 , "value3":8
   },
   {
     "label": "dec",
-    "value": 45
+    "value": 45, "value1":12 , "value3":13
   }
 ]

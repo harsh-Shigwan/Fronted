@@ -12,6 +12,7 @@ const steps = ['Step 1', 'Step 2', 'Step 3'];
 
 export default function Add_Medicines() {
   const [activeStep, setActiveStep] = React.useState(0);
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const [formData, setFormData] = React.useState({
     FirstName: '',
     phone:'',
@@ -57,8 +58,7 @@ export default function Add_Medicines() {
    // Use Axios to send a POST request with the form data
     axios.post('http://127.0.0.1:8000/api/patient/api/patients/', formData, {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+        Authorization: `Token ${token}`,
       },
     })
       .then((response) => {

@@ -13,10 +13,10 @@ import { useNavigate } from 'react-router-dom';
  
 const steps = ['Step 1', 'Step 2', 'Step 3'];
 const EditPatient = () => {
-  const { pk } = useParams(); // Extract the patient ID from the URL params
+  const { pk } = useParams(); 
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const [activeStep, setActiveStep] = React.useState(0);
   const [formData, setFormData] = React.useState({
-    // Initialize form data state with empty values
     FirstName: '',
     phone: '',
     email: '',
@@ -39,26 +39,26 @@ const EditPatient = () => {
   });
 
   useEffect(() => {
-    // Fetch the patient data from the API using the provided patient ID
+ 
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/patient/api/patients/${pk}/`, {
           headers: {
-            "Content-Type": "application/json",
-            authorization: JSON.parse(localStorage.getItem("Token")),
+            Authorization: `Token ${token}`,
           },
         });
-        setFormData(response.data); // Update the form data state with the fetched data
+        setFormData(response.data); 
       } catch (error) {
         console.error('Error fetching patient data:', error);
+        console.log("Error response data:", error.response?.data);
       }
     };
 
-    fetchData(); // Call the fetchData function when the component mounts
-  }, [pk]); // Depend on pk so that useEffect runs when pk changes
+    fetchData(); 
+  }, [pk]); 
 
   const handleChange = (e) => {
-    // Update the form data state when input values change
+   
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -73,14 +73,12 @@ const EditPatient = () => {
   };
   const handleSubmit = async () => {
     try {
-      // Send a PUT request to update the patient data
+
       await axios.put(`http://127.0.0.1:8000/api/patient/api/patients/${pk}/`, formData , {
         headers: {
-          "Content-Type": "application/json",
-          authorization: JSON.parse(localStorage.getItem("Token")),
+          Authorization: `Token ${token}`,
         },
       } );
-      // Redirect the user to the patient details page after successful update
       window.location.href = `/Patient/Patient_Details/${pk}`;
     } catch (error) {
       console.error('Error updating patient data:', error);

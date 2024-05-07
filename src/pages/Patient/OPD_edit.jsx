@@ -5,13 +5,12 @@ import { useParams, useNavigate } from "react-router-dom";
 
 const OPD_edit = () => {
   const { pk } = useParams();
-
   const [patient_id, setPatientId] = useState("");
   const [doctor_id, setDoctorId] = useState("");
-  // const [department, setDepartment] = useState('');
   const [patientData, setPatientData] = useState({});
   const [doctorData, setDoctorData] = useState({});
   const navigate = useNavigate();
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const [formData, setFormData] = useState({
     department: "",
   });
@@ -23,14 +22,12 @@ const OPD_edit = () => {
     console.log("Form Data Submitted:", { patient_id, doctor_id, formData });
 
     try {
-      // Use Axios to send a POST request with the form data
       const response = await axios.put(
         `http://127.0.0.1:8000/opd/api/opd-register/${pk}/`,
         { patient_id, doctor_id, department: formData.department }
         , {
           headers: {
-            "Content-Type": "application/json",
-            authorization: JSON.parse(localStorage.getItem("Token")),
+            Authorization: `Token ${token}`,
           },
         } );
       console.log("API Response:", response.data);
@@ -51,8 +48,7 @@ const OPD_edit = () => {
             `http://127.0.0.1:8000/api/patient/api/patients/${patient_id}/`
             , {
               headers: {
-                "Content-Type": "application/json",
-                authorization: JSON.parse(localStorage.getItem("Token")),
+                Authorization: `Token ${token}`,
               },
             } );
           setPatientData(response.data);
@@ -70,8 +66,7 @@ const OPD_edit = () => {
             `http://127.0.0.1:8000/doctor/api/doctors/${doctor_id}/`
             , {
               headers: {
-                "Content-Type": "application/json",
-                authorization: JSON.parse(localStorage.getItem("Token")),
+                Authorization: `Token ${token}`,
               },
             } );
           setDoctorData(response.data);

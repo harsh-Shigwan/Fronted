@@ -1,43 +1,4 @@
-// import React from 'react'
 
-// const IPD = () => {
-//   return (
-//     <div>  <div className="items-stretch bg-slate-50 flex flex-col pt-5 pb-12 px-8 max-md:px-5">
-//     <div className="bg-white flex flex-col items-stretch pt-3 max-md:max-w-full">
-//       <div className="flex items-stretch gap-4 ml-6 self-start max-md:ml-2.5">
-//         <div className="items-stretch bg-blue-700 flex flex-col justify-center px-5 py-2.5 rounded-md flex-1">
-//           <div className="items-stretch flex justify-between gap-2">
-//             <img
-//               loading="lazy"
-//               srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/26c67fcad32123819fade708d941b0c8498f22978e10e61e9565f84483418bcc?apiKey=8d6992485656477797592f8415f51272&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/26c67fcad32123819fade708d941b0c8498f22978e10e61e9565f84483418bcc?apiKey=8d6992485656477797592f8415f51272&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/26c67fcad32123819fade708d941b0c8498f22978e10e61e9565f84483418bcc?apiKey=8d6992485656477797592f8415f51272&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/26c67fcad32123819fade708d941b0c8498f22978e10e61e9565f84483418bcc?apiKey=8d6992485656477797592f8415f51272&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/26c67fcad32123819fade708d941b0c8498f22978e10e61e9565f84483418bcc?apiKey=8d6992485656477797592f8415f51272&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/26c67fcad32123819fade708d941b0c8498f22978e10e61e9565f84483418bcc?apiKey=8d6992485656477797592f8415f51272&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/26c67fcad32123819fade708d941b0c8498f22978e10e61e9565f84483418bcc?apiKey=8d6992485656477797592f8415f51272&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/26c67fcad32123819fade708d941b0c8498f22978e10e61e9565f84483418bcc?apiKey=8d6992485656477797592f8415f51272&"
-//               className="aspect-square object-contain object-center w-3.5 shrink-0 self-start"
-//             />
-//             <div className="text-white text-xs font-semibold grow whitespace-nowrap">
-//               IPD Patient
-//             </div>
-//           </div>
-//         </div>
-//         <div className="items-stretch border flex flex-col justify-center px-5 py-2.5 rounded-md border-solid border-blue-700 flex-1">
-//           <div className="items-stretch flex justify-between gap-1">
-//             <img
-//               loading="lazy"
-//               srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/b77baeb16746c7fc8f213fc26c34795e34d680d5283d58fc58c8e55e4df32b43?apiKey=8d6992485656477797592f8415f51272&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/b77baeb16746c7fc8f213fc26c34795e34d680d5283d58fc58c8e55e4df32b43?apiKey=8d6992485656477797592f8415f51272&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/b77baeb16746c7fc8f213fc26c34795e34d680d5283d58fc58c8e55e4df32b43?apiKey=8d6992485656477797592f8415f51272&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/b77baeb16746c7fc8f213fc26c34795e34d680d5283d58fc58c8e55e4df32b43?apiKey=8d6992485656477797592f8415f51272&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/b77baeb16746c7fc8f213fc26c34795e34d680d5283d58fc58c8e55e4df32b43?apiKey=8d6992485656477797592f8415f51272&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/b77baeb16746c7fc8f213fc26c34795e34d680d5283d58fc58c8e55e4df32b43?apiKey=8d6992485656477797592f8415f51272&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/b77baeb16746c7fc8f213fc26c34795e34d680d5283d58fc58c8e55e4df32b43?apiKey=8d6992485656477797592f8415f51272&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/b77baeb16746c7fc8f213fc26c34795e34d680d5283d58fc58c8e55e4df32b43?apiKey=8d6992485656477797592f8415f51272&"
-//               className="aspect-square object-contain object-center w-3.5 shrink-0 self-start"
-//             />
-//             <div className="text-blue-700 text-xs font-semibold grow whitespace-nowrap">
-//               Discharged Patient
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//       <div className="bg-slate-100 shrink-0 h-px mt-3.5 max-md:max-w-full" />
-//     </div>
-
-//   </div></div>
-//   )
-// }
-
-// export default IPD
 
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
@@ -73,12 +34,11 @@ const IPD = () => {
   const [myData, setMyData] = useState([]);
   const [myData1, setMyData1] = useState([]);
   const [isError, setIsError] = useState("");
-
+  const token =  JSON.parse(localStorage.getItem("Token"))
 useEffect(()=>{
   axios.get(`${baseURL}/api/ipd/ipd-registrations/`, {
     headers: {
-      "Content-Type": "application/json",
-      authorization: JSON.parse(localStorage.getItem("Token")),
+      Authorization: `Token ${token}`,
     },
   } ).then((res =>{
     setMyData(res.data);
@@ -97,6 +57,7 @@ useEffect(()=>{
   const handle1 = () => {
     navigate1("/patient/IPD/Discharged_List/");
   };
+  
 
   const handlechangepage = (event, newpage) => {
     setPage(newpage);

@@ -77,7 +77,7 @@ console.log(items)
 		  </TableBody>
 		
         </Table>
-		<div className=" font-bold text-[25px] mt-20 w-[350px]   ml-[650px] top-32 right-[0px] flex gap-5 justify-between h-12 p-4  text-base leading-4 text-gray-700 rounded-md bg-slate-100">
+		<div className=" font-bold text-[19px] mt-20 w-[350px]   ml-[650px] top-32 right-[0px] flex gap-5 justify-between h-12 p-4  text-base leading-4 text-gray-700 rounded-md bg-slate-100">
 		Total Amount:
 		Rupees {total.toFixed(2)}
 		</div>

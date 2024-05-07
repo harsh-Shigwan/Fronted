@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const OPD_New = () => {
   const [patient_id, setPatientId] = useState("");
   const [doctor_id, setDoctorId] = useState("");
-  // const [department, setDepartment] = useState('');
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const [patientData, setPatientData] = useState([]);
   const [doctorData, setDoctorData] = useState({});
   const navigate = useNavigate();
@@ -27,8 +27,7 @@ const OPD_New = () => {
         { patient_id, doctor_id, ddepartment: formData.ddepartment }
         , {
           headers: {
-            "Content-Type": "application/json",
-            authorization: JSON.parse(localStorage.getItem("Token")),
+            Authorization: `Token ${token}`,
           },
         } );
       console.log("API Response:", response.data);
@@ -49,8 +48,7 @@ const OPD_New = () => {
             `http://127.0.0.1:8000/api/patient/api/patients/${patient_id}/`
             , {
               headers: {
-                "Content-Type": "application/json",
-                authorization: JSON.parse(localStorage.getItem("Token")),
+                Authorization: `Token ${token}`,
               },
             } );
           setPatientData(response.data);
@@ -68,8 +66,7 @@ const OPD_New = () => {
             `http://127.0.0.1:8000/doctor/api/doctors/${doctor_id}/`
             , {
               headers: {
-                "Content-Type": "application/json",
-                authorization: JSON.parse(localStorage.getItem("Token")),
+                Authorization: `Token ${token}`,
               },
             } );
           setDoctorData(response.data);

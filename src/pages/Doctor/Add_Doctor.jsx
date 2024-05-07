@@ -15,6 +15,7 @@ const steps = ['Step 1', 'Step 2', 'Step 3'];
 
 export default function Add_Doctor() {
   const [activeStep, setActiveStep] = useState(0);
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const [formData, setFormData] = useState({
     name: '',
     Email: '',
@@ -30,7 +31,8 @@ export default function Add_Doctor() {
     identity_proof: '' ,
     medical_liscence: '',
   });
-
+  const navigate = useNavigate();
+  
  
   const handleChange = (e) => {
     setFormData({
@@ -50,13 +52,13 @@ export default function Add_Doctor() {
     console.log('Form Data Submitted:', formData);
     const token = JSON.parse(localStorage.getItem("Token"));
     //Use Axios to send a POST request with the form data
-    axios.post('http://127.0.0.1:8000/doctor/api/doctors/', formData , { headers: {
-        'Content-Type': 'multipart/form-data','Authorization': token,
+    axios.post('http://127.0.0.1:8000/doctor/api/doctors/', formData , { headers: { 'Content-Type': 'multipart/form-data',
+      Authorization: `Token ${token}`,
         
       }},)
       .then((response) => {
         console.log('API Response:', response.data);
-        // Add logic to handle the API response, if needed
+        navigate('/Doctor/Details')
       })
       .catch((error) => {
         console.error('API Error:', error);

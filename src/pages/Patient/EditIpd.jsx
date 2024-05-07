@@ -3,27 +3,17 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const EditIPD = () => {
-  const { pk } = useParams(); // Extract the patient ID from the URL params
+  const { pk } = useParams();
   const navigate = useNavigate();
   const [patients, setPatients] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  // const [beds, setBeds] = useState([]);
-  // const [wardno, setWardNo] = useState('');
   const [beds, setBeds] = useState([]);
   const [selectedWardId, setSelectedWardId] = useState("");
   const [wardsData, setWardsData] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState(null);
   const [newname, setnewname] = useState("");
-
-  //   const [formData, setFormData] = useState({
-  //     patient: '',
-  //     ward_type: '',
-  //     bed_number: '',
-  //     ward: '',
-  //     admission_date: '',
-  //   });
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
@@ -33,8 +23,7 @@ const EditIPD = () => {
           `http://127.0.0.1:8000/api/ipd/ipd-registrations/${pk}/`
           , {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           });
         console.log("res", response.data);
@@ -66,8 +55,7 @@ const EditIPD = () => {
         `http://127.0.0.1:8000/api/ipd/ipd-registrations/${pk}/`,
         formData, {
           headers: {
-            "Content-Type": "application/json",
-            authorization: JSON.parse(localStorage.getItem("Token")),
+            Authorization: `Token ${token}`,
           },
         }
       );
@@ -87,8 +75,7 @@ const EditIPD = () => {
           `http://127.0.0.1:8000/api/ipd/beds/?ward_id=${selectedWardId}`
           , {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           });
 
@@ -122,8 +109,7 @@ const EditIPD = () => {
             `http://127.0.0.1:8000/api/patient/api/patients/?search=${formData.patient}`
             , {
               headers: {
-                "Content-Type": "application/json",
-                authorization: JSON.parse(localStorage.getItem("Token")),
+                Authorization: `Token ${token}`,
               },
             });
           console.log(response.data[0]);
@@ -143,8 +129,7 @@ const EditIPD = () => {
           `http://127.0.0.1:8000/api/ipd/wards/`
           , {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           });
         console.log("ward data:", response.data);

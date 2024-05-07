@@ -15,12 +15,11 @@ const BillDetails = ({ onAddItem }) => {
     const [selectedItem, setSelectedItem] = useState('');
     const [selectedItemPrice, setSelectedItemPrice] = useState( ' ');
     const [ medi , setMedi] = useState([]);
-
+    const token =  JSON.parse(localStorage.getItem("Token"))
     useEffect(() => {
         axios.get(`${baseURL}/inventory/api/equipment/`, {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+                Authorization: `Token ${token}`,
             },
           })
             .then(response => {
@@ -33,8 +32,7 @@ const BillDetails = ({ onAddItem }) => {
 
         axios.get(`${baseURL}/api/patient/api/patients/`, {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+                Authorization: `Token ${token}`,
             },
           })
             .then(response => {
@@ -46,8 +44,7 @@ const BillDetails = ({ onAddItem }) => {
 
             axios.get(`${baseURL}/inventory/api/medicines/`, {
                 headers: {
-                  "Content-Type": "application/json",
-                  authorization: JSON.parse(localStorage.getItem("Token")),
+                  Authorization: `Token ${token}`,
                 },
               })
             .then(response => {
@@ -87,8 +84,7 @@ const BillDetails = ({ onAddItem }) => {
             unit_price: selectedItemPrice
         }, {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           })
        

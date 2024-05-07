@@ -1,22 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import {
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  styled,
-  makeStyles,
-  TBody,
-  Paper,
-  TableContainer,
-  TablePagination,
-  Button,
-  Typography,
-  TextField,
-} from "@mui/material";
 const baseURL = 'http://127.0.0.1:8000';
 
 const Generate_Bill = () => {
@@ -25,14 +9,16 @@ const Generate_Bill = () => {
   const [equip, setEquip] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [equipmentData, setEquipmentData] = useState([]);
-const [ admissionID , setAdmissionID] = useState(null)
+const [ admissionID , setAdmissionID] = useState( [])
+const token =  JSON.parse(localStorage.getItem("Token"))
+const [currentDate, setCurrentDate] = useState(new Date());
+
   useEffect(() => {
     
     // Fetch patient data based on patientId
     axios.get(`${baseURL}/api/patient/api/patients/`, {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+        Authorization: `Token ${token}`,
       },
     })
       .then(response => {
@@ -48,34 +34,28 @@ const [ admissionID , setAdmissionID] = useState(null)
     // Fetch IPD registration data based on patientId
     axios.get(`${baseURL}/api/ipd/ipd-registrations/`, {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+        Authorization: `Token ${token}`,
       },
     })
       .then(response => {
         // Filter the IPD registration data to find the entry for the patient
         const admission = response.data.filter(item => item.patient === parseInt(patientId));
-        if (admission.length > 0) {
+      
           // Access the first element of the filtered array to get the admission ID
-          setAdmissionID(admission[0].admission_id);
-        } else {
-          console.error('IPD registration not found for patient ID:', patientId);
-        }
-        console.log("ipd" , admission);
+          setAdmissionID(admission);
+      
       })
       .catch(error => {
         console.error('Error fetching IPD registration data:', error);
+        console.log("Error response data:", error.response?.data);
       });
   }, [patientId]);
-
-
-
+ 
   useEffect(() => {
     // Fetch equipment data
     axios.get(`${baseURL}/inventory/api/patient-equipment-usage/`, {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+        Authorization: `Token ${token}`,
       },
     })
       .then(response => {
@@ -94,8 +74,7 @@ const [ admissionID , setAdmissionID] = useState(null)
     // Fetch equipment data to get the equipment names
     axios.get(`${baseURL}/inventory/api/equipment/`, {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+        Authorization: `Token ${token}`,
       },
     })
       .then(response => {
@@ -105,6 +84,15 @@ const [ admissionID , setAdmissionID] = useState(null)
         console.error('Error fetching equipment data:', error);
       });
   }, []);
+  useEffect(() => {
+    // Update the current date every second
+    const interval = setInterval(() => {
+      setCurrentDate(new Date());
+    }, 1000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
 
   const getEquipmentName = (equipmentId) => {
     const equipment = equipmentData.find(item => item.id === equipmentId);
@@ -113,15 +101,15 @@ const [ admissionID , setAdmissionID] = useState(null)
 
   const generateFinalBill = () => {
     // Make a POST request to store the total amount in patient-billings
-    axios.post(`${baseURL}/patient/api/patient-billings/`, {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
-      },
-    }, {
+    const token =  JSON.parse(localStorage.getItem("Token"))
+    axios.post(`${baseURL}/patient/api/patient-billings/`,{
       InvoiceDetails: totalPrice.toFixed(0),
       PatientID: parseInt(patientId)
-    })
+    }, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    }, )
     .then(response => {
       console.log('Total amount stored successfully:', response.data);
       alert("Total amount stored successfully")
@@ -129,23 +117,13 @@ const [ admissionID , setAdmissionID] = useState(null)
     })
     .catch(error => {
       console.error('Error storing total amount:', error);
+      console.log("Error response data:", error.response?.data);
     });
   };
 
   return (
     <div className=' ml-28 w-full justify-center'>
-      <h1 className=' bg-slate-700 h-10 w-40'>Generate Bill {admissionID}</h1>
-      {patientData && (
-        <div className=' bg-slate-800'>
-          <h2>Patient Details</h2>
-          <p className=''>Patient ID: {patientData.PatientID}</p>
-          <p>First Name: {patientData.FirstName}</p>
-          <p>Phone: {patientData.phone}</p>
-          <p>Email: {patientData.email}</p>
-          {/* Add more patient details as needed */}
-        </div>
-      )}
-
+  \
       <div>
       <div className="flex flex-col items-start max-w-[793px]  ">
       <div className="flex gap-5 text-sm font-medium tracking-tight text-black max-md:flex-wrap">
@@ -169,9 +147,10 @@ const [ admissionID , setAdmissionID] = useState(null)
         loading="lazy"
         className="w-full  bg-slate-700 border mt-[22px] border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
       />
-      {patientData && (
+     
       <div className="self-stretch mt-[20px] w-full max-md:max-w-full">
         <div className="flex gap-5 max-md:flex-col max-md:gap-0">
+        {patientData && (
           <div className="flex flex-col w-[42%] max-md:ml-0 max-md:w-full">
             <div className="flex flex-col grow px-5 text-sm font-medium text-black max-md:mt-2.5">
               <div className="flex gap-2.5">
@@ -201,39 +180,42 @@ const [ admissionID , setAdmissionID] = useState(null)
            
             </div>
           </div>
+        )}
+        {admissionID.length > 0 && 
           <div className="flex flex-col ml-5 w-[58%] max-md:ml-0 max-md:w-full">
             <div className="flex flex-col text-sm font-medium text-black max-md:mt-3 max-md:max-w-full">
               <div className="flex flex-col items-start self-end max-w-full w-[321px]">
                 <div className="flex gap-2 ml-4 whitespace-nowrap max-md:ml-2.5">
                   <div>Date:</div>
-                  <div className="flex-auto tracking-tighter">19-Jan-2023</div>
+                  <div className="flex-auto tracking-tighter">{currentDate.toLocaleDateString()}</div>
                 </div>
                 <div className="flex gap-5 self-stretch px-4 mt-2.5">
-                  <div className="grow">Admission No</div>
-                  <div className="flex-auto">:000001</div>
+                  <div className="grow">Admission No :    {admissionID[0].admission_id}</div>
+                
                 </div>
                 <div className="flex gap-1.5 mt-2.5 ml-4 max-md:ml-2.5">
                   <div className="grow">Admission Date:</div>
-                  <div className="tracking-tighter">18-Jan-2023,</div>
-                  <div className="flex-auto tracking-normal">12:19 PM</div>
+                  <div className="tracking-tighter">{ admissionID[0].admission_date}</div>
+               
                 </div>
               </div>
               <div className="flex gap-5 px-5 mt-2 max-md:flex-wrap">
                
                 <div className="flex flex-auto gap-1">
-                  <div className=" ml-[93px] grow tracking-normal">Discharge Date:</div>
-                  <div className="mr-[100px] ">--/--/--</div>
+                  <div className=" ml-[100px] grow tracking-normal ">  Discharge Date:</div>
+                  <div className="mr-[100px] ">{ admissionID[0].discharge_date}</div>
                 </div>
               </div>
               <div className="flex gap-1.5 self-center px-5 mt-2 tracking-normal">
-                <div className="grow">Bed No(s):</div>
-                <div className="flex-auto">GEN001(GENERAL)</div>
+                <div className="grow mr-[60px]">Bed No. : { admissionID[0].bed}</div>
+                <div className="">Ward : {admissionID[0].ward} </div>
               </div>
             </div>
           </div>
+        }
         </div>
       </div>
-    )}
+  
       <div className="flex gap-1 px-5 mt-3 text-sm font-medium text-black whitespace-nowrap">
         <div className="grow">Address:</div>
         <div>Pune,</div>
@@ -343,7 +325,7 @@ const [ admissionID , setAdmissionID] = useState(null)
           </tr>
         </tbody>
       </table>
-      <button className='top-[40px] ml-10 rounded items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue w-48 mt-3 gap-[6px] leading-[10px] left-[880px]  absolute font-medium bg-btn text-white' type="submit" onClick={generateFinalBill}>Generate final Bill</button>
+      <button className='top-[40px] ml-10  rounded-md items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue w-48 mt-3 gap-[6px] leading-[10px] left-[880px]  absolute font-medium bg-btn text-white' type="submit" onClick={generateFinalBill}>Generate final Bill</button>
     </div>
     
     </div>

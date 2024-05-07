@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaHome, FaBars, FaAngleDown } from "react-icons/fa";
 import { BiSearch } from "react-icons/bi";
 import { AnimatePresence, motion } from "framer-motion";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import SidebarMenu from "./SidebarMenu";
 import { BsFillPersonLinesFill } from "react-icons/bs";
 import { IoMdDocument } from "react-icons/io";
@@ -80,6 +80,10 @@ const routes = [
 const Sidebar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
   const toggle = () => setIsOpen(!isOpen);
+  const navigate = useNavigate();
+  const navi = ()=>{
+    navigate("/");
+  }
   const inputAnimation = {
     hidden: {
       width: 0,
@@ -127,13 +131,14 @@ const Sidebar = ({ children }) => {
         }}
         className="sidebar"
       >
-        <div className="top_section">
+        <button className="top_section" onClick={navi}>
           {isOpen && (
             <motion.h1
               animate="show"
               exit="hidden"
               variants={showAnimation}
               className="logo"
+              
             >
               CareChainAI
             </motion.h1>
@@ -141,7 +146,7 @@ const Sidebar = ({ children }) => {
           <div className="bars">
             <FaBars onClick={toggle} />
           </div>
-        </div>
+        </button>
 
         <section className="routes">
           {routes.map((route , index) => {

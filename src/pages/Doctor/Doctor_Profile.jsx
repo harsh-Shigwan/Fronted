@@ -4,6 +4,7 @@ import { Bar, Doughnut, Line } from "react-chartjs-2";
 import sourceData from "../../Data/sourceData.json";
 const Doctor_Profile = () => {
     const[ myData , setMyData]= useState([]);
+    const token =  JSON.parse(localStorage.getItem("Token"))
     let { DoctorID} = useParams();
     useEffect(()=>{
 
@@ -14,8 +15,7 @@ console.log(myData)
     const getDoctor=()=>{
         fetch("http://127.0.0.1:8000/doctor/api/doctors/", {
           headers: {
-            "Content-Type": "application/json",
-            authorization: JSON.parse(localStorage.getItem("Token")),
+            Authorization: `Token ${token}`,
           },
         }).then(
             res =>{

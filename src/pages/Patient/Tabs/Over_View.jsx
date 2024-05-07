@@ -13,6 +13,7 @@ const Over_View = () => {
 
   const [myData, setMyData] = useState([]);
   let { PatientID } = useParams();
+  const token = JSON.parse(localStorage.getItem("Token"));
   useEffect(() => {
     getPatient();
   },[PatientID]);

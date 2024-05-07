@@ -7,6 +7,7 @@ import search from "../../Data/search.png";
 const baseURL = "http://127.0.0.1:8000/";
 
 const Discharged = () => {
+  
   let { admission_id } = useParams();
   const [discharge, setDischarge] = useState({
     discharge_date: "",
@@ -29,8 +30,7 @@ const navigate = useNavigate()
     axios
       .post(`${baseURL}/ipd/ipd-discharges/`, postData, {
         headers: {
-          "Content-Type": "application/json",    'Authorization': token,
-          authorization: JSON.parse(localStorage.getItem("Token")),
+          Authorization: `Token ${token}`,
         },
       })
       .then((res) => {

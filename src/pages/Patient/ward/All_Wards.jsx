@@ -31,13 +31,12 @@ const All_Wards = () => {
     const API = "http://127.0.0.1:8000/ipd/wards/";
     const [myData, setMyData] = useState([]);
     const [isError, setIsError] = useState("");
-  
+    const token =  JSON.parse(localStorage.getItem("Token"))
     const getApiData = async (api) => {
       try {
         const res = await axios.get(api, {
           headers: {
-            "Content-Type": "application/json",
-            authorization: JSON.parse(localStorage.getItem("Token")),
+            Authorization: `Token ${token}`,
           },
         });
         setMyData(res.data);
@@ -62,8 +61,7 @@ const All_Wards = () => {
         try {
           const response = await axios.delete(deleteUrl, {
             headers: {
-              "Content-Type": "application/json",
-              authorization: JSON.parse(localStorage.getItem("Token")),
+              Authorization: `Token ${token}`,
             },
           });
           console.log("Data deleted successfully:", response.data);

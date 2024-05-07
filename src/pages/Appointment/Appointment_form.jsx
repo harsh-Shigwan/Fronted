@@ -10,14 +10,12 @@ const Appointment_form = () => {
     const [ doctorList , setDoctorList ] = useState([]);
     const [ selectedDoctor , setSelectedDoctor] = useState('');
     const [docoptions, setDocOptions] = useState([]);
-
- 
+    const token =  JSON.parse(localStorage.getItem("Token"))
 useEffect(()=>{
   
   axios.get(`${baseURL}/patient/api/patients/`, {
     headers: {
-      "Content-Type": "application/json",
-      authorization: JSON.parse(localStorage.getItem("Token")),
+      Authorization: `Token ${token}`,
     },
   })
   .then(response => {
@@ -29,8 +27,7 @@ useEffect(()=>{
 
   axios.get(`${baseURL}/doctor/api/doctors/`, {
     headers: {
-      "Content-Type": "application/json",
-      authorization: JSON.parse(localStorage.getItem("Token")),
+      Authorization: `Token ${token}`,
     },
   }).then(response => {
     setDoctorList(response.data);
@@ -49,8 +46,7 @@ useEffect(()=>{
       doctor: selectedDoctor,
     }, {
       headers: {
-        "Content-Type": "application/json",
-        authorization: JSON.parse(localStorage.getItem("Token")),
+        Authorization: `Token ${token}`,
       },
     })
       .then((response) => {
