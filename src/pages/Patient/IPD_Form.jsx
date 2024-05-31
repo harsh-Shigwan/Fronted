@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { useNavigate , useParams } from 'react-router-dom';
 import axios from 'axios';
+import baseURL from '../../assests/API_URL';
 import Breadcrumb from '../../components/Breadcrumb';
 const IPD_Form = () => {
   const [patients, setPatients] = useState([]);
@@ -39,7 +40,7 @@ const IPD_Form = () => {
   };
   const handleSubmit = () => {
     console.log('Form Data Submitted:', formData);
-    axios.post('http://127.0.0.1:8000/api/ipd/ipd-registrations/', formData , {
+    axios.post(`${baseURL}/api/ipd/ipd-registrations/`, formData , {
       headers: {
         Authorization: `Token ${token}`,
       },
@@ -60,7 +61,7 @@ const IPD_Form = () => {
 
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/api/ipd/beds/?ward_id=${selectedWardId}`
+          `${baseURL}/api/ipd/beds/?ward_id=${selectedWardId}`
           , {
             headers: {
               Authorization: `Token ${token}`,
@@ -93,7 +94,7 @@ const IPD_Form = () => {
       try {
         if (searchQuery.length > 0) {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/patient/api/patients/?search=${searchQuery}`
+            `${baseURL}/api/patient/api/patients/?search=${searchQuery}`
             , {
               headers: {
                 Authorization: `Token ${token}`,
@@ -113,7 +114,7 @@ const IPD_Form = () => {
     const fetchWards = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/ipd/wards/`
+          `${baseURL}/api/ipd/wards/`
           , {
             headers: {
               Authorization: `Token ${token}`,
@@ -191,15 +192,16 @@ return(
                     value={formData.bed}
                   >
                     {beds.map(
-                      (bed) =>
+                      (bed, index) =>
                         bed.is_available && (
                           <option key={bed.id} value={bed.id}>
-                            {bed.id}
+                            {index + 1}
                           </option>
                         )
                     )}
                   </select>
                 )}
+                
               </div>
             </div>
             <div className="flex flex-col items-stretch w-6/12 ml-5 max-md:w-full max-md:ml-0">

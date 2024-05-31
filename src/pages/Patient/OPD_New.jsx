@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import baseURL from "../../assests/API_URL";
 const OPD_New = () => {
   const [patient_id, setPatientId] = useState("");
   const [doctor_id, setDoctorId] = useState("");
@@ -23,7 +23,7 @@ const OPD_New = () => {
     try {
       // Use Axios to send a POST request with the form data
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/opd/api/opd-register/",
+        `${baseURL}/api/opd/api/opd-register/`,
         { patient_id, doctor_id, ddepartment: formData.ddepartment }
         , {
           headers: {
@@ -45,7 +45,7 @@ const OPD_New = () => {
       try {
         if (patient_id) {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/patient/api/patients/${patient_id}/`
+            `${baseURL}/api/patient/api/patients/${patient_id}/`
             , {
               headers: {
                 Authorization: `Token ${token}`,
@@ -63,7 +63,7 @@ const OPD_New = () => {
       try {
         if (doctor_id) {
           const response = await axios.get(
-            `http://127.0.0.1:8000/doctor/api/doctors/${doctor_id}/`
+            `${baseURL}/doctor/api/doctors/${doctor_id}/`
             , {
               headers: {
                 Authorization: `Token ${token}`,

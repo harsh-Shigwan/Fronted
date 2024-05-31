@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import Breadcrumb from '../../components/Breadcrumb'
 import { useNavigate } from 'react-router-dom'
-
+import baseURL from '../../assests/API_URL';
 const Accounts = () => {
   const [inventoryData, setInventoryData] = useState([]);
   const [totalValue, setTotalValue] = useState(0);
@@ -13,7 +13,7 @@ const Accounts = () => {
         navigate("/Accounts/Account_Profile")
     }
     useEffect(() => {
-      axios.get('http://127.0.0.1:8000/inventory/api/equipment/', {
+      axios.get(`${baseURL}/inventory/api/equipment/`, {
         headers: {
           Authorization: `Token ${token}`,
         },
@@ -26,7 +26,7 @@ const Accounts = () => {
               console.error('Error fetching inventory data:', error);
           });
 
-          axios.get('http://127.0.0.1:8000/inventory/api/patient-equipment-usage/', {
+          axios.get(`${baseURL}/inventory/api/patient-equipment-usage/`, {
             headers: {
               Authorization: `Token ${token}`,
             },

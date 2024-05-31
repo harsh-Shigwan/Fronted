@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Breadcrumb from '../../components/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
+import baseURL from '../../assests/API_URL';
 import axios from 'axios'; 
 const steps = ['Basic Details', 'Emgergency Datails', 'Insurance Details'];
 const token = JSON.parse(localStorage.getItem("Token"));
@@ -57,7 +58,7 @@ export default function Add_Patient() {
 const token =  JSON.parse(localStorage.getItem("Token"))
   formData.owner_token = token;
    // Use Axios to send a POST request with the form data
-    axios.post('http://127.0.0.1:8000/api/patient/api/patients/', formData, {
+    axios.post(`${baseURL}/api/patient/api/patients/`, formData, {
       headers: {
        Authorization: `Token ${token}`,
       },

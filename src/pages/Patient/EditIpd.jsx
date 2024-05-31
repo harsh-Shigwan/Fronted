@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import baseURL from "../../assests/API_URL";
 const EditIPD = () => {
   const { pk } = useParams();
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const EditIPD = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/ipd/ipd-registrations/${pk}/`
+          `${baseURL}/api/ipd/ipd-registrations/${pk}/`
           , {
             headers: {
               Authorization: `Token ${token}`,
@@ -52,7 +52,7 @@ const EditIPD = () => {
     event.preventDefault();
     try {
       await axios.put(
-        `http://127.0.0.1:8000/api/ipd/ipd-registrations/${pk}/`,
+        `${baseURL}/api/ipd/ipd-registrations/${pk}/`,
         formData, {
           headers: {
             Authorization: `Token ${token}`,
@@ -72,7 +72,7 @@ const EditIPD = () => {
 
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/api/ipd/beds/?ward_id=${selectedWardId}`
+          `${baseURL}/api/ipd/beds/?ward_id=${selectedWardId}`
           , {
             headers: {
               Authorization: `Token ${token}`,
@@ -106,7 +106,7 @@ const EditIPD = () => {
         console.log("Fetching", formData.patient);
         if (formData.patient) {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/patient/api/patients/?search=${formData.patient}`
+            `${baseURL}/api/patient/api/patients/?search=${formData.patient}`
             , {
               headers: {
                 Authorization: `Token ${token}`,
@@ -126,7 +126,7 @@ const EditIPD = () => {
     const fetchWards = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/ipd/wards/`
+          `${baseURL}/api/ipd/wards/`
           , {
             headers: {
               Authorization: `Token ${token}`,

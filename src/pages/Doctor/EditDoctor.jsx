@@ -1,6 +1,6 @@
 import react  from 'react';
 import { useNavigate , useParams} from 'react-router-dom';
-
+import baseURL from '../../assests/API_URL';
 import { useState } from 'react';
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -37,7 +37,7 @@ export default function EditDoctor() {
     // Fetch the patient data from the API using the provided patient ID
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/doctor/api/doctors/${pk}/`, {
+        const response = await axios.get(`${baseURL}/doctor/api/doctors/${pk}/`, {
           headers: {
             Authorization: `Token ${token}`,
           },
@@ -69,7 +69,7 @@ export default function EditDoctor() {
     console.log('Form Data Submitted:', formData);
     const token = JSON.parse(localStorage.getItem("Token"));
     //Use Axios to send a POST request with the form data
-    axios.put(`http://127.0.0.1:8000/doctor/api/doctors/${pk}`, formData , { headers: {
+    axios.put(`${baseURL}/doctor/api/doctors/${pk}`, formData , { headers: {
       Authorization: `Token ${token}`,
     }},)
       .then((response) => {

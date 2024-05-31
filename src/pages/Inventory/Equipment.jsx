@@ -4,7 +4,7 @@ import Plus from "../../Data/Plus.png";
 import download from "../../Data/download.png";
 import search from "../../Data/search.png";
 import edit from "../../Data/edit.png";
-
+import baseURL from "../../assests/API_URL";
 import generatePDF from "react-to-pdf";
 import {
   Table,
@@ -32,7 +32,7 @@ const Equipment = () => {
     const handle =()=>{
       navigate("/Inventory");
     }
-    const API = "http://127.0.0.1:8000/inventory/api/equipment/";
+    const API = `${baseURL}/inventory/api/equipment/`;
     const [myData, setMyData] = useState([]);
     const [isError, setIsError] = useState("");
     const token =  JSON.parse(localStorage.getItem("Token"))
@@ -53,7 +53,7 @@ const Equipment = () => {
     }, []);
   
     async function deleteData(id) {
-      const deleteUrl = `http://127.0.0.1:8000/inventory/api/equipment/${id}/`;
+      const deleteUrl = `${baseURL}/inventory/api/equipment/${id}/`;
       try {
         const response = await axios.delete(deleteUrl, {
           headers: {

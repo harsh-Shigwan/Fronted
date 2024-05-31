@@ -4,7 +4,7 @@ import axios from "axios";
 import Breadcrumb from "../../components/Breadcrumb";
 import download from "../../Data/download.png";
 import search from "../../Data/search.png";
-const baseURL = "http://127.0.0.1:8000/";
+import baseURL from "../../assests/API_URL";
 
 const Discharged = () => {
   

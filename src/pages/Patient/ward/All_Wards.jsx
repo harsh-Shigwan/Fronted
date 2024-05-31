@@ -6,7 +6,7 @@ import search from "../../../Data/search.png";
 import edit from "../../../Data/edit.png";
 import { useParams } from "react-router-dom";
 import { Chart as ChartJS, defaults } from "chart.js/auto";
-import { Bar, Doughnut, Line } from "react-chartjs-2";
+import baseURL from "../../../assests/API_URL";
 import generatePDF from "react-to-pdf";
 import {
   Table,
@@ -28,7 +28,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Breadcrumb from "../../../components/Breadcrumb";
 
 const All_Wards = () => {
-    const API = "http://127.0.0.1:8000/ipd/wards/";
+    const API = `${baseURL}/ipd/wards/`;
     const [myData, setMyData] = useState([]);
     const [isError, setIsError] = useState("");
     const token =  JSON.parse(localStorage.getItem("Token"))
@@ -57,7 +57,7 @@ const All_Wards = () => {
         setPage(0);
       };
       async function deleteData(id) {
-        const deleteUrl = `http://127.0.0.1:8000/ipd/wards/${id}/`;
+        const deleteUrl = `${baseURL}/ipd/wards/${id}/`;
         try {
           const response = await axios.delete(deleteUrl, {
             headers: {

@@ -7,6 +7,7 @@ import sourceData from "../../Data/sourceData.json";
 import Bars from "../../components/Charts/Bars";
 import month from "../../Data/month.json";
 import DoctorCard from "../../components/DoctorCard";
+import baseURL from "../../assests/API_URL";
 const Home = () => {
   //  defaults.maintainAspectRatio = false;
   defaults.responsive = true;
@@ -29,7 +30,7 @@ const Home = () => {
     async function fetchData() {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/doctor/api/doctors/",{
+          `${baseURL}/doctor/api/doctors/`,{
             headers: {
              Authorization: `Token ${token}`,
             },
@@ -49,7 +50,7 @@ const Home = () => {
     const fetchData = async () => {
       try {
         // Fetch admission data
-        const admissionResponse = await axios.get('http://127.0.0.1:8000/api/patient/api/patients/', {
+        const admissionResponse = await axios.get(`${baseURL}/api/patient/api/patients/`, {
           headers: {
            Authorization: `Token ${token}`,
           },
@@ -57,14 +58,14 @@ const Home = () => {
         const admissionData = admissionResponse.data;
 
         // Fetch registration data
-        const registrationResponse = await axios.get('http://127.0.0.1:8000/api/ipd/ipd-registrations/', {
+        const registrationResponse = await axios.get(`${baseURL}/api/ipd/ipd-registrations/`, {
           headers: {
            Authorization: `Token ${token}`,
           },
         });
         const registrationData = registrationResponse.data;
         
-        const opdpatient = await axios.get("http://127.0.0.1:8000/api/opd/api/opd-register/",{
+        const opdpatient = await axios.get(`${baseURL}/api/opd/api/opd-register/`,{
           headers: {
             Authorization: `Token ${token}`,
            },
@@ -126,7 +127,7 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/patient/api/patients/"
+          `${baseURL}/api/patient/api/patients/`
           , {
             headers: {
               Authorization: `Token ${token}`,
@@ -141,7 +142,7 @@ const Home = () => {
     const fetchdoctor = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/doctor/api/doctors/"
+          `${baseURL}/doctor/api/doctors/`
           , {
             headers: {
               Authorization: `Token ${token}`,
@@ -156,7 +157,7 @@ const Home = () => {
     const fetchIPD = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/ipd/ipd-registrations/"
+          `${baseURL}/api/ipd/ipd-registrations/`
           , {
             headers: {
               Authorization: `Token ${token}`,
@@ -171,7 +172,7 @@ const Home = () => {
     const fetchMedi = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/inventory/api/medicines/"
+          `${baseURL}/inventory/api/medicines/`
           , {
             headers: {
               Authorization: `Token ${token}`,
@@ -185,7 +186,7 @@ const Home = () => {
     };
     const fetchTotalBeds = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/ipd/wards/',  {
+        const response = await axios.get(`${baseURL}/api/ipd/wards/`,  {
           headers: {
             Authorization: `Token ${token}`,
           },

@@ -7,7 +7,7 @@ import download from "../../Data/download.png";
 import search from "../../Data/search.png";
 import edit from "../../Data/edit.png";
 import { Link, useNavigate } from "react-router-dom";
-
+import baseURL from "../../assests/API_URL";
 import generatePDF from "react-to-pdf";
 import {
   Table,
@@ -27,7 +27,7 @@ import {
 } from "@mui/material";
 
 import Breadcrumb from "../../components/Breadcrumb";
-const baseURL = 'http://127.0.0.1:8000';
+
 const IPD = () => {
   const API = "http://127.0.0.1:8000/api/ipd/ipd-registrations/";
   const API1 = "http://127.0.0.1:8000/api/patient/api/patients/";
@@ -164,6 +164,7 @@ useEffect(()=>{
                           </TableRow>
                         </TableHead>
                         <TableBody>
+                        
                           {myData
                             .slice(
                               page * rowperpage,
@@ -190,7 +191,7 @@ useEffect(()=>{
                                 <TableCell>{user.admission_id}</TableCell>
                                 <TableCell>{user.admission_date} </TableCell>
                                 <TableCell>{user.ward}</TableCell>
-                                <TableCell>{user.bed_number}</TableCell>
+                                <TableCell>{user.bed }</TableCell>
                                 <TableCell>
                                   {user.patient}
                                 </TableCell>

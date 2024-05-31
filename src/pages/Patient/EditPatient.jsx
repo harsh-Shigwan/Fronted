@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-
+import baseURL from '../../assests/API_URL';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -42,7 +42,7 @@ const EditPatient = () => {
  
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/patient/api/patients/${pk}/`, {
+        const response = await axios.get(`${baseURL}/api/patient/api/patients/${pk}/`, {
           headers: {
             Authorization: `Token ${token}`,
           },
@@ -74,7 +74,7 @@ const EditPatient = () => {
   const handleSubmit = async () => {
     try {
 
-      await axios.put(`http://127.0.0.1:8000/api/patient/api/patients/${pk}/`, formData , {
+      await axios.put(`${baseURL}/api/patient/api/patients/${pk}/`, formData , {
         headers: {
           Authorization: `Token ${token}`,
         },

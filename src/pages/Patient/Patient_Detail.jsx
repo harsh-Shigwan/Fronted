@@ -23,12 +23,12 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-
+import baseURL from "../../assests/API_URL";
 import { Link, useNavigate } from "react-router-dom";
 import Breadcrumb from "../../components/Breadcrumb";
 const Patient_Detail = () => {
   const { pk } = useParams();
-  const API = "http://127.0.0.1:8000/api/patient/api/patients/";
+  const API = `${baseURL}/api/patient/api/patients/`;
   const [myData, setMyData] = useState([]);
   const [isError, setIsError] = useState("");
   const token =  JSON.parse(localStorage.getItem("Token"))
@@ -67,7 +67,7 @@ const Patient_Detail = () => {
     setPage(0);
   };
   async function deleteData(PatientID) {
-    const deleteUrl = `http://127.0.0.1:8000/api/patient/api/patients/${PatientID}/`;
+    const deleteUrl = `${baseURL}/api/patient/api/patients/${PatientID}/`;
     try {
       const response = await axios.delete(deleteUrl, {
         headers: {

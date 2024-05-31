@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import baseURL from '../../assests/API_URL';
 import axios from 'axios';
 import Breadcrumb from '../../components/Breadcrumb';
 const Add_Medicine_Inventory = () => {
@@ -34,7 +34,7 @@ const Add_Medicine_Inventory = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log('Form Data Submitted:', formData);
-    axios.post('http://127.0.0.1:8000/inventory/api/medicines/', formData, {
+    axios.post(`${baseURL}/inventory/api/medicines/`, formData, {
       headers: {
         Authorization: `Token ${token}`,
       },

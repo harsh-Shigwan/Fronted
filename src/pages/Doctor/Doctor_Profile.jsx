@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 import sourceData from "../../Data/sourceData.json";
+import baseURL from '../../assests/API_URL';
 const Doctor_Profile = () => {
     const[ myData , setMyData]= useState([]);
     const token =  JSON.parse(localStorage.getItem("Token"))
@@ -13,7 +14,7 @@ const Doctor_Profile = () => {
     },[DoctorID]) 
 console.log(myData)
     const getDoctor=()=>{
-        fetch("http://127.0.0.1:8000/doctor/api/doctors/", {
+        fetch(`${baseURL}/doctor/api/doctors/`, {
           headers: {
             Authorization: `Token ${token}`,
           },

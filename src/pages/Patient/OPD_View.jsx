@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-const baseURL = 'http://127.0.0.1:8000';
+import baseURL from '../../assests/API_URL';
 const OPD_View = () => {
     const [ myData , setMyData]=useState([]);
     const [ patientsList , setPatientsList]= useState([]);
@@ -31,7 +31,7 @@ const OPD_View = () => {
 
 
     const getIPD = ()=>{
-        fetch("http://127.0.0.1:8000/api/opd/api/opd-register/" , {
+        fetch(`${baseURL}/api/opd/api/opd-register/` , {
           headers: {
             Authorization: `Token ${token}`,
           },

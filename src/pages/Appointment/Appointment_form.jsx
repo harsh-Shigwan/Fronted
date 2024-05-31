@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import Breadcrumb from '../../components/Breadcrumb';
-const baseURL = 'http://127.0.0.1:8000';
+import baseURL from '../../assests/API_URL';
 const Appointment_form = () => {
   
  
@@ -41,7 +41,7 @@ useEffect(()=>{
   const handleSubmit = (event) => {
     event.preventDefault();
    
-    axios.post('http://127.0.0.1:8000/appointments/appointments/', {
+    axios.post(`${baseURL}/appointments/appointments/`, {
       patient: selectedPatient,
       doctor: selectedDoctor,
     }, {

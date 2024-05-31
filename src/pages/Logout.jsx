@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import React from "react";
+import baseURL from "../assests/API_URL";
 const token = JSON.parse(localStorage.getItem("Token"));
+
 const Logout = () => {
   const navigate = useNavigate();
   //const[(isLoading, setIsLoading)] = useState(false);
@@ -10,7 +12,7 @@ const Logout = () => {
     console.log("token:", token);
     axios
       .post(
-        "http://127.0.0.1:8000/api/hos_loginlogout/",
+        `${baseURL}/api/hos_loginlogout/`,
         {}, // Body yadi zarurat ho tab yaha kuch data bheja ja sakta hai, otherwise empty object
         {
           headers: {

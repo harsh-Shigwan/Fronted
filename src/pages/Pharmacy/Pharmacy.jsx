@@ -4,7 +4,7 @@ import Plus from "../../Data/Plus.png";
 import download from "../../Data/download.png";
 import search from "../../Data/search.png";
 import edit from "../../Data/edit.png";
-
+import baseURL from "../../assests/API_URL";
 import generatePDF from "react-to-pdf";
 import {
   Table,
@@ -26,7 +26,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import Breadcrumb from "../../components/Breadcrumb";
 const Pharmacy = () => {
-  const API = "http://127.0.0.1:8000/api/patient/api/patients/";
+  const API = `${baseURL}/api/patient/api/patients/`;
   const [myData, setMyData] = useState([]);
   const [isError, setIsError] = useState("");
   const token =  JSON.parse(localStorage.getItem("Token"))

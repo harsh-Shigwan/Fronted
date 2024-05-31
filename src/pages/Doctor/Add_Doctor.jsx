@@ -1,6 +1,6 @@
 import react  from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import baseURL from '../../assests/API_URL';
 import { useState } from 'react';
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -52,7 +52,7 @@ export default function Add_Doctor() {
     console.log('Form Data Submitted:', formData);
     const token = JSON.parse(localStorage.getItem("Token"));
     //Use Axios to send a POST request with the form data
-    axios.post('http://127.0.0.1:8000/doctor/api/doctors/', formData , { headers: { 'Content-Type': 'multipart/form-data',
+    axios.post(`${baseURL}/doctor/api/doctors/`, formData , { headers: { 'Content-Type': 'multipart/form-data',
       Authorization: `Token ${token}`,
         
       }},)

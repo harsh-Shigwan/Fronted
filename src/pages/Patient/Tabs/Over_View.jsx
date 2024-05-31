@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 import sourceData from "../../../Data/sourceData.json";
 import month from "../../../Data/month.json";
+import baseURL from "../../../assests/API_URL";
 const Over_View = () => {
   // defaults.responsive = true;
 
@@ -19,7 +20,7 @@ const Over_View = () => {
   },[PatientID]);
 console.log(myData)
   const getPatient = () => {
-    fetch("http://127.0.0.1:8000/api/patient/api/patients/", {
+    fetch(`${baseURL}/api/patient/api/patients/`, {
       headers: {
         "Content-Type": "application/json",
         authorization: JSON.parse(localStorage.getItem("Token")),

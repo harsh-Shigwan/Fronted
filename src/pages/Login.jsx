@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import baseURL from "../assests/API_URL";
 import logo from "../Data/logo.png"
 const Login = () => {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ if (Object.keys(error).length === 0 && isSubmit){
     setIsSubmit(true);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/hos_loginlogin/",
+        `${baseURL}/api/hos_loginlogin/`,
         formData
       );
       const token = response.data.token; 

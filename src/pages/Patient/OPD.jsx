@@ -20,12 +20,12 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-
+import baseURL from "../../assests/API_URL";
 
 import { Link, useNavigate , useParams } from "react-router-dom";
 import Breadcrumb from "../../components/Breadcrumb";
 const OPD = () => {
-  const API = "http://127.0.0.1:8000/api/opd/api/opd-register/";
+  const API = `${baseURL}/api/opd/api/opd-register/`;
   const [myData, setMyData] = useState([]);
   const [ isError , setIsError]=useState("");
   const { pk } = useParams();
@@ -43,7 +43,7 @@ const OPD = () => {
   }
 }
 async function deleteData(visit_id) {
-  const deleteUrl = `http://127.0.0.1:8000/opd/api/opd-register/${visit_id}/`;
+  const deleteUrl = `${baseURL}/opd/api/opd-register/${visit_id}/`;
   try {
     const response = await axios.delete(deleteUrl , {
       headers: {

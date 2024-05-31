@@ -5,7 +5,7 @@ import All_Wards from './All_Wards';
 import Breadcrumb from '../../../components/Breadcrumb';
 import download from "../../../Data/download.png";
 import search from "../../../Data/search.png";
-import generatePDF from "react-to-pdf";
+import baseURL from '../../../assests/API_URL';
 const TotalWard = () => {
     const[ formData , setFormData] = useState({
         name:"",
@@ -22,7 +22,7 @@ const TotalWard = () => {
     const handleSubmit = (event) => {
     
         console.log('Form Data Submitted:', formData);
-        axios.post('http://127.0.0.1:8000/ipd/wards/', formData, {
+        axios.post(`${baseURL}//ipd/wards/`, formData, {
           headers: {
             Authorization: `Token ${token}`,
           },

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-const baseURL = 'http://127.0.0.1:8000';
+import baseURL from '../../assests/API_URL';
 
 const Generate_Bill = () => {
   const { patientId } = useParams(); // Extract patientId from URL parameters
@@ -118,12 +118,12 @@ const [currentDate, setCurrentDate] = useState(new Date());
     .catch(error => {
       console.error('Error storing total amount:', error);
       console.log("Error response data:", error.response?.data);
+      alert("Total amount not stored successfully");
     });
   };
 
   return (
     <div className=' ml-28 w-full justify-center'>
-  \
       <div>
       <div className="flex flex-col items-start max-w-[793px]  ">
       <div className="flex gap-5 text-sm font-medium tracking-tight text-black max-md:flex-wrap">

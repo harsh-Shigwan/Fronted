@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import Breadcrumb from '../../components/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; 
+import baseURL from '../../assests/API_URL';
 const steps = ['Step 1', 'Step 2', 'Step 3'];
 
 export default function Add_Medicines() {
@@ -56,7 +57,7 @@ export default function Add_Medicines() {
     console.log('Form Data Submitted:', formData);
 
    // Use Axios to send a POST request with the form data
-    axios.post('http://127.0.0.1:8000/api/patient/api/patients/', formData, {
+    axios.post(`${baseURL}/api/patient/api/patients/`, formData, {
       headers: {
         Authorization: `Token ${token}`,
       },

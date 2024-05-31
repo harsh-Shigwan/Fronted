@@ -22,7 +22,7 @@ import {
     Button,
     Typography,
   } from "@mui/material";
-  const baseURL="http://127.0.0.1:8000/"
+ import baseURL from "../../assests/API_URL";
 const DischargedList = () => {
   const token =  JSON.parse(localStorage.getItem("Token"))
     const [ dischargeList , setDischargeList]=useState([])

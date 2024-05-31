@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-
+import baseURL from '../../assests/API_URL';
 const IPD_View = () => {
     const [ myData , setMyData]=useState([]);
     const token =  JSON.parse(localStorage.getItem("Token"))
@@ -10,7 +10,7 @@ const IPD_View = () => {
     })
 
     const getIPD = ()=>{
-        fetch("http://127.0.0.1:8000/api/ipd/ipd-registrations/" , {
+        fetch(`${baseURL}/api/ipd/ipd-registrations/` , {
             headers: {
               Authorization: `Token ${token}`,
             },

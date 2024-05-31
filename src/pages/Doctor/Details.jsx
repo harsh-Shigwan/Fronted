@@ -5,6 +5,7 @@ import download from "../../Data/download.png";
 import search from "../../Data/search.png";
 import edit from "../../Data/edit.png";
 import generatePDF from "react-to-pdf";
+import baseURL from "../../assests/API_URL";
 import {
   Table,
   TableHead,
@@ -23,7 +24,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import Breadcrumb from "../../components/Breadcrumb";
 const Details = () => {
-  const API = "http://127.0.0.1:8000/doctor/api/doctors/";
+  const API = `${baseURL}/doctor/api/doctors/`;
   const [myData, setMyData] = useState([]);
   const [isError, setIsError] = useState("");
   const token =  JSON.parse(localStorage.getItem("Token"))
@@ -40,7 +41,7 @@ const Details = () => {
     }
   };
   async function deleteData(DoctorID) {
-    const deleteUrl = `http://127.0.0.1:8000/api/doctor/api/doctors/${DoctorID}/`;
+    const deleteUrl = `${baseURL}/api/doctor/api/doctors/${DoctorID}/`;
     try {
       const response = await axios.delete(deleteUrl, {
         headers: {
