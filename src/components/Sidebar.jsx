@@ -14,6 +14,7 @@ import { AiFillAppstore } from "react-icons/ai";
 import { FaWindowRestore } from "react-icons/fa6";
 import { FaCalendarPlus } from "react-icons/fa";
 import { VscAccount } from "react-icons/vsc";
+import { IoPeople } from "react-icons/io5";
 import Logout from "../pages/Logout";
 const routes = [
   {
@@ -71,6 +72,10 @@ const routes = [
     path: "/Pharmacy",
     name: "Pharmacy",
     icon: <FaCalendarPlus />,
+  },{
+    path: "/Staff_Mangement",
+    name: "Staff",
+    icon:<IoPeople />,
   },{
     path: "/Accounts",
     name: "Accounts",

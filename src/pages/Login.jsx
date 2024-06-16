@@ -60,6 +60,7 @@ if (Object.keys(error).length === 0 && isSubmit){
     } catch (error) {
       setError(error.response.data.message || "Login failed");
       console.log("Error response data:", error.response?.data);
+      alert("Login failed")
     }
   };
 
@@ -72,7 +73,7 @@ if (Object.keys(error).length === 0 && isSubmit){
             src={logo}
             className="z-10 ml-12 max-w-full aspect-[3.85] w-[189px] max-md:ml-2.5"
           />
-          <div className="flex flex-col justify-center px-14 py-12 mt-4 rounded-full bg-slate-80 max-md:px-5 max-md:max-w-full">
+          <div className="flex flex-col justify-center px-14 py-0 mt-0 rounded-full bg-slate-80 max-md:px-5 max-md:max-w-full">
             <img
               loading="lazy"
               srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/32d42d2b9868fc24586749bc4483de4ed04a3d2358628a6fade0637ee32ab3c1?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/32d42d2b9868fc24586749bc4483de4ed04a3d2358628a6fade0637ee32ab3c1?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/32d42d2b9868fc24586749bc4483de4ed04a3d2358628a6fade0637ee32ab3c1?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/32d42d2b9868fc24586749bc4483de4ed04a3d2358628a6fade0637ee32ab3c1?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/32d42d2b9868fc24586749bc4483de4ed04a3d2358628a6fade0637ee32ab3c1?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/32d42d2b9868fc24586749bc4483de4ed04a3d2358628a6fade0637ee32ab3c1?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/32d42d2b9868fc24586749bc4483de4ed04a3d2358628a6fade0637ee32ab3c1?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/32d42d2b9868fc24586749bc4483de4ed04a3d2358628a6fade0637ee32ab3c1?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
@@ -91,12 +92,10 @@ if (Object.keys(error).length === 0 && isSubmit){
           </div>
         </div>
         <div className="flex flex-col flex-1 justify-center my-auto whitespace-nowrap rounded-2xl bg-slate-50 text-zinc-800 max-md:max-w-full">
-          <div className="flex flex-col h-[1000px] p-10 max-md:px-5 max-md:max-w-full">
-            <div className="text-4xl font-bold text-center leading-[48.96px]">
-              👋
-            </div>
+          <div className="flex flex-col h-[1000px] p-5 max-md:px-5 max-md:max-w-full">
+            
             <div className="mt-8 text-3xl font-semibold leading-10 text-center">
-              Welcome back!
+              Welcome...!
             </div>
             <div className="mt-3 text-base leading-6 text-center">
               Let's build someting great

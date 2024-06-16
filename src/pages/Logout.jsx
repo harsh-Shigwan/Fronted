@@ -42,7 +42,7 @@ const Logout = () => {
       ) : ( */}
       <button
         onClick={handleLogout}
-        className="bg-blue-800 w-44 h-9 rounded-2xl ml-0 mt-24"
+        className="bg-blue-800 w-44 h-9 rounded-2xl ml-0 mt-5"
       >
         Logout
       </button>

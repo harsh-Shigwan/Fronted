@@ -59,6 +59,8 @@ import Discharged from "./pages/Patient/Discharged";
 import DischargedList from "./pages/Patient/DischargedList";
 import SideBarLayout from "./components/SideBarLayout";
 import AuthenticationRoute from "./components/AuthenticationRoute";
+import ErrorPage404 from "./components/ErrorPage404";
+import Shifts from "./pages/Staff/Shifts";
 
 //import Medicine from './pages/Pharmacy/Medicine';
 
@@ -191,7 +193,11 @@ const App = () => {
             path="Appointment/Appointment_form"
             element={<Appointment_form />}
           ></Route>
-      
+      {/*staff */}
+      <Route path="/Staff_Mangement" element={<Staff_Mangement/> }></Route>
+      <Route path="/Add_Staff" element={<Add_Staff/> }></Route>
+      <Route path="/Staff_form" element={<Staff_Form/> }></Route>
+      <Route path="/shift" element={<Shifts/>}></Route>
           {/* ward num*/}
           <Route path="/Patient/Ward/Add_Ward" element={<TotalWard />}></Route>
           <Route path="/Patient/Ward" element={<All_Wards />}></Route>
@@ -199,6 +205,7 @@ const App = () => {
         <Route path="/" element={<Navigate to="/home" />} />{" "}
         <Route path="/Login" element={<Login />} />{" "}
         <Route path="/Signin" element={<Signin />} />{" "}
+        <Route path="*" element={< ErrorPage404 />} />{" "}
       </Routes>
     </Router>
   );

@@ -1,10 +1,38 @@
-import React from 'react'
-import Breadcrumb from '../../components/Breadcrumb';
+import React, { useState, useRef, useEffect } from "react";
+import Plus from "../../Data/Plus.png";
+import baseURL from "../../assests/API_URL";
+import { useNavigate } from "react-router-dom";
 
 const Staff_Mangement = () => {
+const handle = () => {
+  navigate("/Staff_form");
+};
+  const navigate = useNavigate();
   return (
     <div>
-    <Breadcrumb></Breadcrumb>
+    
+    <div className="self-stretch relative mt-12 h-[65px] overflow-hidden shrink-0 bg-theme-white-default bottom-3  rounded-lg">
+    <div className="absolute w-full top-[60px] right-[0px] left-[0px] bg-gray-200 box-border h-0 border-t-[1px] border-solid border-border-light" />
+    <div className="absolute top-[18px] left-[32px] text-slate-600 text-[20px] leading-[24px] font-medium">
+      Staff Mangement Dashboard
+    </div>
+ 
+
+    <button
+      className="absolute top-[11px] left-[937px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
+      onClick={handle}
+    >
+      <div className="w-24 my-0 mx-[!important] absolute top-[10px] left-[10px] flex flex-row items-center justify-start gap-[8px] z-[0]">
+        <img
+          className="w-5 relative h-5 object-cover"
+          alt=""
+          src={Plus}
+        />
+        <div className="relative font-semibold">Attendace</div>
+      </div>
+    </button>
+ 
+  </div>
     <div className="py-8 ml-[30px] ">
       <div className="flex gap-5 max-md:flex-col max-md:gap-0 max-md:">
         <div className="flex flex-col w-3/12 max-md:ml-0 max-md:w-full">

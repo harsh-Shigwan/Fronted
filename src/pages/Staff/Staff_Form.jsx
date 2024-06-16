@@ -1,7 +1,16 @@
-import React from 'react';
-import { useState } from 'react'; 
+import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
+import Plus from "../../Data/Plus.png";
+import download from "../../Data/download.png";
+import search from "../../Data/search.png";
+import edit from "../../Data/edit.png";
+import generatePDF from "react-to-pdf";
 import Breadcrumb from '../../components/Breadcrumb';
-
+import MonthSelection from '../../components/MonthSelection';
+import { Button } from '@mui/material';
+import AttendanceGrid from '../../components/AttendanceGrid';
+import Staff from '../../Data/Staff';
+import { useNavigate } from "react-router-dom";
 const  Staff_Form = () => {
   const options = ["Option 1", "Option 2", "Option 3", "Option 4"]; // Add your random options here
   const [selectedOption, setSelectedOption] = useState(null);
@@ -15,12 +24,113 @@ const  Staff_Form = () => {
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
   }
+
+
+
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const handleMonthChange = (date) => {
+    console.log('Selected month:', date);
+    setSelectedDate(date);
+    
+  };
+
+  const[selectedMonth, setSelectedMonth]=useState();
+  const[attadanceList, setAttadanceList]=useState();
+  const onsearchHandler=()=>{
+ console.log('Selected month onsearch:', selectedDate);
+  }
+  useEffect(() => {
+    // Simulate fetching data
+    const fetchData = () => {
+      const data = [
+        { id: 1, name: "Alice" },
+        { id: 2, name: "Bob" },
+        { id: 3, name: "Charlie" },
+        { id: 4, name: "David" },
+        { id: 5, name: "Eve" },
+        { id: 6, name: "Frank" },
+        { id: 7, name: "Grace" },
+        { id: 8, name: "Hank" },
+        { id: 9, name: "Ivy" },
+        { id: 10, name: "Jack" },
+        { id: 11, name: "Karen" },
+        { id: 12, name: "Leo" },
+        { id: 13, name: "Mona" },
+        { id: 14, name: "Nina" },
+        { id: 15, name: "Oscar" },
+        { id: 16, name: "Paul" },
+        { id: 17, name: "Quincy" },
+        { id: 18, name: "Rachel" },
+        { id: 19, name: "Sam" },
+        { id: 20, name: "Tina" }
+      ];
+      setAttadanceList(data);
+    };
+ 
+    fetchData();
+  }, []);
+console.log("sS",setAttadanceList)
+
+const navigate = useNavigate();
+const handle = () => {
+  navigate("/Add_Staff");
+};
+
+const navigate1 = useNavigate();
+const handle1=()=>{
+  navigate1("/shift");
+}
 return(
- <div><Breadcrumb></Breadcrumb>
+ <div>
+
+ <div className="self-stretch relative h-[60px] overflow-hidden shrink-0 bg-theme-white-default bottom-3  rounded-lg mt-12">
+ <div className="absolute w-full top-[60px] right-[0px] left-[0px] bg-gray-200 box-border h-0 border-t-[1px] border-solid border-border-light" />
+ <div className="absolute top-[18px] left-[22px] text-[20px] text-slate-600 leading-[24px] font-medium">
+   Attendace
+ </div>
+
+
+ <button
+   className="absolute top-[11px] left-[937px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
+   onClick={handle}
+ >
+   <div className="w-24 my-0 mx-[!important] absolute top-[10px] left-[20px] flex flex-row items-center justify-start gap-[8px] z-[0]">
+     <img
+       className="w-5 relative h-5 object-cover"
+       alt=""
+       src={Plus}
+     />
+     <div className="relative font-semibold">Add Staff</div>
+   </div>
+ </button>
+ <button
+   className="absolute top-[11px] left-[765px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
+onClick={handle1}
+ >
+   <div className="w-24 my-0 mx-[!important] absolute top-[calc(50%_-_8px)] left-[calc(50%_-_48px)] flex flex-row items-center justify-start gap-[8px] z-[0]">
+     <img
+       className="w-4 relative h-4 overflow-hidden shrink-0"
+       alt=""
+       src={download}
+     />
+     <div className="relative font-semibold">Shifts</div>
+   </div>
+ </button>
+</div>
+ <div >
+ <h1 className=' text-slate-500'>Selected Month: {selectedDate.toString()}</h1>
+ <MonthSelection selectedMonth={handleMonthChange} />
+ <div>
+ <Button onClick={()=>onsearchHandler()}>search</Button></div>
+ <div className=' mt-20'>
+ <AttendanceGrid attadanceList={attadanceList} selectedMonth={selectedMonth}/>
+ </div></div>
+
   <div className="flex w-[1100px] flex-col pt-3 whitespace-nowrap bg-white">
       <div className="flex gap-5 justify-between mx-5 max-md:flex-wrap max-md:mr-2.5 max-md:max-w-full">
         <div className="flex-auto my-auto text-[22px] font-medium leading-6 text-slate-800">
-          Attendance
+          Add Staff 
         </div>
         <div className="flex flex-col justify-center px-8 py-2.5 text-xs font-semibold text-white bg-blue-700 rounded-md max-md:px-5">
           <div className="flex gap-2 justify-between">

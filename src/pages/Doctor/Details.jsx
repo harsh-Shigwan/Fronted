@@ -81,7 +81,6 @@ const Details = () => {
   const [rowperpage, setRowPerPage] = useState(10);
 
   const targetRef = useRef();
-  const [searh, setSearch] = useState("");
   return (
     <div>
       <Breadcrumb></Breadcrumb>
