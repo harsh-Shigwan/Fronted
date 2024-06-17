@@ -1,4 +1,4 @@
 
-const baseURL = 'http://13.51.169.60:8000/';
+const baseURL = 'http://13.60.58.38:8000/';
 
 export default baseURL;

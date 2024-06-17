@@ -56,7 +56,7 @@ const Home = () => {
           },
         });
         const admissionData = admissionResponse.data;
-
+console.log("Admission data:", admissionData);
         // Fetch registration data
         const registrationResponse = await axios.get(`${baseURL}/api/ipd/ipd-registrations/`, {
           headers: {
@@ -83,6 +83,8 @@ const Home = () => {
         });
       } catch (error) {
         console.error('Error fetching data:', error);
+        console.log("Error response data:", error.response?.data);
+        alert('Error fetching data');
       }
     };
 
