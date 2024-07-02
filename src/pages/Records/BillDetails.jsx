@@ -7,6 +7,7 @@ import { useParams , useNavigate } from 'react-router-dom';
 const baseURL = 'http://127.0.0.1:8000';
 
 const BillDetails = ({ onAddItem }) => {
+
     const [quantity, setQuantity] = useState(1);
     const [errorMessage, setErrorMessage] = useState('');
     const [itemsList, setItemsList] = useState([]);
@@ -110,13 +111,9 @@ const BillDetails = ({ onAddItem }) => {
         const newItem = { selectedItem ,selectedPatient, quantity, price: selectedItemPrice };
         onAddItem(newItem);
         console.log('Item added successfully!'); 
-        // Reset fields and error message
-     
         setQuantity(quantity);
         setSelectedItemPrice( selectedItemPrice);
         setErrorMessage('');
-
-        // Post data to the API
         const usage_date = new Date().toISOString();
       
     };
@@ -128,7 +125,7 @@ const BillDetails = ({ onAddItem }) => {
             return;
         }
         // Redirect to the bill generation page with the selected patient as a URL parameter
-        navigate(`/Invoice_Generator/generate-bill/${selectedPatient}`);
+        navigate(`/Invoice_Generator/medi/${selectedPatient}`);
     };
 
 
@@ -150,7 +147,7 @@ const BillDetails = ({ onAddItem }) => {
                         <select className='flex ml-[200px] gap-5 justify-between p-3 w-[400px] mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100' value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)}>
                             <option value="">Select Patient</option>
                             {patientsList.map(patient => (
-                                <option key={patient.PatientID} value={patient.PatientID}>{patient.PatientID}</option>
+                                <option key={patient.PatientID} value={patient.PatientID}>{patient.fullname}</option>
                             ))}
                         </select>
                     </div>

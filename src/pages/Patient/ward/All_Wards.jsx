@@ -1,11 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import Plus from "../../../Data/Plus.png";
 import download from "../../../Data/download.png";
 import search from "../../../Data/search.png";
 import edit from "../../../Data/edit.png";
-import { useParams } from "react-router-dom";
-import { Chart as ChartJS, defaults } from "chart.js/auto";
 import baseURL from "../../../assests/API_URL";
 import generatePDF from "react-to-pdf";
 import {
@@ -14,18 +11,11 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  styled,
-  makeStyles,
-  TBody,
-  Paper,
   TableContainer,
   TablePagination,
-  Button,
-  Typography,
 } from "@mui/material";
 
 import { Link, useNavigate } from "react-router-dom";
-import Breadcrumb from "../../../components/Breadcrumb";
 
 const All_Wards = () => {
     const API = `${baseURL}/ipd/wards/`;
@@ -65,7 +55,6 @@ const All_Wards = () => {
             },
           });
           console.log("Data deleted successfully:", response.data);
-          // After deletion, you can update the state to remove the deleted row from the UI
           setMyData((prevData) =>
             prevData.filter((row) => row.id !== id)
           );
@@ -104,10 +93,7 @@ const All_Wards = () => {
                     alt=""
                     src={search}
                   />
-                </div>
-
-               
-                 
+                </div>                
                 <button
                   className="absolute top-[11px] left-[905px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
                   onClick={() =>
@@ -147,7 +133,6 @@ const All_Wards = () => {
                           )
                           .filter((item) => {
                             const searchLowerCase = searh.toLowerCase();
-                            // Check if total_beds is defined before using includes
                             const totalBedsString = item.total_beds ? String(item.total_beds) : '';
                             const idString = item.id ? String(item.id) : '';
                             return (
@@ -163,10 +148,7 @@ const All_Wards = () => {
                               <TableCell>{user.id}</TableCell>
                               <TableCell>{user.name} </TableCell>
                               <TableCell style={{alignItems:"center"}}>{user.total_beds}</TableCell>
-                           
-                            
-                             
-
+                                       
                               <div className="w-[250px] relative my-0 mx-[!important] left-[0px] bg-theme-white-default shadow-[0px_-1px_0px_#edf2f7_inset] h-[52px] overflow-hidden shrink-0 z-[22]">
                                 <img
                                   className="absolute top-[calc(50%_-_12px)] left-[24px] w-6 h-6 hidden"

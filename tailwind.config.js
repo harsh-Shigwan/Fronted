@@ -27,7 +27,7 @@ module.exports = {
         slategray: "#7a828a",
         "text-body-light": "#425466",
         "gray-200": "#edf2f9",
-        whitesmoke: "#f7fafc",
+       
         orangered: "#ff6000",
         black: "#000",
         "theme-primary-default": "#4c6fff",

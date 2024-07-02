@@ -2,42 +2,41 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import Plus from "../../Data/Plus.png";
 import download from "../../Data/download.png";
-import searh from "../../Data/search.png";
+import search from "../../Data/search.png";
 import edit from "../../Data/edit.png";
 import { useParams } from "react-router-dom";
-import { Chart as ChartJS, defaults } from "chart.js/auto";
-import { Bar, Doughnut, Line } from "react-chartjs-2";
-import generatePDF from "react-to-pdf";
 import {
   Table,
   TableHead,
   TableBody,
   TableRow,
   TableCell,
-  styled,
-  makeStyles,
-  TBody,
-  Paper,
   TableContainer,
   TablePagination,
   Button,
-  Typography,
 } from "@mui/material";
 import baseURL from "../../assests/API_URL";
 import { Link, useNavigate } from "react-router-dom";
 import Breadcrumb from "../../components/Breadcrumb";
+import generatePDF from "react-to-pdf";
 const Patient_Detail = () => {
   const { pk } = useParams();
   const API = `${baseURL}/api/patient/api/patients/`;
   const [myData, setMyData] = useState([]);
   const [isError, setIsError] = useState("");
-  const token =  JSON.parse(localStorage.getItem("Token"))
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortDirection, setSortDirection] = useState("asc"); // or "desc"
+  const token = JSON.parse(localStorage.getItem("Token"));
+  const navigate = useNavigate();
+  const targetRef = useRef();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowPerPage, setRowPerPage] = useState(10);
+
   const getApiData = async (api) => {
-   
     try {
       const res = await axios.get(api, {
         headers: {
-         
           Authorization: `Token ${token}`,
         },
       });
@@ -45,27 +44,55 @@ const Patient_Detail = () => {
     } catch (error) {
       setIsError(error.toJSON().message);
     }
-    console.log("token: ", token)
   };
+
   useEffect(() => {
     getApiData(API);
   }, []);
 
-  const navigate = useNavigate();
+  const handleSort = (column) => {
+    if (sortColumn === column) {
+      // If already sorting by this column, reverse direction
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      // If sorting by a new column, set it as the sort column
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const sortedData = [...myData].sort((a, b) => {
+    const column = sortColumn || "PatientID"; // Default sorting by PatientID
+    const aValue = a[column];
+    const bValue = b[column];
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      // Sort alphabetically
+      return sortDirection === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    } else {
+      // Sort numerically
+      return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+    }
+  });
+
   const handle = () => {
     navigate("/Patient/Patient_Details/Add_Patient");
   };
- const navigate1 = useNavigate();
- const handle1 = () => {
-   navigate1("/Patient/Ward/Add_Ward")
- }
+
+  const handle1 = () => {
+    navigate("/Patient/Ward/Add_Ward");
+  };
+
   const handlechangepage = (event, newpage) => {
     setPage(newpage);
   };
+
   const handleRowPerPage = (event) => {
     setRowPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
   async function deleteData(PatientID) {
     const deleteUrl = `${baseURL}/api/patient/api/patients/${PatientID}/`;
     try {
@@ -84,18 +111,7 @@ const Patient_Detail = () => {
       console.log("Error response data:", error.response?.data);
     }
   }
-  const [page, setPage] = useState(0);
-  const [rowperpage, setRowPerPage] = useState(10);
 
-  const targetRef = useRef();
-
-  const [search, setSearch] = useState("");
-  //const urlName = user.FirstName.replace(/\s+/g, "-").toLowerCase();
-  defaults.responsive = true;
-  defaults.plugins.title.display = true;
-  defaults.plugins.title.align = "center";
-  defaults.plugins.title.font.size = 15;
-  defaults.plugins.title.color = "black";
   return (
     <div>
       <Breadcrumb></Breadcrumb>
@@ -111,16 +127,17 @@ const Patient_Detail = () => {
                   </div>
                   <input
                     className="absolute top-[11px] left-[405px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-5"
-                    defaultValue={ search}
+                    defaultValue={search}
                     onChange={(e) => {
                       setSearch(e.target.value);
                     }}
+                    placeholder="Search...."
                   />
                   <div className="absolute top-[18px] left-[425px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
                     <img
                       className="w-5 relative h-5  overflow-hidden shrink-0"
                       alt=""
-                      src={searh}
+                      src={search}
                     />
                   </div>
 
@@ -138,18 +155,18 @@ const Patient_Detail = () => {
                     </div>
                   </button>
                   <button
-                  className="absolute top-[11px] left-[927px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
-                  onClick={handle1}
-                >
-                  <div className="w-24 my-0 mx-[!important] absolute top-[10px] left-[30px] flex flex-row items-center justify-start gap-[8px] z-[0]">
-                    <img
-                      className="w-5 relative h-5 object-cover"
-                      alt=""
-                      src={Plus}
-                    />
-                    <div className="relative font-semibold">Add Wards</div>
-                  </div>
-                </button>
+                    className="absolute top-[11px] left-[927px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
+                    onClick={handle1}
+                  >
+                    <div className="w-24 my-0 mx-[!important] absolute top-[10px] left-[30px] flex flex-row items-center justify-start gap-[8px] z-[0]">
+                      <img
+                        className="w-5 relative h-5 object-cover"
+                        alt=""
+                        src={Plus}
+                      />
+                      <div className="relative font-semibold">Add Wards</div>
+                    </div>
+                  </button>
                   <button
                     className="absolute top-[11px] left-[585px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
                     onClick={() =>
@@ -158,7 +175,7 @@ const Patient_Detail = () => {
                       })
                     }
                   >
-                    <div className="w-24 my-0 mx-[!important] absolute top-[calc(50%_-_8px)] left-[calc(50%_-_48px)] flex flex-row items-center justify-start gap-[8px] z-[0]">
+                    <div className="w-24 my-0 mx-[!important] absolute top-[calc(50% - 8px)] left-[calc(50% - 48px)] flex flex-row items-center justify-start gap-[8px] z-[0]">
                       <img
                         className="w-4 relative h-4 overflow-hidden shrink-0"
                         alt=""
@@ -169,55 +186,107 @@ const Patient_Detail = () => {
                   </button>
                 </div>
                 <div className="self-stretch  h-[572px] overflow-hidden shrink-0  items-start justify-start text-text-body-light">
-                  <page>
-                    <TableContainer ref={targetRef}>
-                      <Table>
-                        <TableHead className=" bg-indigo-100 w-full">
-                          <TableRow>
-                            <TableCell>Patient ID</TableCell>
-                            <TableCell>Name </TableCell>
-                            <TableCell>Sex</TableCell>
-                            <TableCell>Blood</TableCell>
-                            <TableCell>Date Of Birth</TableCell>
-                            <TableCell>Contact Number</TableCell>
-                            <TableCell>Action</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {myData
-                            .slice(
-                              page * rowperpage,
-                              page * rowperpage + rowperpage
-                            )
-                            .filter(
-                              (item) =>{
-                                const tosearch = search.toLowerCase();
-                                const patientIdString = item.PatientID ? String(item.PatientID) : '';
-                                const phoneNoString = item.phone_no ? String(item.phone_no) : '';
-                                const dobString = item.DOB ? String(item.DOB) : '';
-                                return (
-                                tosearch=== "" ||
-                                item.fullname.toLowerCase().includes(tosearch) || 
-                                item.Gender.toLowerCase().includes(tosearch)||
-                                item.blood.toLowerCase().includes(tosearch) ||
-                                patientIdString.includes(tosearch) ||  
-                                phoneNoString.includes(tosearch) ||
-                                dobString.includes(tosearch) 
-                                )
-                              }
-                            )
-                            .map((user) => (
-                              <TableRow key={user.PatientID}>
-                                <TableCell>{user.PatientID}</TableCell>
-                                <TableCell>{user.fullname} </TableCell>
-                                <TableCell>{user.Gender}</TableCell>
-                                <TableCell>{user.blood}</TableCell>
-                                <TableCell>{user.DOB}</TableCell>
-                                <TableCell>{user.phone_no}</TableCell>
+                  <TableContainer ref={targetRef}>
+                    <Table>
+                      <TableHead className=" bg-indigo-100 w-full">
+                        <TableRow>
+                          <TableCell
+                            onClick={() => handleSort("PatientID")}
+                          >
+                            Patient id{" "}
+                            {sortColumn === "PatientID" && (
+                              <span>
+                                {sortDirection === "asc" ? "↑" : "↓"}
+                              </span>
+                            )}
+                          </TableCell>
+                          <TableCell onClick={() => handleSort("fullname")}>
+                            Name{" "}
+                            {sortColumn === "fullname" && (
+                              <span>
+                                {sortDirection === "asc" ? "↑" : "↓"}
+                              </span>
+                            )}
+                          </TableCell>
+                          <TableCell onClick={() => handleSort("Gender")}>
+                            Sex{" "}
+                            {sortColumn === "Gender" && (
+                              <span>
+                                {sortDirection === "asc" ? "↑" : "↓"}
+                              </span>
+                            )}
+                          </TableCell>
+                          <TableCell onClick={() => handleSort("blood")}>
+                            Blood{" "}
+                            {sortColumn === "blood" && (
+                              <span>
+                                {sortDirection === "asc" ? "↑" : "↓"}
+                              </span>
+                            )}
+                          </TableCell>
+                          <TableCell onClick={() => handleSort("DOB")}>
+                            Date Of Birth{" "}
+                            {sortColumn === "DOB" && (
+                              <span>
+                                {sortDirection === "asc" ? "↑" : "↓"}
+                              </span>
+                            )}
+                          </TableCell>
+                          <TableCell
+                            onClick={() => handleSort("phone_no")}
+                          >
+                            Contact Number{" "}
+                            {sortColumn === "phone_no" && (
+                              <span>
+                                {sortDirection === "asc" ? "↑" : "↓"}
+                              </span>
+                            )}
+                          </TableCell>
+                          <TableCell>Action</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {sortedData
+                          .slice(
+                            page * rowPerPage,
+                            page * rowPerPage + rowPerPage
+                          )
+                          .filter((item) => {
+                            const toSearch = search.toLowerCase();
+                            const patientIdString = item.PatientID
+                              ? String(item.PatientID)
+                              : "";
+                            const phoneNoString = item.phone_no
+                              ? String(item.phone_no)
+                              : "";
+                            const dobString = item.DOB
+                              ? String(item.DOB)
+                              : "";
+                            return (
+                              toSearch === "" ||
+                              item.fullname
+                                .toLowerCase()
+                                .includes(toSearch) ||
+                              item.Gender.toLowerCase().includes(toSearch) ||
+                              item.blood.toLowerCase().includes(toSearch) ||
+                              patientIdString.includes(toSearch) ||
+                              phoneNoString.includes(toSearch) ||
+                              dobString.includes(toSearch)
+                            );
+                          })
+                          .map((user) => (
+                            <TableRow key={user.PatientID}>
+                              <TableCell>{user.PatientID}</TableCell>
+                              <TableCell>{user.fullname} </TableCell>
+                              <TableCell>{user.Gender}</TableCell>
+                              <TableCell>{user.blood}</TableCell>
+                              <TableCell>{user.DOB}</TableCell>
+                              <TableCell>{user.phone_no}</TableCell>
 
+                              <TableCell>
                                 <div className="w-[250px] relative my-0 mx-[!important] left-[0px] bg-theme-white-default shadow-[0px_-1px_0px_#edf2f7_inset] h-[52px] overflow-hidden shrink-0 z-[22]">
                                   <img
-                                    className="absolute top-[calc(50%_-_12px)] left-[24px] w-6 h-6 hidden"
+                                    className="absolute top-[calc(50% - 12px)] left-[24px] w-6 h-6 hidden"
                                     alt=""
                                     src=""
                                   />
@@ -225,7 +294,7 @@ const Patient_Detail = () => {
                                     to={`/Patient/Patient_Details/EditPatient/${user.PatientID}`}
                                   >
                                     <img
-                                      className="absolute top-[calc(50%_-_12px)] left-[21px] w-6 h-6 overflow-hidden"
+                                      className="absolute top-[calc(50% - 12px)] left-[21px] w-6 h-6 overflow-hidden"
                                       alt=""
                                       src={edit}
                                     />
@@ -247,7 +316,9 @@ const Patient_Detail = () => {
                                   </Link>
                                   <button
                                     className="absolute top-[13px] left-[151px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
-                                    onClick={() => deleteData(user.PatientID)}
+                                    onClick={() =>
+                                      deleteData(user.PatientID)
+                                    }
                                   >
                                     <div className="flex flex-row items-center justify-start gap-[6px]">
                                       <img
@@ -261,20 +332,20 @@ const Patient_Detail = () => {
                                     </div>
                                   </button>
                                 </div>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                      <TablePagination
-                        count={20}
-                        page={page}
-                        rowperpage={rowperpage}
-                        component="div"
-                        onPageChange={handlechangepage}
-                        onRowsPerPageChange={handleRowPerPage}
-                      ></TablePagination>
-                    </TableContainer>
-                  </page>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                    <TablePagination
+                      count={20}
+                      page={page}
+                      rowsPerPage={rowPerPage}
+                      component="div"
+                      onPageChange={handlechangepage}
+                      onRowsPerPageChange={handleRowPerPage}
+                    />
+                  </TableContainer>
                 </div>
               </div>
             </div>

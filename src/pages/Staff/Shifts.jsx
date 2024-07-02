@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import baseURL from '../../assests/API_URL';
+import axios from 'axios';
+
 const Shifts = () => {
+  const token = JSON.parse(localStorage.getItem("Token"));
   const [formData, setFormData] = useState({
     department: '',
     shiftStartTime: '',
@@ -9,6 +12,24 @@ const Shifts = () => {
     shiftDate: ''
   });
   const [errorMessage, setErrorMessage] = useState('');
+  const [staff, setStaff] = useState([]);
+
+  useEffect(() => {
+    if (token) {
+      axios.get(`${baseURL}/api/staff/staff/`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }).then(response => {
+        setStaff(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching staff data:', error);
+      });
+    }
+  }, [token]);
+
+  console.log("staff", staff);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,6 +37,17 @@ const Shifts = () => {
       ...formData,
       [name]: value
     });
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      department: '',
+      shiftStartTime: '',
+      staffMember: '',
+      shiftEndTime: '',
+      shiftDate: ''
+    });
+    setErrorMessage('');
   };
 
   const handleSubmit = () => {
@@ -28,18 +60,8 @@ const Shifts = () => {
     ) {
       setErrorMessage('All input fields are required');
     } else {
-      // Your form submission logic here
-      // For now, just logging the form data
       console.log(formData);
-      // Clearing form data and error message after successful submission
-      setFormData({
-        department: '',
-        shiftStartTime: '',
-        staffMember: '',
-        shiftEndTime: '',
-        shiftDate: ''
-      });
-      setErrorMessage('');
+      handleCancel();
     }
   };
 
@@ -58,11 +80,9 @@ const Shifts = () => {
           <div>
             <select
               className="flex gap-5 border-transparent justify-between w-[500px] p-4 text-gray-500 rounded-md bg-slate-100 max-md:flex-wrap max-md:max-w-full"
-              type="select"
               name="department"
               value={formData.department}
               onChange={handleChange}
-              placeholder="Select staff Department"
             >
               <option className="text-gray-500 text-base font-medium leading-4" value="">
                 Select Department
@@ -73,15 +93,13 @@ const Shifts = () => {
             </select>
           </div>
           <input
-    type="time"
-    className="flex gap-5 border-transparent w-[450px] justify-between h-[50px] text-[15px] p-4 text-gray-500 rounded-md bg-slate-100 max-md:flex-wrap max-md:max-w-full"
-    name="shiftStartTime"
-    value={formData.shiftStartTime}
-    onChange={handleChange}
-    placeholder="Select time"
-  />
-            
-          </div>
+            type="time"
+            className="flex gap-5 border-transparent w-[450px] justify-between h-[50px] text-[15px] p-4 text-gray-500 rounded-md bg-slate-100 max-md:flex-wrap max-md:max-w-full"
+            name="shiftStartTime"
+            value={formData.shiftStartTime}
+            onChange={handleChange}
+          />
+        </div>
       
         <div className="flex gap-[500px] justify-between mt-8 max-w-full text-slate-600 w-[954px] max-md:flex-wrap">
           <div>Staff Member*</div>
@@ -91,29 +109,31 @@ const Shifts = () => {
           <div>
             <select
               className="flex gap-5 border-transparent justify-between w-[500px] p-4 text-gray-500 rounded-md bg-slate-100 max-md:flex-wrap max-md:max-w-full"
-              type="select"
               name="staffMember"
               value={formData.staffMember}
               onChange={handleChange}
-              placeholder="Select staff member"
             >
               <option className="text-gray-500 text-base font-medium leading-4" value="">
                 Select Staff Member
               </option>
-              <option className="text-gray-500 text-base font-medium leading-4" value="ICU">ICU</option>
-              <option className="text-gray-500 text-base font-medium leading-4" value="IPD">IPD</option>
-              <option className="text-gray-500 text-base font-medium leading-4" value="OPD">OPD</option>
+              {staff.map(st => (
+                <option
+                  key={st.id}
+                  className="text-gray-500 text-base font-medium leading-4"
+                  value={st.name}
+                >
+                  {st.name}
+                </option>
+              ))}
             </select>
           </div>
           <input
-    type="time"
-    className="flex gap-5 border-transparent w-[450px] justify-between h-[50px] text-[15px] p-4 text-gray-500 rounded-md bg-slate-100 max-md:flex-wrap max-md:max-w-full"
-    name="shiftStartTime"
-    value={formData.shiftStartTime}
-    onChange={handleChange}
-    placeholder="Select time"
-  /> 
-         
+            type="time"
+            className="flex gap-5 border-transparent w-[450px] justify-between h-[50px] text-[15px] p-4 text-gray-500 rounded-md bg-slate-100 max-md:flex-wrap max-md:max-w-full"
+            name="shiftEndTime"
+            value={formData.shiftEndTime}
+            onChange={handleChange}
+          /> 
         </div>
         <div className="mt-8 text-slate-600 max-md:max-w-full">Shift Date*</div>
         <div className="">
@@ -124,7 +144,6 @@ const Shifts = () => {
               name="shiftDate"
               value={formData.shiftDate}
               onChange={handleChange}
-              placeholder="DD-MM-YYYY"
             />
           </div>
         </div>
@@ -133,13 +152,7 @@ const Shifts = () => {
       <div className="flex gap-5 justify-between self-end mt-40 mr-8 text-base font-semibold leading-4 whitespace-nowrap max-md:mt-10 max-md:mr-2.5">
         <div
           className="grow justify-center px-8 py-4 text-blue-700 rounded-lg border border-blue-700 border-solid max-md:px-5"
-          onClick={() => setFormData({
-            department: '',
-            shiftStartTime: '',
-            staffMember: '',
-            shiftEndTime: '',
-            shiftDate: ''
-          })}
+          onClick={handleCancel}
         >
           Cancel
         </div>

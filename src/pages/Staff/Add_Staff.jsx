@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
+import baseURL from '../../assests/API_URL';
 const Add_Staff = () => {
+  const token =  JSON.parse(localStorage.getItem("Token"))
   const [formData, setFormData] = useState({
     name: '',
     gender: '',
     phoneNumber: '',
     address: '',
     email: '',
-    dateOfBirth: '',
-    hireDate: '',
+    dob: '',
+    hire_datee: '',
     department: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
@@ -22,29 +24,25 @@ const Add_Staff = () => {
     });
   };
 
-  const handleSubmit = () => {
-    const requiredFields = [
-      'name', 'gender', 'phoneNumber', 'address', 'email', 
-      'dateOfBirth', 'hireDate', 'department'
-    ];
-    const isEmpty = requiredFields.some(field => formData[field].trim() === '');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.post(`${baseURL}/api/staff/staff/`, formData, {
+      headers: {
+        Authorization: `Token ${token}`,
+      }
+    }).then((response) => {
+      console.log('API Response:', response.data);
+   
+      // Add logic to handle the API response, if needed
+      navigate('/staff_form');
+    })
+    .catch((error) => {
+      console.error('API Error:', error);
+      console.log("Error response data:", error.response?.data);
+      alert("Staff not added")
+      // Add logic to handle the API error, if needed
+    });
     
-    if (isEmpty) {
-      setErrorMessage('All input fields are required');
-    } else {
-      console.log(formData);
-      setFormData({
-        name: '',
-        gender: '',
-        phoneNumber: '',
-        address: '',
-        email: '',
-        dateOfBirth: '',
-        hireDate: '',
-        department: ''
-      });
-      setErrorMessage('');
-    }
   };
 
   const navigate = useNavigate();
@@ -121,8 +119,8 @@ const Add_Staff = () => {
           <input
             type="date"
             className="flex gap-5 border-transparent w-[450px] justify-between h-[50px] text-[15px] p-4 text-gray-500 rounded-md bg-slate-100 max-md:flex-wrap max-md:max-w-full"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
+            name="dob"
+            value={formData.dob}
             onChange={handleChange}
           />
         </div>
@@ -135,8 +133,8 @@ const Add_Staff = () => {
           <input
             type="date"
             className="flex gap-5 border-transparent w-[450px] justify-between h-[50px] text-[15px] p-4 text-gray-500 rounded-md bg-slate-100 max-md:flex-wrap max-md:max-w-full"
-            name="hireDate"
-            value={formData.hireDate}
+            name="hire_datee"
+            value={formData.hire_datee}
             onChange={handleChange}
           />
           <select

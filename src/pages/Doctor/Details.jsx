@@ -12,10 +12,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  styled,
-  makeStyles,
-  TBody,
-  Paper,
   TableContainer,
   TablePagination,
   Button,
@@ -23,11 +19,19 @@ import {
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import Breadcrumb from "../../components/Breadcrumb";
+
 const Details = () => {
   const API = `${baseURL}/doctor/api/doctors/`;
   const [myData, setMyData] = useState([]);
   const [isError, setIsError] = useState("");
-  const token =  JSON.parse(localStorage.getItem("Token"))
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [search, setSearch] = useState("");
+
+  const token = JSON.parse(localStorage.getItem("Token"));
+  const navigate = useNavigate();
+  const targetRef = useRef();
+
   const getApiData = async (api) => {
     try {
       const res = await axios.get(api, {
@@ -40,6 +44,7 @@ const Details = () => {
       setIsError(error.toJSON().message);
     }
   };
+
   async function deleteData(DoctorID) {
     const deleteUrl = `${baseURL}/api/doctor/api/doctors/${DoctorID}/`;
     try {
@@ -49,7 +54,7 @@ const Details = () => {
         },
       });
       console.log("Data deleted successfully:", response.data);
-      // After deletion, you can update the state to remove the deleted row from the UI
+      // After deletion, update the state to remove the deleted row from UI
       setMyData((prevData) =>
         prevData.filter((row) => row.DoctorID !== DoctorID)
       );
@@ -58,29 +63,24 @@ const Details = () => {
       console.log("Error response data:", error.response?.data);
     }
   }
-  
+
   useEffect(() => {
     getApiData(API);
   }, []);
 
-  const navigate = useNavigate();
-  const handle = () => {
-    navigate("/Doctor/Details/Add_Doctor");
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
   };
 
-
-
-  const handlechangepage = (event, newpage) => {
-    setPage(newpage);
-  };
-  const handleRowPerPage = (event) => {
-    setRowPerPage(parseInt(event.target.value, 10));
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const [page, setPage] = useState(0);
-  const [rowperpage, setRowPerPage] = useState(10);
 
-  const targetRef = useRef();
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+  };
+
   return (
     <div>
       <Breadcrumb></Breadcrumb>
@@ -94,7 +94,12 @@ const Details = () => {
                   <div className="absolute top-[18px] left-[22px] text-[20px] leading-[24px] font-medium">
                     Doctors
                   </div>
-                  <input className="absolute top-[11px] left-[588px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black" />
+                  <input
+                    className="absolute top-[11px] left-[588px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-5"
+                    value={search}
+                    onChange={handleSearchChange}
+                    placeholder="Search"
+                  />
                   <div className="absolute top-[18px] left-[600px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
                     <img
                       className="w-5 relative h-5  overflow-hidden shrink-0"
@@ -105,7 +110,7 @@ const Details = () => {
 
                   <button
                     className="absolute top-[11px] left-[937px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
-                    onClick={handle}
+                    onClick={() => navigate("/Doctor/Details/Add_Doctor")}
                   >
                     <div className="w-24 my-0 mx-[!important] absolute top-[10px] left-[30px] flex flex-row items-center justify-start gap-[8px] z-[0]">
                       <img
@@ -140,31 +145,70 @@ const Details = () => {
                       <Table>
                         <TableHead className=" bg-indigo-100 w-full">
                           <TableRow>
-                          
+                            <TableCell> Id</TableCell>
                             <TableCell>Name </TableCell>
-                            <TableCell>Email</TableCell>
+                            
                             <TableCell>Phone Number</TableCell>
                             <TableCell>Qualification</TableCell>
                             <TableCell>Experience</TableCell>
-                            <TableCell>.</TableCell>
+                            <TableCell></TableCell>
                             <TableCell>Action</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
                           {myData
+                            .filter((item) => {
+                              const searchLowerCase = search.toLowerCase();
+                              const nameString = item.name
+                                ? item.name.toLowerCase()
+                                : "";
+                              const emailString = item.email
+                                ? item.email.toLowerCase()
+                                : "";
+                              const phoneNumberString = item.phone_number
+                                ? item.phone_number.toLowerCase()
+                                : "";
+                              const qualificationString =
+                                item.education_qualification
+                                  ? item.education_qualification.toLowerCase()
+                                  : "";
+                              const experienceString = item.experince
+                                ? item.experince.toLowerCase()
+                                : "";
+                              const phoneString = item.phone
+                                ? item.phone.toLowerCase()
+                                : "";
+                              const doctorIDString = String(item.DoctorID)
+                                ? String(item.DoctorID).toLowerCase()
+                                : "";
+
+                              return (
+                                searchLowerCase === "" ||
+                                doctorIDString.includes(searchLowerCase) ||
+                                nameString.includes(searchLowerCase) ||
+                                emailString.includes(searchLowerCase) ||
+                                phoneNumberString.includes(searchLowerCase) ||
+                                qualificationString.includes(
+                                  searchLowerCase
+                                ) ||
+                                experienceString.includes(searchLowerCase) ||
+                                phoneString.includes(searchLowerCase)
+                              );
+                            })
                             .slice(
-                              page * rowperpage,
-                              page * rowperpage + rowperpage
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage
                             )
                             .map((user) => (
                               <TableRow key={user.DoctorID}>
+                              <TableCell>{user.DoctorID}</TableCell>
                                 <TableCell>{user.name}</TableCell>
-                                <TableCell>{user.email} </TableCell>
+
                                 <TableCell>{user.phone_number}</TableCell>
                                 <TableCell>{user.education_qualification}</TableCell>
                                 <TableCell>{user.experince}</TableCell>
                                 <TableCell>{user.phone}</TableCell>
-                                <div className="w-[250px] relative my-0 mx-[!important] left-[0px] bg-theme-white-default shadow-[0px_-1px_0px_#edf2f7_inset] h-[52px] overflow-hidden shrink-0 z-[22]">
+                                <div className="w-[250px] relative my-0 mx-[!important] left-[0px] bg-whitesmoke shadow-[0px_-1px_0px_#edf2f7_inset] h-[52px] overflow-hidden shrink-0 z-[22]">
                                   <img
                                     className="absolute top-[calc(50%_-_12px)] left-[24px] w-6 h-6 hidden"
                                     alt=""
@@ -214,13 +258,14 @@ const Details = () => {
                         </TableBody>
                       </Table>
                       <TablePagination
-                        count={20}
-                        page={page}
-                        rowperpage={rowperpage}
-                        component="div"
-                        onPageChange={handlechangepage}
-                        onRowsPerPageChange={handleRowPerPage}
-                      ></TablePagination>
+                      rowsPerPageOptions={[5, 10, 25]}
+                      component="div"
+                      count={myData.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={handlePageChange}
+                      onRowsPerPageChange={handleRowsPerPageChange}
+                    />
                     </TableContainer>
                   </page>
                 </div>

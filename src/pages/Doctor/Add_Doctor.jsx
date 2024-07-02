@@ -298,7 +298,7 @@ export default function Add_Doctor() {
           </div>
           <div >
             
-            <select className="justify-between border-transparent items-stretch bg-slate-100 flex w-[613px] max-w-full gap-5 mt-2 pl-5 pr-20 py-4 rounded-md max-md:flex-wrap max-md:pr-5" type='select' name='medical_liscence'  value={formData.medical_liscence}
+            <select className="justify-between border-transparent items-stretch bg-slate-100 text-slate-600 font-medium flex w-[613px] max-w-full gap-5 mt-2 pl-5 pr-20 py-4 rounded-md max-md:flex-wrap max-md:pr-5" type='select' name='medical_liscence'  value={formData.medical_liscence}
                 onChange={handleChange}
                 fullWidth placeholder='Select medical proof'>
             <option className='text-gray-500 text-base font-medium leading-4' value="License">License</option>

@@ -53,7 +53,7 @@ const OPD_View = () => {
     <div>
     <div className=' bg-neutral-700 h-9 w-full '>{myData.visit_date}
     <div>{myData.visit_id}</div>
-    <div>{myData.ddepartment}</div></div>
+    <div>{myData.department}</div></div>
     hellov
     </div>
   )

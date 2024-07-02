@@ -61,7 +61,8 @@ import SideBarLayout from "./components/SideBarLayout";
 import AuthenticationRoute from "./components/AuthenticationRoute";
 import ErrorPage404 from "./components/ErrorPage404";
 import Shifts from "./pages/Staff/Shifts";
-
+import BedPerCharge from "./pages/Records/BedCharge/BedPerCharge";
+import Medi from "./pages/Records/Medicine/Medi";
 //import Medicine from './pages/Pharmacy/Medicine';
 
 const App = () => {
@@ -140,10 +141,12 @@ const App = () => {
           />
           {/*Invoice */}
           <Route
-            path="/Invoice_Generator/generate-bill/:patientId"
+            path="/Invoice_Generator/generate-bill/:patientId/:totalAmount"
             element={<Generate_Bill />}
           />
+          <Route path="/Invoice_Generator/BedCharge/:patientId" element={<BedPerCharge/>}/>
           <Route path="/Invoice_Generator" element={<Records />}></Route>
+         <Route path="/Invoice_Generator/medi/:patientId" element={<Medi/>}></Route>
           <Route path="/Pharmacy" element={<Pharmacy />} />
           <Route path="/Pharmacy/Add_Records" element={<Add_Records />}></Route>
           <Route path="/Pharmacy/Medicines" element={<Medicines />}></Route>
@@ -176,6 +179,7 @@ const App = () => {
             path="/PatientGraph"
             element={<PatientGraph></PatientGraph>}
           ></Route>
+          {/*staff */}
           <Route path="/Staff" element={<Staff_Mangement />}></Route>
           <Route
             path="/Staff/Add_Staff_Member"
@@ -185,12 +189,17 @@ const App = () => {
             path="/Staff/Add_Staff_Member/Add_Staff"
             element={<Add_Staff />}
           ></Route>
+          {/*appointment */}
           <Route
             path="/Appointment"
             element={<Appointment></Appointment>}
           ></Route>
           <Route
             path="Appointment/Appointment_form"
+            element={<Appointment_form />}
+          ></Route>
+          <Route
+            path="Appointment/Appointment_form/Appoointment_schedule/:pk"
             element={<Appointment_form />}
           ></Route>
       {/*staff */}
