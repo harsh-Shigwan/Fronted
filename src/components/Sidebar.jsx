@@ -24,7 +24,7 @@ const routes = [
     subRoutes: [
       {
         path: "/Patient/Patient_Details",
-        name: "Details",
+        name: "All Patients",
         icon: <BiSolidDetail />,
       },
       {
@@ -68,11 +68,7 @@ const routes = [
     name: "Inventory",
     icon: <FaWindowRestore />,
   },
-  {
-    path: "/Pharmacy",
-    name: "Pharmacy",
-    icon: <FaCalendarPlus />,
-  },{
+ {
     path: "/Staff_Mangement",
     name: "Staff",
     icon:<IoPeople />,

@@ -32,7 +32,6 @@ const DailyCharge = ({ addItem }) => {
 
   const handleItemChange = (itemName) => {
     setItemName(itemName);
-    // Show dropdown and filter options based on input
     setWardInput(itemName);
     setShowWardDropdown(true);
 
@@ -59,7 +58,7 @@ const DailyCharge = ({ addItem }) => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 mt-8">
       <div className="flex gap-5 justify-between max-md:flex-wrap">
         <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
           <div className="text-sm text-slate-600 font-medium max-md:max-w-full">

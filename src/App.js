@@ -63,6 +63,8 @@ import ErrorPage404 from "./components/ErrorPage404";
 import Shifts from "./pages/Staff/Shifts";
 import BedPerCharge from "./pages/Records/BedCharge/BedPerCharge";
 import Medi from "./pages/Records/Medicine/Medi";
+import AppointmentID from "./pages/Appointment/AppointmentID";
+import DateChart from "./components/Graph/DateChart";
 //import Medicine from './pages/Pharmacy/Medicine';
 
 const App = () => {
@@ -195,11 +197,15 @@ const App = () => {
             element={<Appointment></Appointment>}
           ></Route>
           <Route
-            path="Appointment/Appointment_form"
-            element={<Appointment_form />}
+            path="Appointment/Appointment_form/:DoctorID"
+            element={<AppointmentID />}
           ></Route>
           <Route
-            path="Appointment/Appointment_form/Appoointment_schedule/:pk"
+          path="/Appointment/Appointment_form/"
+          element={<Appointment_form />}
+        ></Route>
+          <Route
+            path="/Appointment/Appointment_form/Appoointment_schedule/:pk"
             element={<Appointment_form />}
           ></Route>
       {/*staff */}
@@ -207,6 +213,7 @@ const App = () => {
       <Route path="/Add_Staff" element={<Add_Staff/> }></Route>
       <Route path="/Staff_form" element={<Staff_Form/> }></Route>
       <Route path="/shift" element={<Shifts/>}></Route>
+      <Route path="/bar" element={<DateChart/>}></Route>
           {/* ward num*/}
           <Route path="/Patient/Ward/Add_Ward" element={<TotalWard />}></Route>
           <Route path="/Patient/Ward" element={<All_Wards />}></Route>

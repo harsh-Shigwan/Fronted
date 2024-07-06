@@ -128,16 +128,13 @@ const Inventory = () => {
                     <input
                       className="absolute top-[11px] left-[588px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-5"
                       value={searchTerm}
+                      placeholder="Search Medicine..."
                       onChange={(e) => {
                         setSearchTerm(e.target.value);
                       }}
                     />
                     <div className="absolute top-[18px] left-[600px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
-                      <img
-                        className="w-5 relative h-5  overflow-hidden shrink-0"
-                        alt=""
-                        src={search}
-                      />
+                    
                     </div>
 
                     <button
@@ -159,7 +156,7 @@ const Inventory = () => {
                       className="absolute top-[11px] left-[765px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
                       onClick={() =>
                         generatePDF(targetRef, {
-                          filename: "Discharged_Patient_List.pdf",
+                          filename: "Medicine List.pdf",
                         })
                       }
                     >
@@ -196,10 +193,22 @@ const Inventory = () => {
                               )
                               .filter(
                                 (item) =>
-                                  searchTerm.toLowerCase() === "" ||
-                                  item.FirstName.toLowerCase().includes(
-                                    searchTerm.toLowerCase()
-                                  )
+                                  {
+                                    const toSearch = searchTerm.toLowerCase();
+                                    const nameMatch = item.name.toLowerCase().includes(toSearch);
+                                    const quantityMatch = item.quantity.toString().includes(toSearch);
+                                    const manufacturerMatch = item.manufacturer.toLowerCase().includes(toSearch);
+                                    const expirationDateMatch = item.expiration_date.toLowerCase().includes(toSearch);
+                                    const unitPriceMatch = item.unit_price.toString().includes(toSearch);
+                                  
+                                    return toSearch === "" ||
+                                           nameMatch ||
+                                           quantityMatch ||
+                                           manufacturerMatch ||
+                                           expirationDateMatch ||
+                                           unitPriceMatch;
+                                  }
+                                  
                               )
                               .map((user) => (
                                 <TableRow key={user.id}>

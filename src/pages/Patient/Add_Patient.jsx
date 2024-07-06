@@ -336,7 +336,7 @@ const token =  JSON.parse(localStorage.getItem("Token"))
             
             </input>
             <div className="text-slate-600 text-sm font-medium mt-9 max-md:max-w-full">
-              Initial balance
+             Initial Deposit
             </div>
             <input className="text-gray-500 border-transparent  text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' placeholder='Enter initial balance'name="initial_balance"
                    value={formData.initial_balance}

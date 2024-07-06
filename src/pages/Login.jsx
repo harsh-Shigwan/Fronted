@@ -71,7 +71,7 @@ if (Object.keys(error).length === 0 && isSubmit){
           <img
             loading="lazy"
             src={logo}
-            className="z-10 ml-12 max-w-full aspect-[3.85] w-[189px] max-md:ml-2.5"
+            className="z-10 ml-20 max-w-full aspect-[3.85] w-[249px] max-md:ml-2.5"
           />
           <div className="flex flex-col justify-center px-14 py-0 mt-0 rounded-full bg-slate-80 max-md:px-5 max-md:max-w-full">
             <img
@@ -85,11 +85,7 @@ if (Object.keys(error).length === 0 && isSubmit){
             something more.
           </div>
 
-          <div className="flex gap-5 justify-between self-center mt-6 max-w-full w-[408px]">
-            <div className="flex-1 shrink-0 h-2 bg-blue-500 rounded-sm" />
-            <div className="flex-1 shrink-0 h-2 rounded-sm bg-slate-300" />
-            <div className="flex-1 shrink-0 h-2 rounded-sm bg-slate-300" />
-          </div>
+       
         </div>
         <div className="flex flex-col flex-1 justify-center my-auto whitespace-nowrap rounded-2xl bg-slate-50 text-zinc-800 max-md:max-w-full">
           <div className="flex flex-col h-[1000px] p-5 max-md:px-5 max-md:max-w-full">
@@ -154,24 +150,8 @@ if (Object.keys(error).length === 0 && isSubmit){
             >
               Sign in
             </button>{" "}
-            <div className="justify-center items-center px-16 mt-8 text-xs text-center text-slate-500 max-md:px-5">
-              or do it via other accounts
-            </div>{" "}
-            <div className="flex gap-4 justify-center px-14 mt-8 text-4xl font-bold text-indigo-800 max-md:px-5">
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/68b2d2d364aeafd9569d9edf7902b2af532c9971fd73fcc32d8d698e1f5cf824?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                className="aspect-[1.28]  w-[68px]"
-              />{" "}
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/83dc48ee568712bafa03bac26c228db126ccd4f2f9065686a709a0c6490d0f43?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                className="aspect-[1.28] w-[68px]"
-              />{" "}
-              <div className="justify-center px-7 py-3 bg-white rounded-lg shadow aspect-[1.28] max-md:px-5">
-                f
-              </div>
-            </div>
+           
+            
           </div>
         </div>{" "}
       </div>

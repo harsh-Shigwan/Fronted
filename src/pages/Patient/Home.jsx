@@ -8,13 +8,15 @@ import Bars from "../../components/Charts/Bars";
 import month from "../../Data/month.json";
 import DoctorCard from "../../components/DoctorCard";
 import baseURL from "../../assests/API_URL";
+import DateChart from "../../components/Graph/DateChart";
+
 const Home = () => {
-  //  defaults.maintainAspectRatio = false;
+   
   defaults.responsive = true;
-  // defaults.plugins.title.display = true;
-  //  defaults.plugins.title.align = "center";
-  //  defaults.plugins.title.font.size = 15;
-  //  defaults.plugins.title.color = "black";
+  defaults.plugins.title.display = true;
+    defaults.plugins.title.align = "center";
+  defaults.plugins.title.font.size = 15;
+   defaults.plugins.title.color = "black";
   const token =  JSON.parse(localStorage.getItem("Token"))
   const [totalPatients, setTotalPatients] = useState(0);
   const [totalDoc, setTotalDoc] = useState(0);
@@ -22,10 +24,9 @@ const Home = () => {
   const [ medi , setmedi] =useState(0);
   const [ totalBeds , setTotalBeds] = useState([]);
   const [doctors, setDoctors] = useState([]);
-  const [data, setData] = useState({
-    admissionData: [],
-    registrationData: []
-  });
+  const [ admissionData , setAdmissionData] = useState([])
+  const [ ipdDate ,  setIpdDate] = useState([])
+  const [ opdDate , setOpdDate] = useState([])
   useEffect(() => {
     async function fetchData() {
       try {
@@ -45,86 +46,56 @@ const Home = () => {
 
     fetchData();
   }, []);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch admission data
+      
         const admissionResponse = await axios.get(`${baseURL}/api/patient/api/patients/`, {
           headers: {
-           Authorization: `Token ${token}`,
+            Authorization: `Token ${token}`,
           },
         });
-        const admissionData = admissionResponse.data;
-console.log("Admission data:", admissionData);
-        // Fetch registration data
+        const admissionDate = admissionResponse.data.map(patient => ({
+          Register_Date: patient.Register_Date,
+        }));
+        setAdmissionData(admissionDate);
+        console.log("Admission date data:", admissionDate);
+  
+      
         const registrationResponse = await axios.get(`${baseURL}/api/ipd/ipd-registrations/`, {
           headers: {
-           Authorization: `Token ${token}`,
+            Authorization: `Token ${token}`,
           },
         });
-        const registrationData = registrationResponse.data;
+        const registrationData = registrationResponse.data.map(ipdPatient => ({
+          admission_date: ipdPatient.admission_date,
+        }));
+        setIpdDate(registrationData);
+        console.log("registrationDate data:", registrationData);
+  
         
-        const opdpatient = await axios.get(`${baseURL}/api/opd/api/opd-register/`,{
+        const opdpatient = await axios.get(`${baseURL}/api/opd/api/opd-register/`, {
           headers: {
             Authorization: `Token ${token}`,
-           },
-        })
-        const opdData = opdpatient.data;
-        // Process data to calculate monthly summation
-        const admissionMonthlySum = calculateMonthlySumad(admissionData);
-        const registrationMonthlySum = calculateMonthlySum(registrationData);
-        const opdMonthlySum = calculateMonthlySumopd( opdData);
-        // Update state with the processed data
-        setData({
-          admissionData: admissionMonthlySum,
-          registrationData: registrationMonthlySum,
-          opdData: opdMonthlySum
+          },
         });
+        const opdData = opdpatient.data.map(opdPatient => ({
+          visit_date: opdPatient.visit_date,
+        }));
+        setOpdDate(opdData);
+        console.log("opdDate data:", opdData);
+  
       } catch (error) {
         console.error('Error fetching data:', error);
         console.log("Error response data:", error.response?.data);
         alert('Error fetching data');
       }
     };
-
+  
     fetchData();
   }, []);
-
-  const calculateMonthlySumopd = (data) => {
-    const monthlySum = Array.from({ length: 12 }, () => 0); 
-    data.forEach(item => {
-      const month = new Date(item.visit_date).getMonth();
-     // Extract month from admission date
-      monthlySum[month] += 1; // Increase count for the corresponding month
-    });
-
-    return monthlySum;
-  }
-  const calculateMonthlySum = (data) => {
-    const monthlySum = Array.from({ length: 12 }, () => 0); // Initialize array for monthly sum
-
-    // Iterate over data and accumulate monthly sums
-    data.forEach(item => {
-      const month = new Date(item.admission_date).getMonth();
-     // Extract month from admission date
-      monthlySum[month] += 1; // Increase count for the corresponding month
-    });
-
-    return monthlySum;
-  };
-  const calculateMonthlySumad = (data) => {
-    const monthlySum = Array.from({ length: 12 }, () => 0); // Initialize array for monthly sum
   
-    // Iterate over data and accumulate monthly sums
-    data.forEach(item => {
-      const month = new Date(item.Register_Date).getMonth(); // Extract month from Register_Date
-      monthlySum[month] += 1; // Increase count for the corresponding month
-    });
-  
-    return monthlySum;
-  };
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -177,7 +148,7 @@ console.log("Admission data:", admissionData);
           `${baseURL}/inventory/api/medicines/`
           , {
             headers: {
-              Authorization: `Token ${token}`,
+              Authorization: `Token ${token} `,
             },
           });
 
@@ -194,8 +165,7 @@ console.log("Admission data:", admissionData);
           },
         }
       );
-        // Assuming the response data is an array with one object
-   // Assuming you want to get the total beds for the first ward
+       
           setTotalBeds(response.data);
        
       } catch (error) {
@@ -208,48 +178,9 @@ console.log("Admission data:", admissionData);
     fetchdoctor();
     fetchData();
   }, []);
-  console.log("bed" , setTotalBeds)
-  const chartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    datasets: [
-      {
-        label: 'Total Patient ',
-        backgroundColor:["rgba(120, 149, 255, 1)"],
-        borderColor: ["rgba(255, 255, 255, 1)"],
-        borderWidth: 0,
-        hoverBackgroundColor: 'rgba(120, 149, 255,  0.8)',
-        hoverBorderColor: 'rgba(255, 99, 132, 1)',
-        borderRadius: 20,
-        barPercentage: 0.5,
-        categoryPercentage: 0.7,
-        data: data.admissionData
-      },
-      {
-        label:'IPD Patient',
-        backgroundColor:[ "rgba(243, 221, 24, 1)"],
-        borderColor: [ "rgba(243, 221, 24, 1)"],
-        borderWidth: 0,
-        hoverBackgroundColor:  [ "rgba(243, 221, 24, 0.6)"],
-        hoverBorderColor: 'rgba(54, 162, 235, 1)',
-        borderRadius: 10,
-                      barPercentage: 0.5,
-                      categoryPercentage: 0.7,
-        data: data.registrationData
-      },
-      {
-        label:'OPD Patient',
-        backgroundColor:[ "rgba(253, 129, 156, 1)"],
-        borderColor: [ "rgba(253, 129, 156, 1)"],
-        borderWidth: 0,
-        hoverBackgroundColor:  [ "rgba(253, 129, 156, 0.8)"],
-        hoverBorderColor: 'rgba(54, 162, 235, 1)',
-        borderRadius: 10,
-                      barPercentage: 0.5,
-                      categoryPercentage: 0.7,
-        data: data.opdData
-      }
-    ]
-  };
+
+  
+ console.log("admission datttte", admissionData)
   return (
     <div>
       <div className="w-[1100px] relative bg-whitesmoke h-[870px] flex flex-col items-start justify-start p-[30px] box-border gap-[30px] text-left text-sm text-black font-text-small">
@@ -363,33 +294,7 @@ console.log("Admission data:", admissionData);
               </div>
             </div>
           </div>
-          <div className="top-[100px]  ">
-            <div className="dataCard w-[800px] customerCard rounded-2xl shadow-[0px_3px_8px_rgba(50,_50,_71,_0.05),_0px_0px_1px_rgba(12,_26,_75,_0.24)]">
-            <Bar data={chartData}  options={{
-              indexAxis: "x", // Rotate into horizontal bar chart
-              plugins: {
-                title: {
-                  text: "Patients",
-                },
-              },
-              scales: {
-                x: {
-                  grid: {
-                    display: false, // Remove grid background bars in x-axis
-                  },
-                },
-                y: {
-                  grid: {
-                    display: false, // Remove grid background bars in y-axis
-                  },
-                  ticks: {
-                    display: true,
-                  },
-                },
-              },
-            }}/>
-            </div>
-          </div>
+       <DateChart dates={admissionData} dates1={ipdDate} dates2={opdDate}/>
 
           <div className="absolute top-[0px] left-[831.51px] w-[253.04px] h-[402px] flex flex-col items-start justify-start gap-[30px] text-smi text-input-muted-placeholder">
             <div className="self-stretch rounded-2xl bg-theme-white-default shadow-[0px_0px_1px_rgba(12,26,_75,_0.24),_0px_3px_8px-1px_rgba(50,_50,_71,_0.05)] flex flex-col items-start justify-start p-6 gap-[24px]">
@@ -454,19 +359,22 @@ console.log("Admission data:", admissionData);
           </div>
         </div>
         <div className="self-stretch relative h-[12px] text-right text-theme-primary-default">
-          <div className="absolute w-[20.91%] top-[0px]  mt-5 left-[10px] text-lg font-semibold text-text-heading-dark text-left inline-block">
+          <div className="absolute w-[20.91%] top-[70px]  mt-5 left-[10px] text-lg font-semibold text-text-heading-dark text-left inline-block">
             Available Doctors
       
         </div>
       </div>
         <div className="">
          
-        <div className="flex   w-[1090px] flex-nowrap overflow-x-auto mt-10">
+        <div className="flex   w-[1090px] flex-nowrap overflow-x-auto mt-24">
         {doctors.slice(0, 4).map((doctor, index) => (
           <DoctorCard key={index} doctor={doctor} />
         ))}
       </div>
          
+        </div>
+        <div>
+    
         </div>
       </div>
     </div>

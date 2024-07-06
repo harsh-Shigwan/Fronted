@@ -1,6 +1,28 @@
 import React from "react";
 
-const EquipmentTable = ({ groupedEquipments, totalPrice, generateFinalBill }) => {
+const MedicineTable = ({ mediTotal, mediData }) => {
+  const groupMediData = (data) => {
+    const groupedData = data.reduce((acc, curr) => {
+      const existing = acc.find(item => item.medicine === curr.medicine);
+      if (existing) {
+        existing.quantity_used += curr.quantity_used;
+        existing.total_price += curr.unit_price * curr.quantity_used;
+      } else {
+        acc.push({
+          medicine: curr.medicine,
+          quantity_used: curr.quantity_used,
+          unit_price: curr.unit_price,
+          usage_date: curr.usage_date,
+          total_price: curr.unit_price * curr.quantity_used,
+        });
+      }
+      return acc;
+    }, []);
+    return groupedData;
+  };
+
+  const groupedMediData = groupMediData(mediData);
+
   return (
     <div className="mt-5">
       <table className="min-w-full divide-y divide-gray-200">
@@ -10,7 +32,7 @@ const EquipmentTable = ({ groupedEquipments, totalPrice, generateFinalBill }) =>
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider"
             >
-              Equipment ID
+              Medicine
             </th>
             <th
               scope="col"
@@ -28,7 +50,7 @@ const EquipmentTable = ({ groupedEquipments, totalPrice, generateFinalBill }) =>
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider"
             >
-              Price
+              Unit Price
             </th>
             <th
               scope="col"
@@ -39,13 +61,10 @@ const EquipmentTable = ({ groupedEquipments, totalPrice, generateFinalBill }) =>
           </tr>
         </thead>
         <tbody className="text-gray-700 divide-y border-black divide-gray-200">
-          {groupedEquipments.map((equipment, index) => (
+          {groupedMediData.map((equipment, index) => (
             <tr key={index}>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {equipment.name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {equipment.unit_price}
+                {equipment.medicine}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {equipment.quantity_used}
@@ -54,29 +73,25 @@ const EquipmentTable = ({ groupedEquipments, totalPrice, generateFinalBill }) =>
                 {equipment.usage_date}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {equipment.unit_price}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {equipment.total_price.toFixed(2)}
               </td>
             </tr>
           ))}
           <tr>
             <td className="px-6 py-4 border-y-2 border-black" colSpan="4">
-            Equipment Total 
+             Medicines Total 
             </td>
             <td className="px-6 py-4 border-y-2 border-black">
-              {totalPrice.toFixed(2)}
+              {mediTotal.toFixed(2)}
             </td>
           </tr>
         </tbody>
       </table>
-      <button
-        className="top-[40px] ml-10 rounded-md items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue w-48 mt-3 gap-[6px] leading-[10px] left-[880px] absolute font-medium bg-btn text-white"
-        type="submit"
-        onClick={generateFinalBill}
-      >
-        Generate final Bill
-      </button>
     </div>
   );
 };
 
-export default EquipmentTable;
+export default MedicineTable;

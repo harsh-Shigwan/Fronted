@@ -4,6 +4,7 @@ import Plus from "../../Data/Plus.png";
 import download from "../../Data/download.png";
 import search from "../../Data/search.png";
 import edit from "../../Data/edit.png";
+import { BsSearch } from "react-icons/bs";
 import { useParams } from "react-router-dom";
 import {
   Table,
@@ -126,36 +127,22 @@ const Patient_Detail = () => {
                     Patients
                   </div>
                   <input
-                    className="absolute top-[11px] left-[405px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-5"
+                    className="absolute top-[11px] left-[405px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid  border-black pl-8"
                     defaultValue={search}
                     onChange={(e) => {
                       setSearch(e.target.value);
                     }}
                     placeholder="Search...."
                   />
-                  <div className="absolute top-[18px] left-[425px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
-                    <img
-                      className="w-5 relative h-5  overflow-hidden shrink-0"
-                      alt=""
-                      src={search}
-                    />
+                  <div className="absolute top-[25px] left-[305px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
+                  <div
+                  className="w-5 relative h-10  overflow-hidden shrink-0 "
+                  ><BsSearch/>
+                </div>
                   </div>
 
                   <button
                     className="absolute top-[11px] left-[757px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
-                    onClick={handle}
-                  >
-                    <div className="w-24 my-0 mx-[!important] absolute top-[10px] left-[30px] flex flex-row items-center justify-start gap-[8px] z-[0]">
-                      <img
-                        className="w-5 relative h-5 object-cover"
-                        alt=""
-                        src={Plus}
-                      />
-                      <div className="relative font-semibold">Add Patient</div>
-                    </div>
-                  </button>
-                  <button
-                    className="absolute top-[11px] left-[927px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
                     onClick={handle1}
                   >
                     <div className="w-24 my-0 mx-[!important] absolute top-[10px] left-[30px] flex flex-row items-center justify-start gap-[8px] z-[0]">
@@ -165,6 +152,19 @@ const Patient_Detail = () => {
                         src={Plus}
                       />
                       <div className="relative font-semibold">Add Wards</div>
+                    </div>
+                  </button>
+                  <button
+                    className="absolute top-[11px] left-[927px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
+                    onClick={handle}
+                  >
+                    <div className="w-24 my-0 mx-[!important] absolute top-[10px] left-[30px] flex flex-row items-center justify-start gap-[8px] z-[0]">
+                      <img
+                        className="w-5 relative h-5 object-cover"
+                        alt=""
+                        src={Plus}
+                      />
+                      <div className="relative font-semibold">Add Patient</div>
                     </div>
                   </button>
                   <button
@@ -284,7 +284,7 @@ const Patient_Detail = () => {
                               <TableCell>{user.phone_no}</TableCell>
 
                               <TableCell>
-                                <div className="w-[250px] relative my-0 mx-[!important] left-[0px] bg-theme-white-default shadow-[0px_-1px_0px_#edf2f7_inset] h-[52px] overflow-hidden shrink-0 z-[22]">
+                                <div className="w-[250px] relative my-0 mx-[!important] left-[0px] bg-theme-white-default shadow-[0px_-1px_0px_#edf2f7_inset] mt-2 h-[52px] overflow-hidden shrink-0 z-[22]">
                                   <img
                                     className="absolute top-[calc(50% - 12px)] left-[24px] w-6 h-6 hidden"
                                     alt=""
@@ -299,7 +299,7 @@ const Patient_Detail = () => {
                                       src={edit}
                                     />
                                   </Link>
-                                  <Link
+                                 {/* <Link
                                     className="absolute top-[13px] left-[71px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
                                     to={`/Patient/Patient_Details/${user.PatientID}`}
                                   >
@@ -313,9 +313,9 @@ const Patient_Detail = () => {
                                         View
                                       </div>
                                     </div>
-                                  </Link>
+                                  </Link>*/}
                                   <button
-                                    className="absolute top-[13px] left-[151px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
+                                    className="absolute top-[13px] left-[101px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
                                     onClick={() =>
                                       deleteData(user.PatientID)
                                     }

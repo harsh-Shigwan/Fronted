@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Breadcrumb from '../../components/Breadcrumb';
 import baseURL from '../../assests/API_URL';
+import { useParams } from 'react-router-dom';
 
-const Appointment_schedule = () => {
+const AppointmentSchedule = () => {
+  const { pk } = useParams();
   const [selectedPatient, setSelectedPatient] = useState('');
   const [patientsList, setPatientsList] = useState([]);
   const [doctorList, setDoctorList] = useState([]);
@@ -14,42 +16,38 @@ const Appointment_schedule = () => {
   const token = JSON.parse(localStorage.getItem('Token'));
 
   useEffect(() => {
-    axios
-      .get(`${baseURL}/patient/api/patients/`, {
+    fetchPatientsAndDoctors();
+  }, []);
+
+  const fetchPatientsAndDoctors = async () => {
+    try {
+      const patientsResponse = await axios.get(`${baseURL}/patient/api/patients/`, {
         headers: {
           Authorization: `Token ${token}`,
         },
-      })
-      .then((response) => {
-        setPatientsList(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching patients:', error);
       });
+      setPatientsList(patientsResponse.data);
 
-    axios
-      .get(`${baseURL}/doctor/api/doctors/`, {
+      const doctorsResponse = await axios.get(`${baseURL}/doctor/api/doctors/`, {
         headers: {
           Authorization: `Token ${token}`,
         },
-      })
-      .then((response) => {
-        setDoctorList(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching doctors:', error);
       });
-  }, [token]);
+      setDoctorList(doctorsResponse.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     // Format time slot from HH:mm to HH:mm-HH:mm
     const formattedTimeSlot = `${timeSlot}-${addMinutesToTime(timeSlot, 10)}`; // Adjust the end time as needed
 
-    axios
-      .post(
-        `${baseURL}/api/appointment/appointments/`,
+    try {
+      await axios.put(
+        `${baseURL}/api/appointment/appointments/${appointmentId}/`, // Replace appointmentId with the actual appointment ID
         {
           patient: selectedPatient,
           doctor: selectedDoctor,
@@ -62,15 +60,11 @@ const Appointment_schedule = () => {
             Authorization: `Token ${token}`,
           },
         }
-      )
-      .then((response) => {
-        console.log('API Response:', response.data);
-        console.log('Item added successfully!');
-      })
-      .catch((error) => {
-        console.error('API Error:', error);
-        console.log('Error response data:', error.response?.data);
-      });
+      );
+      console.log('Appointment updated successfully!');
+    } catch (error) {
+      console.error('Error updating appointment:', error);
+    }
   };
 
   // Function to add minutes to a given time string (HH:mm)
@@ -81,13 +75,14 @@ const Appointment_schedule = () => {
     date.setMinutes(parseInt(mins) + minutes);
     return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
   };
+
   return (
     <div>
       <Breadcrumb />
       <form className="flex flex-col w-[1120px] px-6 pb-12 font-medium bg-slate-50 max-md:px-5" onSubmit={handleSubmit}>
         <div className="flex flex-col pt-6 pb-12 bg-white max-md:max-w-full">
           <div className="self-start ml-7 text-xl leading-6 whitespace-nowrap text-slate-800 max-md:ml-2.5">
-            Appointment Form
+            Update Appointment
           </div>
           <div className="shrink-0 mt-5 h-px bg-slate-100 max-md:max-w-full" />
           <div className="flex flex-col px-7 mt-6 max-md:px-5 max-md:max-w-full">
@@ -141,7 +136,7 @@ const Appointment_schedule = () => {
                 <input
                   className="justify-center items-start py-4 pr-16 pl-4 mt-2 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 max-md:max-w-full"
                   name="time_slot"
-                  type="time"
+                  type="text"
                   onChange={(e) => setTimeSlot(e.target.value)}
                   value={timeSlot}
                   placeholder="enter the time slot"
@@ -171,7 +166,7 @@ const Appointment_schedule = () => {
           <div className="flex gap-5 justify-between self-end mt-14 mr-8 mb-9 text-base font-semibold leading-4 whitespace-nowrap max-md:mt-10 max-md:mr-2.5">
             <div className="grow justify-center px-8 py-4 text-blue-700 rounded-lg border border-blue-700 border-solid max-md:px-5">Cancel</div>
             <button className="grow justify-center px-10 py-4 text-white bg-blue-700 rounded-lg border border-solid border-[color:var(--Theme-Primary-Default,#4C6FFF)] max-md:px-5" type="submit">
-              Add
+              Update
             </button>
           </div>
         </div>
@@ -180,5 +175,4 @@ const Appointment_schedule = () => {
   );
 };
 
-export default Appointment_schedule;
-
+export default AppointmentSchedule;

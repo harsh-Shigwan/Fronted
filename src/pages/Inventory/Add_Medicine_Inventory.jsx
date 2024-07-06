@@ -12,24 +12,11 @@ const Add_Medicine_Inventory = () => {
 
  
 
-  const [ formData , setFormData]= useState({
-    name:"",
-    sale_price:"",
-    quantity:"",
-    expiration_date:"",
-    unit_price:"",
-    batch_num:"",
-    tax:"",
-    manufacturer:""
-  }
-  ); //1st
+  const [ formData , setFormData]= useState({}); //1st
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value }); //3rd
   };
  
-
- 
-
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -81,14 +68,14 @@ const Add_Medicine_Inventory = () => {
           </div>
         </div>
         <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap max-md:max-w-full">
-        <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
-          <div className="text-sm text-slate-600 max-md:max-w-full">
-            Sale Price*
-          </div>
-          <input className="justify-center items-start py-4 pr-16 pl-4 mt-3 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 max-md:max-w-full" name='sale_price' type='number' onChange={handleChange} value={formData.sale_price} placeholder='enter the sale price' >
-          
-          </input>
+        <div className="flex flex-col flex-1 py-0.5 whitespace-nowrap max-md:max-w-full">
+        <div className="text-sm text-slate-600 max-md:max-w-full">
+          Amount*
         </div>
+        <input className="justify-center items-start py-4 pr-16 pl-4 mt-3 text-base leading-4 text-gray-500 rounded-md bg-slate-100 max-md:pr-5 max-md:max-w-full"  name='unit_price' type='number' onChange={handleChange} value={formData.unit_price} placeholder='enter the amount' >
+         
+        </input>
+      </div>
         <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
           <div className="text-sm text-slate-600 max-md:max-w-full">
             {" "}
@@ -105,39 +92,12 @@ const Add_Medicine_Inventory = () => {
             <div className="text-sm text-slate-600 max-md:max-w-full">
               Expiry Date
             </div>
-            <input className="flex gap-5 justify-between px-3.5 py-4 mt-2 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:flex-wrap max-md:max-w-full" name='expiration_date' type='date' onChange={handleChange} value={formData.expiration_date} placeholder=' enter the expiry date' >
+            <input className="flex gap-5 justify-between px-3.5 py-4 mt-2 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:flex-wrap w-[500px]" name='expiration_date' type='date' onChange={handleChange} value={formData.expiration_date} placeholder=' enter the expiry date' >
             
             </input>
           </div>
-          <div className="flex flex-col flex-1 py-0.5 whitespace-nowrap max-md:max-w-full">
-            <div className="text-sm text-slate-600 max-md:max-w-full">
-              Amount*
-            </div>
-            <input className="justify-center items-start py-4 pr-16 pl-4 mt-3 text-base leading-4 text-gray-500 rounded-md bg-slate-100 max-md:pr-5 max-md:max-w-full"  name='unit_price' type='number' onChange={handleChange} value={formData.unit_price} placeholder='enter the amount' >
-             
-            </input>
-          </div>
         </div>
-        <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap max-md:max-w-full">
-          <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
-            <div className="text-sm text-slate-600 max-md:max-w-full">
-              Batch no*
-            </div>
-            <input className="justify-center items-start py-4 pr-16 pl-4 mt-3 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 max-md:max-w-full" name='batch_num' type='number' onChange={handleChange} value={formData.batch_num} 
-            placeholder=' enter the batch no' >
-             
-            </input>
-          </div>
-          <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
-            <div className="text-sm text-slate-600 max-md:max-w-full">
-              {" "}
-              Tax*
-            </div>
-            <input className="justify-center items-start py-4 pr-16 pl-4 mt-2 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 max-md:max-w-full" name='tax' type='number' onChange={handleChange} value={formData.tax} placeholder='enter the tax'>
-           
-            </input>
-          </div>
-        </div>
+       
       </div>
 
       

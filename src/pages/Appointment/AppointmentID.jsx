@@ -3,8 +3,10 @@ import axios from 'axios';
 import Breadcrumb from '../../components/Breadcrumb';
 import baseURL from '../../assests/API_URL';
 import CustomDropdown from '../../components/CustomDropdown';
+import { useParams } from 'react-router-dom';
 
-const Appointment_form = () => {
+const AppointmentID = () => {
+  const { DoctorID } = useParams();
   const [selectedPatient, setSelectedPatient] = useState('');
   const [patientInput, setPatientInput] = useState('');
   const [patientsList, setPatientsList] = useState([]);
@@ -32,23 +34,40 @@ const Appointment_form = () => {
         console.error('Error fetching patients:', error);
       });
 
-    axios
-      .get(`${baseURL}/doctor/api/doctors/`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      })
-      .then((response) => {
-        setDoctorList(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching doctors:', error);
-      });
+  
   }, [token]);
+  useEffect(() => {
+    if (DoctorID) {
+      axios
+        .get(`${baseURL}/doctor/api/doctors/${DoctorID}/`, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        })
+        .then((response) => {
+          const doctor = response.data;
+          setDoctorInput(doctor.name);
+          setSelectedDoctor(doctor.DoctorID);
+        })
+        .catch((error) => {
+          console.error(`Error fetching doctor ${DoctorID}:`, error);
+        });
+    }
+  }, [DoctorID, token]);
+
+//   useEffect(() => {
+//     if (DoctorID > 0) {
+     
+//       if (DoctorID) {
+//         setDoctorInput(DoctorID);
+//         setSelectedDoctor(DoctorID);
+//       }
+//     }
+//   }, [DoctorID, doctorList]);
 
   const handlePatientInputChange = (e) => {
     setPatientInput(e.target.value);
-  
+    setSelectedPatient('');
   };
 
   const handleDoctorInputChange = (e) => {
@@ -61,15 +80,15 @@ const Appointment_form = () => {
     setSelectedPatient(patient.PatientID);
     setShowPatientDropdown(false);
   };
+  
   const handleDoctorSelect = (doctor) => {
     setDoctorInput(doctor.name);
     setSelectedDoctor(doctor.DoctorID);
     setShowDoctorDropdown(false);
   };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    // Format time slot from HH:mm to HH:mm-HH:mm
     const formattedTimeSlot = `${timeSlot}-${addMinutesToTime(timeSlot, 10)}`; // Adjust the end time as needed
   
     axios
@@ -98,7 +117,6 @@ const Appointment_form = () => {
       });
   };
 
-  // Function to add minutes to a given time string (HH:mm)
   const addMinutesToTime = (time, minutes) => {
     const [hours, mins] = time.split(':');
     const date = new Date();
@@ -133,12 +151,12 @@ const Appointment_form = () => {
                   className="flex gap-5 justify-between p-4 mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100"
                   onChange={handlePatientInputChange}
                   onFocus={() => setShowPatientDropdown(true)}
-                  
+            //      onBlur={() => setTimeout(() => setShowPatientDropdown(false), 100)}
                   value={patientInput}
                   placeholder="Type or select the patient"
                 />
                 {showPatientDropdown && (
-                  <div className="flex flex-col  max-h-48 overflow-y-auto bg-white border border-gray-300  w-[500px]	position: absolute text-slate-600   mt-[86px]  rounded-md">
+                  <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[500px] absolute text-slate-600 mt-[86px] rounded-md">
                     {patientsList
                       .filter((patient) =>
                         patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())
@@ -158,32 +176,16 @@ const Appointment_form = () => {
 
               <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
                 <div className="text-sm text-slate-600">Doctor Name *</div>
-                <input
+                <div
                   type="text"
-                  className="flex gap-5 justify-between p-4 mt-2 text-base leading-4 text-gray-500  rounded-md bg-slate-100 "
-                  onChange={handleDoctorInputChange}
-                  onFocus={() => setShowDoctorDropdown(true)}
-               //   onBlur={() => setTimeout(() => setShowDoctorDropdown(false), 100)}
-                  value={doctorInput}
+                  className="flex gap-5 justify-between h-[55px] p-4 mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100"
+                 // onChange={handleDoctorInputChange}
+                  //onFocus={() => setShowDoctorDropdown(true)}
+                //  onBlur={() => setTimeout(() => setShowDoctorDropdown(false), 100)}
+                
                   placeholder="Type or select the doctor"
-                />
-                {showDoctorDropdown && (
-                  <div className="flex flex-col mt-[86px]  max-h-48 overflow-y-auto bg-white border border-gray-300  w-[500px]	position: absolute text-slate-600  rounded-md">
-                    {doctorList
-                      .filter((doctor) =>
-                        doctor.name.toLowerCase().includes(doctorInput.toLowerCase())
-                      )
-                      .map((doctor) => (
-                        <div
-                          key={doctor.DoctorID}
-                          className="p-2 cursor-pointer hover:bg-gray-200"
-                          onClick={() => handleDoctorSelect(doctor)}
-                        >
-                          {doctor.name}
-                        </div>
-                      ))}
-                  </div>
-                )}
+                >{doctorInput}</div>
+                
               </div>
             </div>
             <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap max-md:max-w-full">
@@ -203,7 +205,7 @@ const Appointment_form = () => {
                 <input
                   className="justify-center items-start py-4 pr-16 pl-4 mt-2 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 max-md:max-w-full"
                   name="time_slot"
-                  type="text"
+                  type="time"
                   onChange={(e) => setTimeSlot(e.target.value)}
                   value={timeSlot}
                   placeholder="enter the time slot"
@@ -215,10 +217,10 @@ const Appointment_form = () => {
               <div className="flex flex-col flex-1 self-start max-md:max-w-full">
                 <div className="text-sm text-slate-600 max-md:max-w-full">Status</div>
                 <CustomDropdown
-              options={statusOptions}
-              value={status}
-              onChange={setStatus}
-            />
+                  options={statusOptions}
+                  value={status}
+                  onChange={setStatus}
+                />
               </div>
             </div>
           </div>
@@ -234,4 +236,4 @@ const Appointment_form = () => {
   );
 };
 
-export default Appointment_form;
+export default AppointmentID;

@@ -1,171 +1,236 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams , useNavigate } from 'react-router-dom';
-
-const baseURL = 'http://127.0.0.1:8000';
+const baseURL = "http://127.0.0.1:8000";
 
 const BillDetails = ({ onAddItem }) => {
-
-    const [quantity, setQuantity] = useState(1);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [itemsList, setItemsList] = useState([]);
-    const [patientsList, setPatientsList] = useState([]);
-    const [selectedPatient, setSelectedPatient] = useState('');
-    const [selectedItem, setSelectedItem] = useState('');
-    const [selectedItemPrice, setSelectedItemPrice] = useState( ' ');
-    const [ medi , setMedi] = useState([]);
-    const token =  JSON.parse(localStorage.getItem("Token"))
-    useEffect(() => {
-        axios.get(`${baseURL}/inventory/api/equipment/`, {
-            headers: {
-                Authorization: `Token ${token}`,
-            },
-          })
-            .then(response => {
-                setItemsList(response.data);
-                console.log("itemsList", itemsList)
-            })
-            .catch(error => {
-                console.error('Error fetching items:', error);
-            });
-
-        axios.get(`${baseURL}/api/patient/api/patients/`, {
-            headers: {
-                Authorization: `Token ${token}`,
-            },
-          })
-            .then(response => {
-                setPatientsList(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching patients:', error);
-            });
-
-            axios.get(`${baseURL}/inventory/api/medicines/`, {
-                headers: {
-                  Authorization: `Token ${token}`,
-                },
-              })
-            .then(response => {
-                setMedi(response.data);
-                console.log("itemsList", itemsList)
-            })
-            .catch(error => {
-                console.error('Error fetching items:', error);
-            });
-
-        
-    }, []);
-    
-
+  const [quantity, setQuantity] = useState(1);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [itemsList, setItemsList] = useState([]);
+  const [patientsList, setPatientsList] = useState([]);
+  const [selectedPatient, setSelectedPatient] = useState("");
+  const [selectedItem, setSelectedItem] = useState("");
+  const [selectedItemPrice, setSelectedItemPrice] = useState("");
+  const [patientInput, setPatientInput] = useState("");
+  const [itemsInput, setItemInput] = useState("");
+  const [showPatientDropdown, setShowPatientDropdown] = useState(false);
+  const [showItemDropdown, setShowItemDropdown] = useState(false);
+  const [medi, setMedi] = useState([]);
+  const token = JSON.parse(localStorage.getItem("Token"));
   
-    const handleItemChange1 = (event) => {
-        const selectedItemid = parseInt(event.target.value);
-        setSelectedItem(selectedItemid);
-        const selectedItemData = itemsList.find(item => item.id === selectedItemid)?.unit_price || 0;
-        setSelectedItemPrice(selectedItemData);
-     
-    };
+  console.log("selectedPatient", selectedPatient);
+  console.log("selectedItem", selectedItem);
 
-    const handleSubmit = (event) => {
-  
-        if (!selectedItem || !quantity || quantity <= 0 || !selectedPatient) {
-            setErrorMessage('Please select a valid item, quantity, and patient.');
-            return;
+  useEffect(() => {
+    axios
+      .get(`${baseURL}/inventory/api/equipment/`, {
+        headers: { Authorization: `Token ${token}` },
+      })
+      .then((response) => setItemsList(response.data))
+      .catch((error) => console.error("Error fetching items:", error));
+
+    axios
+      .get(`${baseURL}/api/patient/api/patients/`, {
+        headers: { Authorization: `Token ${token}` },
+      })
+      .then((response) => setPatientsList(response.data))
+      .catch((error) => console.error("Error fetching patients:", error));
+
+    axios
+      .get(`${baseURL}/inventory/api/medicines/`, {
+        headers: { Authorization: `Token ${token}` },
+      })
+      .then((response) => setMedi(response.data))
+      .catch((error) => console.error("Error fetching medicines:", error));
+  }, [token]);
+
+  const handleItemInputChange = (event) => {
+    setItemInput(event.target.value);
+  };
+
+  const handleItemSelect = (item) => {
+    setSelectedItem(item.id);
+    setItemInput(item.name);
+    setSelectedItemPrice(item.unit_price);
+    setShowItemDropdown(false);
+  };
+
+  const handlePatientInputChange = (event) => {
+    setPatientInput(event.target.value);
+  };
+
+  const handlePatientSelect = (patient) => {
+    setSelectedPatient(patient.PatientID);
+    setPatientInput(patient.FirstName);
+    setShowPatientDropdown(false);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!selectedItem || !quantity || quantity <= 0 || !selectedPatient) {
+      setErrorMessage("Please select a valid item, quantity, and patient.");
+      return;
+    }
+    const usage_date = new Date().toISOString();
+    axios
+      .post(
+        `${baseURL}/inventory/api/patient-equipment-usage/`,
+        {
+          patient: selectedPatient,
+          equipment: selectedItem,
+          quantity_used: quantity,
+          usage_date: usage_date,
+          unit_price: selectedItemPrice,
+        },
+        {
+          headers: { Authorization: `Token ${token}` },
         }
-        const usage_date = new Date().toISOString();
-        event.preventDefault();
-        axios.post(`${baseURL}/inventory/api/patient-equipment-usage/`, {
-            patient: selectedPatient,
-            equipment: selectedItem,
-            quantity_used: quantity,
-            usage_date: usage_date,
-            unit_price: selectedItemPrice
-        }, {
-            headers: {
-              Authorization: `Token ${token}`,
-            },
-          })
-       
-        .then((response) => {
-            console.log('API Response:', response.data);
-           console.log('Item added successfully!');
+      )
+      .then((response) => console.log("Item added successfully!"))
+      .catch((error) => {
+        console.error("API Error:", error);
+        console.log("Error response data:", error.response?.data);
+      });
+  };
 
-   
-        })
-        .catch((error) => {
-            console.error('API Error:', error);
-            console.log("Error response data:", error.response?.data);
-            
-
-        });
-        console.log("selectedPatient",selectedPatient)
+  const handleAddItem = () => {
+    if (!selectedItem || !quantity || !selectedPatient || quantity <= 0) {
+      setErrorMessage("*Please select an item and patient !!");
+      return;
+    }
+    const newItem = {
+      selectedItem,
+      selectedPatient,
+      quantity,
+      price: selectedItemPrice,
     };
-    const handleAddItem = () => {
-        if (!selectedItem || !quantity ||!selectedPatient || quantity <= 0) {
-            setErrorMessage('Please select a valid item and quantity.');
-            return;
-        }
-        const newItem = { selectedItem ,selectedPatient, quantity, price: selectedItemPrice };
-        onAddItem(newItem);
-        console.log('Item added successfully!'); 
-        setQuantity(quantity);
-        setSelectedItemPrice( selectedItemPrice);
-        setErrorMessage('');
-        const usage_date = new Date().toISOString();
-      
-    };
-    const navigate = useNavigate();
-    const handleGenerateBill = () => {
-        // Check if a patient is selected
-        if (!selectedPatient) {
-            setErrorMessage('Please select a patient before generating the bill.');
-            return;
-        }
-        // Redirect to the bill generation page with the selected patient as a URL parameter
-        navigate(`/Invoice_Generator/medi/${selectedPatient}`);
-    };
+    onAddItem(newItem);
+    setErrorMessage("");
+  };
 
-
-    return (
-        <div className=''>
-            <form onSubmit={handleSubmit}>
-                <div className='flex'>
-                    <div className='h-20 w-80 b'>
-                        <div className='text-slate-600  text-sm font-medium mt-9 max-md:max-w-full ml-10'>Item</div>
-                        <select className='ml-8 flex gap-5 justify-between p-3 mt-2 w-[410px] text-base leading-2 text-gray-500 rounded-md bg-slate-100' value={selectedItem} onChange={handleItemChange1}>
-                            <option value="">Select Item</option>
-                            {itemsList.map(item => (
-                                <option key={item.id} value={item.id}>{item.name}</option>
-                            ))}
-                        </select>
+  const navigate = useNavigate();
+  const handleGenerateBill = () => {
+    if (!selectedPatient) {
+      setErrorMessage("*Please select a patient before Proceed further !");
+      return;
+    }
+    navigate(`/Invoice_Generator/medi/${selectedPatient}`);
+  };
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <div className="flex">
+          <div className="h-20 w-80">
+            <div className="text-slate-600 text-sm font-medium mt-9 ml-12">
+             Select Item
+            </div>
+            <input
+              type="text"
+              className="flex gap-5 justify-between font-medium p-4 mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100 ml-10 w-[400px]"
+              onChange={handleItemInputChange}
+              onFocus={() => setShowItemDropdown(true)}
+              value={itemsInput}
+              placeholder="Type or select the Items"
+            />
+            {showItemDropdown && (
+              <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[400px] absolute text-slate-600 mt-[8px] rounded-md ml-10 font-medium">
+                {itemsList
+                  .filter((item) =>
+                    item.name.toLowerCase().includes(itemsInput.toLowerCase())
+                  )
+                  .map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-2 cursor-pointer hover:bg-gray-200"
+                      onMouseDown={() => handleItemSelect(item)}
+                    >
+                      {item.name}
                     </div>
-                    <div>
-                        <div className='text-slate-600 text-sm font-medium mt-9 max-md:max-w-full ml-[210px]'>Patient</div>
-                        <select className='flex ml-[200px] gap-5 justify-between p-3 w-[400px] mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100' value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)}>
-                            <option value="">Select Patient</option>
-                            {patientsList.map(patient => (
-                                <option key={patient.PatientID} value={patient.PatientID}>{patient.fullname}</option>
-                            ))}
-                        </select>
+                  ))}
+              </div>
+            )}
+          </div>
+          <div>
+            <div className="text-slate-600 text-sm font-medium mt-9 ml-[210px]">
+             Select Patient* 
+            </div>
+            <input
+              type="text"
+              className="flex gap-5 justify-between font-medium p-4 mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100 ml-[200px] w-[400px]"
+              onChange={handlePatientInputChange}
+              onFocus={() => setShowPatientDropdown(true)}
+              value={patientInput}
+              placeholder="Type or select the patient"
+            />
+            {showPatientDropdown && (
+              <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[400px] absolute text-slate-600 mt-[8px] rounded-md ml-[200px] font-medium">
+                {patientsList
+                  .filter((patient) =>
+                    patient.FirstName.toLowerCase().includes(
+                      patientInput.toLowerCase()
+                    )
+                  )
+                  .map((patient) => (
+                    <div
+                      key={patient.PatientID}
+                      className="p-2 cursor-pointer hover:bg-gray-200"
+                      onMouseDown={() => handlePatientSelect(patient)}
+                    >
+                      {patient.FirstName}
                     </div>
-                </div>
-                <div className='text-slate-600 text-sm font-medium mt-9 max-md:max-w-full ml-10'>Quantity</div>
-                <input type="number" className='justify-center items-start py-3 pr-16 pl-4 mt-3 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 w-[400px] ml-10' value={quantity} onChange={(e) => setQuantity(e.target.value)} />
-
-                <div className='text-slate-600 text-sm font-medium mt-9 max-md:max-w-full ml-10'>Price</div>
-                <input type="number" className='justify-center items-start py-3 pr-16 pl-4 mt-3 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 w-[400px] ml-10' value={selectedItemPrice} onChange={(e) => setSelectedItemPrice(e.target.value)}  readOnly />
-
-                <button className='top-[13px] ml-10 rounded-xl h-12 items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue w-28 mt-3 gap-[6px] leading-[10px] font-medium bg-btn text-white' type="submit"  onClick={handleAddItem}>Add Item</button>
-              
-                <p style={{ color: 'red', marginLeft: '10px' }}>{errorMessage}</p>
-               
-            </form>
-            <button className='top-[410px] ml-10 items-center justify-start  px-4 border-[1px] border-solid border-royalblue h-12  rounded-xl w-36 mt-1 gap-[6px] leading-[10px] left-[880px]  absolute font-medium bg-btn text-white' type="submit" onClick={handleGenerateBill} > Generate Bill</button>
+                  ))}
+              </div>
+            )}
+            <p style={{ color: "red", marginLeft: "210px" , marginTop:"5px" }}>{errorMessage}</p>
+          </div>
         </div>
-    );
+        <div className=" flex flex-row">
+        <div>
+          <div className="text-slate-600 text-sm font-medium mt-9 ml-10">
+            Quantity
+          </div>
+          <input
+            type="number"
+            className="py-3 pr-16 pl-4 mt-3 font-medium text-base text-gray-500 rounded-md bg-slate-100 w-[400px] ml-10"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+          /></div>
+          <div>
+
+          <div className="text-slate-600 text-sm font-medium mt-9 ml-[92px]">
+            Price
+          </div>
+          <input
+            type="number"
+            className="py-3 pr-16 pl-4 mt-3 font-medium text-base text-gray-500 rounded-md bg-slate-100 w-[400px] ml-[83px]"
+            value={selectedItemPrice}
+            onChange={(e) => setSelectedItemPrice(e.target.value)}
+            placeholder="Select the Item ->  "
+            readOnly
+          /></div>
+        </div>
+
+        <div className=" flex flex-row mt-9">
+          <button
+            className="ml-10 rounded-xl h-12 py-2 px-4 border border-royalblue w-28 mt-0 font-medium bg-btn text-white"
+            type="submit"
+            onClick={handleAddItem}
+          >
+            Add Item
+          </button>
+          
+          <button
+            className="ml-[8px]  h-12 py-2  pr-5  px-4 border border-royalblue rounded-xl w-36 mt-0 font-medium bg-btn text-white"
+            type="button"
+            onClick={handleGenerateBill}
+          >
+          Proceed ->
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 export default BillDetails;

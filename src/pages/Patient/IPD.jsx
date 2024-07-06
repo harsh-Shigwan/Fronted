@@ -108,13 +108,10 @@ const IPD = () => {
                     onChange={(e) => {
                       setSearch(e.target.value);
                     }}
+                    placeholder="search..."
                   />
                   <div className="absolute top-[18px] left-[500px] h-[23.75px] flex flex-row ml-28 items-start justify-start">
-                    <img
-                      className="w-5 relative h-5 overflow-hidden shrink-0"
-                      alt=""
-                      src={search}
-                    />
+                   
                   </div>
 
                   <button
@@ -143,7 +140,7 @@ const IPD = () => {
                         src={Plus}
                       />
                       <div className="relative font-semibold">
-                        List of Discharged Patient
+                        List of Discharge Patient
                       </div>
                     </div>
                   </button>

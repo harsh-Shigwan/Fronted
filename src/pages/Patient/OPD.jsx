@@ -132,11 +132,7 @@ const OPD = () => {
                     onChange={(e) => setSearch(e.target.value)}
                   />
                   <div className="absolute top-[18px] left-[600px] h-[23.75px] flex flex-row ml-28 items-start justify-start">
-                    <img
-                      className="w-5 relative h-5 overflow-hidden shrink-0"
-                      alt=""
-                      src={search}
-                    />
+ 
                   </div>
                   <button
                     className="absolute top-[11px] left-[937px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5 h-10 box-border text-theme-white-default"

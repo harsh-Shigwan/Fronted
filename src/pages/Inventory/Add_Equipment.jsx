@@ -50,13 +50,13 @@ const Add_Equipment = () => {
   <form className="flex flex-col w-[1120px] px-6 pb-12 font-medium bg-slate-50 max-md:px-5" onSubmit={handleSubmit}>
     <div className="flex flex-col pt-6 pb-12 bg-white max-md:max-w-full">
       <div className="self-start ml-7 text-xl leading-6 whitespace-nowrap text-slate-800 max-md:ml-2.5">
-        Medicine Inventory
+        Equipment Inventory
       </div>
       <div className="shrink-0 mt-5 h-px bg-slate-100 max-md:max-w-full" />
       <div className="flex flex-col px-7 mt-6 max-md:px-5 max-md:max-w-full">
         <div className="flex gap-5 justify-between max-md:flex-wrap max-md:max-w-full">
           <div className="flex mt-1 flex-col flex-1 self-start">
-            <div className="text-sm text-slate-600">Medicine manufacturer *</div>
+            <div className="text-sm text-slate-600">Equipment manufacturer *</div>
             <input className="flex gap-5 justify-between p-4 mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100" name='manufacturer' type='text' onChange={handleChange} value={formData.manufacturer} placeholder='enter the medincine category'>
               
             
@@ -65,7 +65,7 @@ const Add_Equipment = () => {
           
           <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
             <div className="text-sm text-slate-600 max-md:max-w-full">
-              Medicine Name*
+            Equipment Name*
             </div>
             <input className="justify-center items-start py-4 pr-16 pl-4 mt-3 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 max-md:max-w-full" name='name' type='text' onChange={handleChange} value={formData.name} placeholder='enter the medincine name'>
              

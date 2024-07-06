@@ -83,6 +83,7 @@ const All_Wards = () => {
                 <input
                   className="absolute top-[11px] left-[718px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-10"
                   defaultValue={searh}
+                  placeholder="Search...."
                   onChange={(e) => {
                     setSearch(e.target.value);
                   }}

@@ -101,11 +101,7 @@ const Details = () => {
                     placeholder="Search"
                   />
                   <div className="absolute top-[18px] left-[600px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
-                    <img
-                      className="w-5 relative h-5  overflow-hidden shrink-0"
-                      alt=""
-                      src={search}
-                    />
+                    
                   </div>
 
                   <button
@@ -125,7 +121,7 @@ const Details = () => {
                     className="absolute top-[11px] left-[765px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
                     onClick={() =>
                       generatePDF(targetRef, {
-                        filename: "Dishcharged_Patient_List.pdf",
+                        filename: "Doctor List.pdf",
                       })
                     }
                   >
@@ -203,7 +199,6 @@ const Details = () => {
                               <TableRow key={user.DoctorID}>
                               <TableCell>{user.DoctorID}</TableCell>
                                 <TableCell>{user.name}</TableCell>
-
                                 <TableCell>{user.phone_number}</TableCell>
                                 <TableCell>{user.education_qualification}</TableCell>
                                 <TableCell>{user.experince}</TableCell>

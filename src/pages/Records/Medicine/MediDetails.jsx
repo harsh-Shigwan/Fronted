@@ -85,11 +85,11 @@ const MediDetails = ({ addItem , patientId }) => {
   };
 
   return (
-    <div className="ml-10">
+    <div className="ml-10 mt-8">
       <div className="flex gap-5 justify-between max-md:flex-wrap">
         <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
           <div className="text-sm text-slate-600 font-medium max-md:max-w-full">
-            Select the ward
+            Select the Medicine
           </div>
           <input
             type="text"
@@ -120,7 +120,7 @@ const MediDetails = ({ addItem , patientId }) => {
         </div>
         <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
           <div className="text-sm text-slate-600 font-medium max-md:max-w-full">
-            Enter the number of days
+            Quantity
           </div>
           <input
             type="number"
@@ -133,8 +133,8 @@ const MediDetails = ({ addItem , patientId }) => {
       </div>
       <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap">
         <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
-          <div className="text-sm text-slate-600 font-medium max-md:max-w-full mt-8">
-            Bed Price Per day
+          <div className="text-sm text-slate-600 font-medium max-md:max-w-full mt-8 ml-2">
+            Medicine Price
           </div>
           <div className="p-4 mt-5 text-base text-gray-500 bg-slate-100 rounded-md max-md:pr-5 w-[500px]">
             {price > 0 ? ` ${price} Rupees` : "Select a ward to see the price"}

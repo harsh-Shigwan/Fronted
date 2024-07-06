@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import baseURL from "../../assests/API_URL";
 import EquipmentTable from "../../components/Billing/EquipmentTable";
+import MedicineTable from "../../components/Billing/MedinceTable";
 
 const Generate_Bill = () => {
   const { patientId, totalAmount } = useParams();
@@ -11,15 +12,12 @@ const Generate_Bill = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [equipmentData, setEquipmentData] = useState([]);
   const [admissionID, setAdmissionID] = useState([]);
-  const [admissionDate, setAdmissionDate] = useState(null);
-  const [dischargeDate, setDischargeDate] = useState(null);
   const token = JSON.parse(localStorage.getItem("Token"));
-  const [daysBetweenDates, setDaysBetweenDates] = useState(null);
-  const [ward, setWard] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [mediTotal, setMediTotal] = useState(0);
+  const [ mediData ,setMediData] = useState([])
   const [balanceAmount, setBalanceAmount] = useState(null);
-  console.log("totalAmount", totalAmount);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,15 +39,6 @@ const Generate_Bill = () => {
             headers: { Authorization: `Token ${token}` },
           }),
         ]);
-
-        const dischargeData = dischargeRes.data.filter(
-          (item) => item.patient === parseInt(patientId)
-        );
-        if (dischargeData.length > 0) {
-          setDischargeDate(dischargeData[0].discharge_date);
-          setAdmissionDate(dischargeData[0].admission_date);
-        }
-
         const patient = patientRes.data.find(
           (p) => p.PatientID === parseInt(patientId)
         );
@@ -70,19 +59,25 @@ const Generate_Bill = () => {
         );
         setTotalPrice(totalPrice);
         setEquip(equipmentsUsedByPatient);
-
-        const mediTotalPrice = mediRes.data.reduce(
+        
+        const medicineUsedByPatient = mediRes.data.filter(
+          (item) =>  item.patient === parseInt(patientId)
+        )
+        const mediTotalPrice = medicineUsedByPatient.reduce(
           (acc, curr) => acc + parseFloat(curr.unit_price * curr.quantity_used),
           0
         );
+        const AllMediData = mediRes.data.filter((item) => item.patient === parseInt(patientId));
         setMediTotal(mediTotalPrice);
+        setMediData(AllMediData);
+        
+      
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
-  }, [patientId, token]);
+  }, [ ]);
 
   useEffect(() => {
     axios
@@ -129,14 +124,11 @@ const Generate_Bill = () => {
       );
   
       if (existingBillings.length > 0) {
-        const previousTotal = parseFloat(existingBillings[0].InvoiceDetails);
-        const updatedInvoiceDetails = previousTotal + newAmount;
-  
         // Update the existing billing with the new amount
         const updateResponse = await axios.put(
           `${baseURL}/patient/api/patient-billings/${existingBillings[0].BillingID}/`,
           {
-            InvoiceDetails: updatedInvoiceDetails.toFixed(0),
+            InvoiceDetails: newAmount.toFixed(0),
             PatientID: parseInt(patientId),
           },
           {
@@ -174,21 +166,7 @@ const Generate_Bill = () => {
   
   const totalSum = parseFloat(totalPrice) + parseFloat(mediTotal) + parseFloat(totalAmount);
   const balancetotal = parseFloat(totalSum) - parseFloat(balanceAmount);
-  useEffect(() => {
-    const calculateDaysBetweenDates = () => {
-      if (admissionDate && dischargeDate) {
-        const admission = new Date(admissionDate);
-        const discharge = new Date(dischargeDate);
 
-        const differenceInTime = discharge.getTime() - admission.getTime();
-        const differenceInDays = differenceInTime / (1000 * 3600 * 24);
-
-        setDaysBetweenDates(Math.round(differenceInDays));
-      }
-    };
-
-    calculateDaysBetweenDates();
-  }, [admissionDate, dischargeDate]);
 
   const groupEquipments = (equipments) => {
     const groupedEquipments = {};
@@ -222,7 +200,7 @@ const Generate_Bill = () => {
   );
 
   return (
-    <div className=" ml-28 w-full justify-center">
+    <div className=" ml-28 w-full justify-center ">
       <div>
         <div className="flex flex-col items-start max-w-[793px]  ">
           <div className="flex gap-5 text-sm font-medium tracking-tight text-black max-md:flex-wrap">
@@ -278,8 +256,10 @@ const Generate_Bill = () => {
                     </div>
 
                     <div className=" flex mt-2 mwhitespace-nowrap">
-                      <div className="grow uppercase">Contact</div>
+                      <div className="grow uppercase">Contact:</div>
+                      <div className=" mr-32">
                       {patientData.phone}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -377,7 +357,7 @@ const Generate_Bill = () => {
               <div className="flex flex-col">
                 <div className="tracking-tight">Rooms & Nursing Charges</div>
                 <div className="mt-2 flex-auto ">Equipment Charges</div>
-                <div className="mt-1.5 tracking-normal">Professional Fees</div>
+                <div className="mt-1.5 tracking-normal">Medicines</div>
               </div>
             </div>
             <div className="flex flex-col self-start tracking-tight whitespace-nowrap">
@@ -410,8 +390,9 @@ const Generate_Bill = () => {
           <div className="self-center mt-5 text-base font-bold tracking-wider text-black uppercase">
             Detailed Breakup
           </div>
-
+         
          <EquipmentTable  groupedEquipments={groupedEquipments} totalPrice={totalPrice} generateFinalBill={generateFinalBill}/>
+         <MedicineTable mediData={mediData} mediTotal={mediTotal}></MedicineTable>
         </div>
       </div>
     </div>

@@ -289,7 +289,7 @@ return(
                 </div>
                 <input
           type="text"
-          className="flex gap-5 justify-between w-[500px] p-4 mt-2 text-base letext-gray-500 border-transparent text-base font-medium leading-4 bg-slate-100   pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5"
+          className="flex gap-5 justify-between w-[500px] p-4 mt-2 text-base letext-gray-500 border-transparent text-base font-medium leading-4 bg-slate-100 text-slate-600     pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5"
           onChange={handleWardInputChange}
           onFocus={() => setShowWardDropdown(true)}
           onBlur={() => setTimeout(() => setShowWardDropdown(false), 100)}

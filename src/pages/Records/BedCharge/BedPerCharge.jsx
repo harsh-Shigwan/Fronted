@@ -4,6 +4,7 @@ import DailyCharge from './DailyCharge';
 import WardPrice from './WardPrice';
 import Total from './Total';
 import { Link } from 'react-router-dom';
+import Breadcrumb from "../../../components/Breadcrumb";
 
 const BedPerCharge = () => {
   const [items, setItems] = useState([]);
@@ -25,14 +26,14 @@ const BedPerCharge = () => {
   }, [items]);
 
   return (
-    <div className="container mx-auto p-4  w-[1000px] ml-16 rounded-lg shadow-md mt-10 ">
-      <h1 className="text-3xl font-bold text-center">Bill Management System</h1>
+    <div className="container mx-auto p-4  w-[1000px] ml-16 rounded-lg shadow-md mt-3 ">
+     <Breadcrumb></Breadcrumb>
       <DailyCharge addItem={addItem} />
       <WardPrice items={items} deleteItem={deleteItem} patientId={patientId}  />
       <Total items={items} />
 
     
-      <Link to={`/Invoice_Generator/generate-bill/${patientId}/${totalPrice}`} className="top-[280px] ml-20 items-center justify-start  px-4 border-[1px] border-solid border-royalblue h-12  rounded-xl w-36 mt-1  gap-[6px] leading-[10px] left-[880px]  absolute font-medium bg-btn text-white pt-4 pr-4">
+      <Link to={`/Invoice_Generator/generate-bill/${patientId}/${totalPrice}`} className="top-[350px] ml-20 items-center justify-start  px-4 border-[1px] border-solid border-royalblue h-12  rounded-xl w-36 mt-1  gap-[6px] leading-[10px] left-[880px]  absolute font-medium bg-btn text-white pt-4 pr-4">
         Confirm bed
       </Link>
     </div>
