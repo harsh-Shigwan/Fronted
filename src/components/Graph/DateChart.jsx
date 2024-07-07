@@ -20,7 +20,7 @@ const DateChart = ({ dates, dates1, dates2 }) => {
       {
         label: ' Patients',
         data: Array(12).fill(0),
-        backgroundColor: "rgba(120, 149, 255, 1)",
+        backgroundColor: "rgba(120, 149, 255, 1)", 
         borderColor: "rgba(255, 255, 255, 1)",
         borderWidth: 0,
         hoverBackgroundColor: "rgba(120, 149, 255, 0.8)",
@@ -134,7 +134,7 @@ const DateChart = ({ dates, dates1, dates2 }) => {
       className="px-4 py-2 ml-[488px] mt-2   text-md font- text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark justify-center rounded bg-theme-white-default mb-0  flex items-center"
       onClick={handleNextYear}
     >
-      Next Month <FaChevronRight className="ml-2" />
+      Next Year <FaChevronRight className="ml-2" />
     </button> </div>
     <div className=" text-slate-500 ml-5 mt-2 font-semibold">Year : {year}</div>
       <div className=" ">

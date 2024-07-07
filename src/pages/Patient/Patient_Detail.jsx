@@ -294,12 +294,12 @@ const Patient_Detail = () => {
                                     to={`/Patient/Patient_Details/EditPatient/${user.PatientID}`}
                                   >
                                     <img
-                                      className="absolute top-[calc(50% - 12px)] left-[21px] w-6 h-6 overflow-hidden"
+                                      className="absolute top-[13px] left-[21px] w-6 h-6 overflow-hidden"
                                       alt=""
                                       src={edit}
                                     />
                                   </Link>
-                                 {/* <Link
+                                 <Link
                                     className="absolute top-[13px] left-[71px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
                                     to={`/Patient/Patient_Details/${user.PatientID}`}
                                   >
@@ -313,9 +313,9 @@ const Patient_Detail = () => {
                                         View
                                       </div>
                                     </div>
-                                  </Link>*/}
+                                  </Link>
                                   <button
-                                    className="absolute top-[13px] left-[101px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
+                                    className="absolute top-[13px] left-[151px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
                                     onClick={() =>
                                       deleteData(user.PatientID)
                                     }

@@ -58,15 +58,15 @@ const Patient_Profile = () => {
       setValue(newValue);
     };
   return (
-    <div><Breadcrumb></Breadcrumb>
+    <div className=' w-[1000px]'><Breadcrumb></Breadcrumb>
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: '' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Over View" {...a11yProps(0)} />
-          <Tab label="Visit" {...a11yProps(1)} />
-          <Tab label="Tretment History" {...a11yProps(2)} />
-          <Tab label="Billing" {...a11yProps(3)} />
-          <Tab label="Lab" {...a11yProps(4)} />
+        
+          <Tab label="Tretment History" {...a11yProps(1)} />
+          <Tab label="Billing" {...a11yProps(2)} />
+          <Tab label="Lab" {...a11yProps(3)} />
         
          
       
@@ -77,17 +77,15 @@ const Patient_Profile = () => {
       <CustomTabPanel value={value} index={0}>
      <Over_View/>
       </CustomTabPanel>
+  
       <CustomTabPanel value={value} index={1}>
-        <Visit/>
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
         <Treatment_History/>
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
+      <CustomTabPanel value={value} index={2}>
     
       <Billing/>
     </CustomTabPanel>
-    <CustomTabPanel value={value} index={4}>
+    <CustomTabPanel value={value} index={3}>
     
     <Lab_Investigation/>
   </CustomTabPanel>

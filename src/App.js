@@ -65,6 +65,7 @@ import BedPerCharge from "./pages/Records/BedCharge/BedPerCharge";
 import Medi from "./pages/Records/Medicine/Medi";
 import AppointmentID from "./pages/Appointment/AppointmentID";
 import DateChart from "./components/Graph/DateChart";
+import AppointmentSchedule from "./pages/Appointment/Appointment_schedule";
 //import Medicine from './pages/Pharmacy/Medicine';
 
 const App = () => {
@@ -206,7 +207,7 @@ const App = () => {
         ></Route>
           <Route
             path="/Appointment/Appointment_form/Appoointment_schedule/:pk"
-            element={<Appointment_form />}
+            element={<AppointmentSchedule />}
           ></Route>
       {/*staff */}
       <Route path="/Staff_Mangement" element={<Staff_Mangement/> }></Route>

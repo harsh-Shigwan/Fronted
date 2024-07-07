@@ -180,7 +180,9 @@ const Home = () => {
   }, []);
 
   
- console.log("admission datttte", admissionData)
+  const noti=()=>{
+    alert("Coming Soon...")
+  }
   return (
     <div>
       <div className="w-[1100px] relative bg-whitesmoke h-[870px] flex flex-col items-start justify-start p-[30px] box-border gap-[30px] text-left text-sm text-black font-text-small">
@@ -307,13 +309,13 @@ const Home = () => {
                 </div>
                 <div className="absolute h-full top-[0px] right-[0.51px] bottom-[0px] w-[161px] flex flex-col items-start justify-start text-sm text-theme-white-default">
                   <div className="w-[218px] flex flex-col items-start justify-start">
-                    <div className="w-[207px] rounded-md bg-theme-primary-dark flex flex-col items-center justify-start py-4 px-6 box-border">
+                    <button className="w-[207px] rounded-md bg-theme-primary-dark flex flex-col items-center justify-start py-4 px-6 box-border " onClick={noti}>
                       <div className="flex flex-row items-center justify-start gap-[10px]">
                         <div className="relative leading-[14px] font-semibold">
                           Notifications
                         </div>
                       </div>
-                    </div>
+                    </button>
                   </div>
                 </div>
               </div>

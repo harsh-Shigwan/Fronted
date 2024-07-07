@@ -15,7 +15,7 @@ const Doctor_Profile = () => {
     useEffect(() => {
       const fetchAppointments = async () => {
           try {
-              const response = await axios.get('http://127.0.0.1:8000/api/appointment/appointments/',
+              const response = await axios.get(`${baseURL}/api/appointment/appointments/`,
                 {
                   headers: {
                     Authorization: `Token ${token}`,
@@ -263,7 +263,7 @@ const Doctor_Profile = () => {
                 }}
               />
             </div>
-            <div className='text-slate-500 h-10 w-10 absolute inset-0 flex items-center justify-center z-40 top-[180px] left-[1150px] bg-slate-100 text-lg font-bold rounded-full shadow-md'>
+            <div className='text-slate-500 h-10 w-10 absolute inset-0 flex items-center justify-center z-40 top-[200px] left-[1150px] bg-slate-100 text-lg font-bold rounded-full shadow-md'>
             {PieDataSum}
           </div>
           

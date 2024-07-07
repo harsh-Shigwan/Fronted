@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import Plus from "../../Data/Plus.png";
 import download from "../../Data/download.png";
-import search from "../../Data/search.png";
+import searchIcon from "../../Data/search.png";
 import edit from "../../Data/edit.png";
 import { Link, useNavigate } from "react-router-dom";
 import baseURL from "../../assests/API_URL";
@@ -111,7 +111,11 @@ const IPD = () => {
                     placeholder="search..."
                   />
                   <div className="absolute top-[18px] left-[500px] h-[23.75px] flex flex-row ml-28 items-start justify-start">
-                   
+                  <img
+                  className="w-5 relative h-5 overflow-hidden bg-slate-900 shrink-0"
+                  alt="Search"
+                  src={searchIcon}
+                />
                   </div>
 
                   <button
@@ -219,7 +223,7 @@ const IPD = () => {
                                       to={`EditIPD/${user.admission_id}`}
                                     >
                                       <img
-                                        className="absolute top-[calc(50% - 12px)] left-[21px] w-6 h-6 overflow-hidden"
+                                        className="absolute top-[13px] left-[21px] w-6 h-6 overflow-hidden"
                                         alt=""
                                         src={edit}
                                       />

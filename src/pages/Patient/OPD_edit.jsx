@@ -1,145 +1,246 @@
 import React, { useState, useEffect } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import baseURL from "../../assests/API_URL";
-const OPD_edit = () => {
-  const { pk } = useParams();
-  const [patient_id, setPatientId] = useState("");
-  const [doctor_id, setDoctorId] = useState("");
-  const [patientData, setPatientData] = useState({});
-  const [doctorData, setDoctorData] = useState({});
+
+const OPD_New = () => {
+  const { pk } = useParams(); // Get the primary key from the URL params
+  const token = JSON.parse(localStorage.getItem("Token")); // Retrieve token from local storage
+
+  // State variables
+  const [patientsList, setPatientsList] = useState([]);
+  const [doctorList, setDoctorList] = useState([]);
+  const [selectedDoctor, setSelectedDoctor] = useState("");
+  const [selectedPatient, setSelectedPatient] = useState("");
+  const [patientInput, setPatientInput] = useState("");
+  const [doctorInput, setDoctorInput] = useState("");
+  const [showPatientDropdown, setShowPatientDropdown] = useState(false);
+  const [showDoctorDropdown, setShowDoctorDropdown] = useState(false);
   const navigate = useNavigate();
-  const token =  JSON.parse(localStorage.getItem("Token"))
   const [formData, setFormData] = useState({
     department: "",
   });
-  const handleChange = (event) => {
-    setFormData({ ...formData, department: event.target.value });
-  };
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log("Form Data Submitted:", { patient_id, doctor_id, formData });
 
-    try {
-      const response = await axios.put(
-        `${baseURL}/opd/api/opd-register/${pk}/`,
-        { patient_id, doctor_id, department: formData.department }
-        , {
+  // Fetch existing OPD record details when component mounts or pk changes
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/api/opd/api/opd-register/${pk}/`, {
           headers: {
             Authorization: `Token ${token}`,
           },
-        } );
+        });
+        // Set fetched data into state variables
+        setSelectedDoctor(response.data.doctor);
+        setSelectedPatient(response.data.patient);
+        setFormData({ department: response.data.department });
+        setPatientInput(response.data.patient.FirstName);
+        setDoctorInput(response.data.doctor.name);
+      } catch (error) {
+        console.error("Error fetching appointment data:", error);
+      }
+    };
+    fetchData();
+  }, [pk, token]);
+
+  // Fetch all patients and doctors when component mounts
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/patient/api/patients/`, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+        setPatientsList(response.data);
+      } catch (error) {
+        console.error("Error fetching patients:", error);
+      }
+    };
+
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/doctor/api/doctors/`, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+        setDoctorList(response.data);
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+      }
+    };
+
+    fetchPatients();
+    fetchDoctors();
+  }, [token]);
+
+  // Handle input changes for doctor and patient fields
+  const handleDoctorInputChange = (e) => {
+    setDoctorInput(e.target.value);
+    setSelectedDoctor("");
+    setShowDoctorDropdown(true);
+  };
+
+  const handlePatientInputChange = (e) => {
+    setPatientInput(e.target.value);
+    setSelectedPatient("");
+    setShowPatientDropdown(true);
+  };
+
+  // Handle selection from dropdown lists
+  const handleDoctorSelect = (doctor) => {
+    setDoctorInput(doctor.name);
+    setSelectedDoctor(doctor.DoctorID);
+    setShowDoctorDropdown(false);
+  };
+
+  const handlePatientSelect = (patient) => {
+    setPatientInput(patient.FirstName);
+    setSelectedPatient(patient.PatientID);
+    setShowPatientDropdown(false);
+  };
+
+  // Handle form input change
+  const handleChange = (event) => {
+    setFormData({ ...formData, department: event.target.value });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log("Form Data Submitted:", {
+      patient_id: selectedPatient,
+      doctor_id: selectedDoctor,
+      formData,
+    });
+
+    try {
+      const response = await axios.put(
+        `${baseURL}/api/opd/api/opd-register/${pk}/`,
+        {
+          patient_id: selectedPatient,
+          doctor_id: selectedDoctor,
+          department: formData.department,
+        },
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
       console.log("API Response:", response.data);
-      // Add logic to handle the API response, if needed
       navigate("/Patient/OPD");
     } catch (error) {
       console.error("API Error:", error);
       console.log("Error response data:", error.response?.data);
-      // Add logic to handle the API error, if needed
     }
   };
 
-  useEffect(() => {
-    const fetchPatientData = async () => {
-      try {
-        if (patient_id) {
-          const response = await axios.get(
-            `${baseURL}/api/patient/api/patients/${patient_id}/`
-            , {
-              headers: {
-                Authorization: `Token ${token}`,
-              },
-            } );
-          setPatientData(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching patient data:", error);
-        console.log("Error response data:", error.response?.data);
-      }
-    };
-
-    const fetchDoctorData = async () => {
-      try {
-        if (doctor_id) {
-          const response = await axios.get(
-            `${baseURL}/doctor/api/doctors/${doctor_id}/`
-            , {
-              headers: {
-                Authorization: `Token ${token}`,
-              },
-            } );
-          setDoctorData(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching doctor data:", error);
-        console.log("Error response data:", error.response?.data);
-      }
-    };
-
-    fetchPatientData();
-    fetchDoctorData();
-  }, [patient_id, doctor_id]);
-
   return (
-    <div className="">
+    <div>
       <Breadcrumb />
+
       <fieldset>
         <form
           onSubmit={handleSubmit}
-          className="m-0 w-[1110px] bg-theme-white-default overflow-hidden flex flex-col  py-6 pr-[22px] pl-[26px] box-border gap-[30px] mt-5 "
+          className="m-0 w-[1110px] bg-theme-white-default overflow-hidden flex flex-col py-6 pr-[22px] pl-[26px] box-border gap-[30px] mt-5"
         >
-          <div className="backdrop-blur-[5px]  flex   max-w-full items-stretch justify-between gap-5  pr-1 py-1.5   rounded-xl">
-            <input
-              className=" text-gray-500 border-transparent text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 w-[500px] rounded-md items-start max-md:max-w-full max-md:pr-5"
-              type="text"
-              placeholder="Enter patient ID"
-              value={patient_id}
-              onChange={(e) => setPatientId(e.target.value)}
-            />
+          <div className="flex flex-col px-7 mt-6 max-md:px-5 max-md:max-w-full">
+            <div className="flex gap-5 justify-between max-md:flex-wrap max-md:max-w-full">
+              <div className="flex mt-0 mb-5 flex-col flex-1 self-start">
+                <div className="text-slate-600 text-sm font-medium">Select a Patient</div>
+                <input
+                  type="text"
+                  className="flex gap-5 justify-between p-4 mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100"
+                  onChange={handlePatientInputChange}
+                  onFocus={() => setShowPatientDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowPatientDropdown(false), 100)}
+                  value={patientInput}
+                  placeholder="Type or select the patient"
+                />
+                {showPatientDropdown && (
+                  <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[493px] position: absolute text-slate-600 font-medium mt-[86px] rounded-md">
+                    {patientsList
+                      .filter((patient) =>
+                        patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())
+                      )
+                      .map((patient) => (
+                        <div
+                          key={patient.PatientID}
+                          className="p-2 cursor-pointer hover:bg-gray-200"
+                          onMouseDown={() => handlePatientSelect(patient)}
+                        >
+                          {patient.FirstName}
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
+                <div className="text-sm text-slate-600 font-medium max-md:max-w-full">Select a Doctor</div>
+                <input
+                  type="text"
+                  className="flex gap-5 justify-between p-4 mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100"
+                  onChange={handleDoctorInputChange}
+                  onFocus={() => setShowDoctorDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDoctorDropdown(false), 100)}
+                  value={doctorInput}
+                  placeholder="Type or select the doctor"
+                />
+                {showDoctorDropdown && (
+                  <div className="flex flex-col mt-[86px] max-h-48 overflow-y-auto bg-white border border-gray-300 w-[493px] position: absolute text-slate-600 font-medium rounded-md">
+                    {doctorList
+                      .filter((doctor) =>
+                        doctor.name.toLowerCase().includes(doctorInput.toLowerCase())
+                      )
+                      .map((doctor) => (
+                        <div
+                          key={doctor.DoctorID}
+                          className="p-2 cursor-pointer hover:bg-gray-200"
+                          onMouseDown={() => handleDoctorSelect(doctor)}
+                        >
+                          {doctor.name}
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap w-[500px]">
+              <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
+                <div className="text-sm text-slate-600 font-medium max-md:max-w-full">Department</div>
+                <input
+                  className="justify-center items-start py-4 pr-16 pl-4 mt-3 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 max-md:max-w-full"
+                  type="text"
+                  placeholder="Enter department"
+                  value={formData.department}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="backdrop-blur-[5px]  flex   max-w-full items-stretch justify-between gap-5  pr-1 py-1.5  rounded-xl">
-            <input
-              className=" text-gray-500 border-transparent text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 w-[500px] rounded-md items-start max-md:max-w-full max-md:pr-5"
-              type="text"
-              placeholder="Enter doctor ID"
-              value={doctor_id}
-              onChange={(e) => setDoctorId(e.target.value)}
-            />
+          <div className="flex items-stretch justify-between gap-5 mt-8 self-end">
+            <div
+              className="text-blue-700 text-base font-semibold leading-4 items-stretch border grow justify-center px-8 py-4 rounded-lg border-solid border-blue-700 max-md:px-5"
+              onClick={() => navigate("/Patient/OPD")}
+            >
+              Cancel
+            </div>
+            <button
+              className="text-white text-base font-semibold leading-4 items-stretch border border-[color:var(--Theme-Primary-Default,#4C6FFF)] bg-blue-700 grow justify-center px-7 py-4 rounded-lg border-solid max-md:px-5"
+              type="submit"
+            >
+              Submit
+            </button>
           </div>
-
-          <div className="backdrop-blur-[5px]  flex   max-w-full items-stretch justify-between gap-5  pr-1 py-1.5  rounded-xl">
-            <input
-              className=" text-gray-500 border-transparent text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 w-[500px] rounded-md items-start max-md:max-w-full max-md:pr-5"
-              type="text"
-              placeholder="Enter department"
-              value={formData.department}
-              onChange={handleChange}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="bg-blue-700 h-10 w-28 rounded-xl text-white font-semibold text-[15px] pt-1 mt-5"
-          >
-            Submit
-          </button>
         </form>
       </fieldset>
-
-      {/* Display fetched patient and doctor data */}
-      <div>
-        <h2>Patient Data:</h2>
-        <pre>{JSON.stringify(patientData, null, 2)}</pre>
-      </div>
-
-      <div>
-        <h2>Doctor Data:</h2>
-        <pre>{JSON.stringify(doctorData, null, 2)}</pre>
-      </div>
     </div>
   );
 };
 
-export default OPD_edit;
+export default OPD_New;

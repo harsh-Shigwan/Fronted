@@ -22,10 +22,13 @@ import Breadcrumb from "../../components/Breadcrumb";
 const Appointment = () => {
   const appointmentsAPI = `${baseURL}/api/appointment/appointments/`;
   const patientsAPI = `${baseURL}/api/patient/api/patients/`;
+  const DoctorAPI = `${baseURL}/doctor/api/doctors/`;
   const [appointments, setAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
+  const [ doctor , setDoctor]= useState([]);
   const [isError, setIsError] = useState("");
   const token = JSON.parse(localStorage.getItem("Token"));
+
 
   const fetchData = async () => {
     try {
@@ -39,12 +42,20 @@ const Appointment = () => {
           Authorization: `Token ${token}`,
         },
       });
+      const doctorResponse = await axios.get(DoctorAPI, {
+        headers: {
+          Authorization: `Token ${token}`,
+        }
+      })
+      setDoctor(doctorResponse.data);
       setAppointments(appointmentsResponse.data);
       setPatients(patientsResponse.data);
     } catch (error) {
       setIsError(error.toJSON().message);
     }
   };
+  console.log("d",doctor);
+  console.log("p",patients);
 
   async function deleteData(id) {
     const deleteUrl = `${baseURL}/api/appointment/appointments/${id}/`;
@@ -54,7 +65,7 @@ const Appointment = () => {
           Authorization: `Token ${token}`,
         },
       });
-      console.log("Data deleted successfully:", response.data);
+      alert("Data deleted successfully:", response.data);
       // After deletion, you can update the state to remove the deleted row from the UI
       setAppointments((prevData) =>
         prevData.filter((row) => row.id !== id)
@@ -88,12 +99,16 @@ const Appointment = () => {
   const [rowperpage, setRowPerPage] = useState(10);
   const targetRef = useRef();
   const [search, setSearch] = useState("");
-
+  const DoctorMap = doctor.reduce((map, doctor) => {
+    map[doctor.DoctorID]=doctor.name;
+    return map;
+  },{})
   const patientMap = patients.reduce((map, patient) => {
     map[patient.PatientID] = patient.FirstName;
     return map;
   }, {});
-
+console.log("pm",patientMap);
+console.log("dm",DoctorMap );
   return (
     <div>
       <Breadcrumb />
@@ -172,7 +187,7 @@ const Appointment = () => {
                               const dateString = item.date ? String(item.date).toLowerCase() : '';
                               const statusString = item.status ? String(item.status).toLowerCase() : '';
                               const patientName = patientMap[item.patient] ? patientMap[item.patient].toLowerCase() : '';
-                              const doctorString = item.doctor ? String(item.doctor).toLowerCase() : '';
+                              const doctorString = DoctorMap[item.doctor] ? String(item.doctor).toLowerCase() : '';
 
                               return (
                                 tosearch === "" ||
@@ -192,7 +207,7 @@ const Appointment = () => {
                                 <TableCell>{user.time_slot}</TableCell>
                                 <TableCell>{user.status}</TableCell>
                                
-                                <TableCell>{user.doctor}</TableCell>
+                                <TableCell>{DoctorMap[user.doctor]}</TableCell>
                                 <TableCell>
                                  
                                 </TableCell>
