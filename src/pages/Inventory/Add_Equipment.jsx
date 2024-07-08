@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Breadcrumb from '../../components/Breadcrumb';
 import baseURL from '../../assests/API_URL';
 import axios from 'axios';
@@ -106,9 +106,9 @@ const Add_Equipment = () => {
         
       </div>
       <div className="flex gap-5 justify-between self-end mt-14 mr-8 mb-9 text-base font-semibold leading-4 whitespace-nowrap max-md:mt-10 max-md:mr-2.5">
-        <div className="grow justify-center px-8 py-4 text-blue-700 rounded-lg border border-blue-700 border-solid max-md:px-5">
+        <Link to={"/Inventory/Equipment"} className="grow justify-center px-8 py-4 text-blue-700 rounded-lg border border-blue-700 border-solid max-md:px-5">
           Cancel
-        </div>
+        </Link>
         <button className="grow justify-center px-10 py-4 text-white bg-blue-700 rounded-lg border border-solid border-[color:var(--Theme-Primary-Default,#4C6FFF)] max-md:px-5"   type='submit'>
           Add
         </button>

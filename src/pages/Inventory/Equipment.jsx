@@ -218,11 +218,11 @@ const Equipment = () => {
                                 <TableCell>{user.unit_price}</TableCell>
                                 <TableCell>
                                   <div className="w-[190px] relative my-0 mx-[!important] left-[0px] bg-theme-white-default shadow-[0px_-1px_0px_#edf2f7_inset] h-[52px] overflow-hidden shrink-0 z-[22]">
-                                    <img
+                                  <Link to={`/Inventory/Equipment/${user.id}`}>  <img
                                       className="absolute top-[calc(50%_-_12px)] left-[21px] w-6 h-6 overflow-hidden"
                                       alt=""
                                       src={edit}
-                                    />
+                                    /></Link>
                                     <button
                                       className="absolute top-[13px] left-[71px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
                                       onClick={() => deleteData(user.id)}

@@ -18,24 +18,20 @@ const OPD_New = () => {
   const [showPatientDropdown, setShowPatientDropdown] = useState(false);
   const [showDoctorDropdown, setShowDoctorDropdown] = useState(false);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    department: "",
-  });
+  const [formData, setFormData] = useState({ department: "" });
 
   // Fetch existing OPD record details when component mounts or pk changes
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${baseURL}/api/opd/api/opd-register/${pk}/`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
+          headers: { Authorization: `Token ${token}` },
         });
         // Set fetched data into state variables
         setSelectedDoctor(response.data.doctor);
         setSelectedPatient(response.data.patient);
         setFormData({ department: response.data.department });
-        setPatientInput(response.data.patient.FirstName);
+        setPatientInput(response.data.patient.FirstName); // Ensure this is the correct property for patient's name
         setDoctorInput(response.data.doctor.name);
       } catch (error) {
         console.error("Error fetching appointment data:", error);
@@ -49,9 +45,7 @@ const OPD_New = () => {
     const fetchPatients = async () => {
       try {
         const response = await axios.get(`${baseURL}/patient/api/patients/`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
+          headers: { Authorization: `Token ${token}` },
         });
         setPatientsList(response.data);
       } catch (error) {
@@ -62,9 +56,7 @@ const OPD_New = () => {
     const fetchDoctors = async () => {
       try {
         const response = await axios.get(`${baseURL}/doctor/api/doctors/`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
+          headers: { Authorization: `Token ${token}` },
         });
         setDoctorList(response.data);
       } catch (error) {
@@ -125,9 +117,7 @@ const OPD_New = () => {
           department: formData.department,
         },
         {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
+          headers: { Authorization: `Token ${token}` },
         }
       );
       console.log("API Response:", response.data);
@@ -141,7 +131,6 @@ const OPD_New = () => {
   return (
     <div>
       <Breadcrumb />
-
       <fieldset>
         <form
           onSubmit={handleSubmit}

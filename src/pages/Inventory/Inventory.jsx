@@ -227,11 +227,12 @@ const Inventory = () => {
                                       alt=""
                                       src=""
                                     />
+                                    <Link to={`/Inventory/${user.id}`}>
                                     <img
                                       className="absolute top-[calc(50%_-_12px)] left-[21px] w-6 h-6 overflow-hidden"
                                       alt=""
                                       src={edit}
-                                    />
+                                    /></Link>
                                     <button
                                       className="absolute top-[13px] left-[71px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
                                       onClick={() => deleteData(user.id)}

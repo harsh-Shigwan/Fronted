@@ -149,7 +149,7 @@ console.log("dm",DoctorMap );
                     className="absolute top-[11px] left-[765px] rounded-md h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
                     onClick={() =>
                       generatePDF(targetRef, {
-                        filename: "Dishcharged_Patient_List.pdf",
+                        filename: "Appointment list.pdf",
                       })
                     }
                   >
@@ -208,6 +208,7 @@ console.log("dm",DoctorMap );
                                 <TableCell>{user.status}</TableCell>
                                
                                 <TableCell>{DoctorMap[user.doctor]}</TableCell>
+                                
                                 <TableCell>
                                  
                                 </TableCell>

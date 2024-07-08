@@ -1,15 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import baseURL from "../../assests/API_URL";
 
 const MedicineTable = ({ mediTotal, mediData }) => {
+  const [medicineNames, setMedicineNames] = useState({});
+
+  // Fetch medicine names from API
+  useEffect(() => {
+    const fetchMedicineNames = async () => {
+      try {
+        const token = JSON.parse(localStorage.getItem("Token"));
+        const response = await axios.get(`${baseURL}/inventory/api/medicines/`, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+
+        // Create a mapping of medicine IDs to names
+        const namesMap = {};
+        response.data.forEach((medicine) => {
+          namesMap[medicine.id] = medicine.name;
+        });
+
+        setMedicineNames(namesMap);
+      } catch (error) {
+        console.error("Error fetching medicine names:", error);
+      }
+    };
+
+    fetchMedicineNames();
+  }, []);
+
+  // Function to group medicine data and replace IDs with names
   const groupMediData = (data) => {
     const groupedData = data.reduce((acc, curr) => {
-      const existing = acc.find(item => item.medicine === curr.medicine);
+      const medicineName = medicineNames[curr.medicine] || `Medicine ID: ${curr.medicine}`;
+      const existing = acc.find((item) => item.medicine === medicineName);
       if (existing) {
         existing.quantity_used += curr.quantity_used;
         existing.total_price += curr.unit_price * curr.quantity_used;
       } else {
         acc.push({
-          medicine: curr.medicine,
+          medicine: medicineName,
           quantity_used: curr.quantity_used,
           unit_price: curr.unit_price,
           usage_date: curr.usage_date,
@@ -32,7 +64,7 @@ const MedicineTable = ({ mediTotal, mediData }) => {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider"
             >
-              Medicine
+              Medicine Name
             </th>
             <th
               scope="col"
@@ -82,7 +114,7 @@ const MedicineTable = ({ mediTotal, mediData }) => {
           ))}
           <tr>
             <td className="px-6 py-4 border-y-2 border-black" colSpan="4">
-             Medicines Total 
+              Medicines Total
             </td>
             <td className="px-6 py-4 border-y-2 border-black">
               {mediTotal.toFixed(2)}

@@ -66,6 +66,8 @@ import Medi from "./pages/Records/Medicine/Medi";
 import AppointmentID from "./pages/Appointment/AppointmentID";
 import DateChart from "./components/Graph/DateChart";
 import AppointmentSchedule from "./pages/Appointment/Appointment_schedule";
+import Edit_Equipment from "./pages/Inventory/Edit_Equipment";
+import Edit_Medicine from "./pages/Inventory/Edit_Medicine";
 //import Medicine from './pages/Pharmacy/Medicine';
 
 const App = () => {
@@ -80,7 +82,9 @@ const App = () => {
           <Route path="/Appointment" element={<Appointment />}></Route>
           {/*Inventory */}
           <Route path="/Inventory" element={<Inventory />}></Route>
+          <Route path="/Inventory/:pk" element={<Edit_Medicine />}></Route>
           <Route path="/Inventory/Equipment" element={<Equipment />}></Route>
+          <Route path="/Inventory/Equipment/:pk" element={<Edit_Equipment />}></Route>
           <Route
             path="/Inventory/Equipment/Add_Equipment"
             element={<Add_Equipment />}

@@ -10,7 +10,7 @@ const EquipmentTable = ({ groupedEquipments, totalPrice, generateFinalBill }) =>
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider"
             >
-              Equipment ID
+              Equipment Name
             </th>
             <th
               scope="col"
@@ -68,13 +68,7 @@ const EquipmentTable = ({ groupedEquipments, totalPrice, generateFinalBill }) =>
           </tr>
         </tbody>
       </table>
-      <button
-        className="top-[40px] ml-10 rounded-md items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue w-48 mt-3 gap-[6px] leading-[10px] left-[880px] absolute font-medium bg-btn text-white"
-        type="submit"
-        onClick={generateFinalBill}
-      >
-        Generate final Bill
-      </button>
+    
     </div>
   );
 };

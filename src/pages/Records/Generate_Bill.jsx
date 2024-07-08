@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import baseURL from "../../assests/API_URL";
 import EquipmentTable from "../../components/Billing/EquipmentTable";
 import MedicineTable from "../../components/Billing/MedinceTable";
-
+import download from "../../Data/download.png";
+import generatePDF from "react-to-pdf";
 const Generate_Bill = () => {
   const { patientId, totalAmount } = useParams();
   const [patientData, setPatientData] = useState(null);
@@ -15,30 +16,31 @@ const Generate_Bill = () => {
   const token = JSON.parse(localStorage.getItem("Token"));
   const [currentDate, setCurrentDate] = useState(new Date());
   const [mediTotal, setMediTotal] = useState(0);
-  const [ mediData ,setMediData] = useState([])
+  const [mediData, setMediData] = useState([]);
   const [balanceAmount, setBalanceAmount] = useState(null);
-
-
+  const [patientMedicineUsages, setPatientMedicineUsages] = useState([]);
+  const targetRef = useRef();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [dischargeRes, patientRes, admissionRes, equipmentRes, mediRes] = await axios.all([
-          axios.get(`${baseURL}/api/ipd/ipd-DischargeHistory`, {
-            headers: { Authorization: `Token ${token}` },
-          }),
-          axios.get(`${baseURL}/api/patient/api/patients/`, {
-            headers: { Authorization: `Token ${token}` },
-          }),
-          axios.get(`${baseURL}/api/ipd/ipd-registrations/`, {
-            headers: { Authorization: `Token ${token}` },
-          }),
-          axios.get(`${baseURL}/inventory/api/patient-equipment-usage/`, {
-            headers: { Authorization: `Token ${token}` },
-          }),
-          axios.get(`${baseURL}/inventory/api/patient-medicine-usage/`, {
-            headers: { Authorization: `Token ${token}` },
-          }),
-        ]);
+        const [dischargeRes, patientRes, admissionRes, equipmentRes, mediRes] =
+          await axios.all([
+            axios.get(`${baseURL}/api/ipd/ipd-DischargeHistory`, {
+              headers: { Authorization: `Token ${token}` },
+            }),
+            axios.get(`${baseURL}/api/patient/api/patients/`, {
+              headers: { Authorization: `Token ${token}` },
+            }),
+            axios.get(`${baseURL}/api/ipd/ipd-registrations/`, {
+              headers: { Authorization: `Token ${token}` },
+            }),
+            axios.get(`${baseURL}/inventory/api/patient-equipment-usage/`, {
+              headers: { Authorization: `Token ${token}` },
+            }),
+            axios.get(`${baseURL}/inventory/api/patient-medicine-usage/`, {
+              headers: { Authorization: `Token ${token}` },
+            }),
+          ]);
         const patient = patientRes.data.find(
           (p) => p.PatientID === parseInt(patientId)
         );
@@ -59,25 +61,25 @@ const Generate_Bill = () => {
         );
         setTotalPrice(totalPrice);
         setEquip(equipmentsUsedByPatient);
-        
+
         const medicineUsedByPatient = mediRes.data.filter(
-          (item) =>  item.patient === parseInt(patientId)
-        )
+          (item) => item.patient === parseInt(patientId)
+        );
         const mediTotalPrice = medicineUsedByPatient.reduce(
           (acc, curr) => acc + parseFloat(curr.unit_price * curr.quantity_used),
           0
         );
-        const AllMediData = mediRes.data.filter((item) => item.patient === parseInt(patientId));
+        const AllMediData = mediRes.data.filter(
+          (item) => item.patient === parseInt(patientId)
+        );
         setMediTotal(mediTotalPrice);
         setMediData(AllMediData);
-        
-      
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, [ ]);
+  }, []);
 
   useEffect(() => {
     axios
@@ -106,67 +108,150 @@ const Generate_Bill = () => {
     const equipment = equipmentData.find((item) => item.id === equipmentId);
     return equipment ? equipment.name : "";
   };
-
-  const generateFinalBill = async () => {
+  const generateFinalBill = async (event) => {
+    event.preventDefault();
     try {
       const token = JSON.parse(localStorage.getItem("Token"));
-      const newAmount = parseFloat(totalPrice) + parseFloat(mediTotal) + parseFloat(totalAmount);
-  
-      // Fetch the existing billings
-      const response = await axios.get(`${baseURL}/patient/api/patient-billings/`, {
-        headers: {
-          Authorization: `Token ${token}`,
+      const newAmount =
+        parseFloat(totalPrice) +
+        parseFloat(mediTotal) +
+        parseFloat(totalAmount);
+      const createResponse = await axios.post(
+        `${baseURL}/patient/api/patient-billings/`,
+        {
+          InvoiceDetails: newAmount.toFixed(0),
+          PatientID: parseInt(patientId),
         },
-      });
-  
-      const existingBillings = response.data.filter(
-        (billing) => billing.PatientID === parseInt(patientId)
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
       );
-  
-      if (existingBillings.length > 0) {
-        // Update the existing billing with the new amount
-        const updateResponse = await axios.put(
-          `${baseURL}/patient/api/patient-billings/${existingBillings[0].BillingID}/`,
-          {
-            InvoiceDetails: newAmount.toFixed(0),
-            PatientID: parseInt(patientId),
+
+      console.log("Total amount stored successfully:", createResponse.data);
+      alert("Total amount stored successfully");
+      const equipmentUsageResponse = await axios.get(
+        `${baseURL}/inventory/api/patient-equipment-usage/`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
           },
+        }
+      );
+
+      const patientEquipmentUsages = equipmentUsageResponse.data.filter(
+        (usage) => usage.patient === parseInt(patientId)
+      );
+
+      for (const usage of patientEquipmentUsages) {
+        await axios.delete(
+          `${baseURL}/inventory/api/patient-equipment-usage/${usage.id}/`,
           {
             headers: {
               Authorization: `Token ${token}`,
             },
           }
         );
-  
-        console.log("Total amount updated successfully:", updateResponse.data);
-        alert("Total amount updated successfully");
-      } else {
-        // Create a new billing record if none exists
-        const createResponse = await axios.post(
-          `${baseURL}/patient/api/patient-billings/`,
-          {
-            InvoiceDetails: newAmount.toFixed(0),
-            PatientID: parseInt(patientId),
-          },
-          {
-            headers: {
-              Authorization: `Token ${token}`,
-            },
-          }
-        );
-  
-        console.log("Total amount stored successfully:", createResponse.data);
-        alert("Total amount stored successfully");
       }
+
+      console.log("Equipment usage data deleted successfully");
+     
+      const medicineUsageResponse = await axios.get(
+        `${baseURL}/inventory/api/patient-medicine-usage/`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+
+      const patientMedicineUsages = medicineUsageResponse.data.filter(
+        (usage) => usage.patient === parseInt(patientId)
+      );
+      for (const usage of patientMedicineUsages) {
+        await axios.delete(
+          `${baseURL}/inventory/api/patient-medicine-usage/${usage.id}/`,
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+      }
+
+    
+
+      const patientDataResponse = await axios.get(
+        `${baseURL}/patient/api/patients/${patientId}/`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+
+      const { DOB, FirstName, Gender, Register_Date } =
+        patientDataResponse.data;
+
+      const updateResponse = await axios.put(
+        `${baseURL}/patient/api/patients/${patientId}/`,
+        {
+          ...patientDataResponse.data,
+          initial_balance: 0,
+          DOB,
+          FirstName,
+          Gender,
+          Register_Date,
+        },
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+
+      console.log(
+        "Patient's initial balance updated to 0:",
+        updateResponse.data
+      );
+      
     } catch (error) {
       console.error("Error storing or updating total amount:", error);
-      alert("Total amount not stored or updated successfully");
+      console.log("Error response data:", error.response?.data);
+      alert("Error storing or updating !!");
     }
   };
-  
-  const totalSum = parseFloat(totalPrice) + parseFloat(mediTotal) + parseFloat(totalAmount);
-  const balancetotal = parseFloat(totalSum) - parseFloat(balanceAmount);
 
+  useEffect(() => {
+    const fetchMedicineUsage = async () => {
+      try {
+        const medicineUsageResponse = await axios.get(
+          `${baseURL}/inventory/api/patient-medicine-usage/`,
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+
+        const filteredUsages = medicineUsageResponse.data.filter(
+          (usage) => usage.patient === parseInt(patientId)
+        );
+
+        setPatientMedicineUsages(filteredUsages);
+        console.log("patientMedicineUsages", filteredUsages);
+      } catch (error) {
+        console.error("Error fetching medicine usage:", error);
+      }
+    };
+
+    fetchMedicineUsage();
+  }, [patientId, token, baseURL]);
+
+  const totalSum =
+    parseFloat(totalPrice) + parseFloat(mediTotal) + parseFloat(totalAmount);
+  const balancetotal = parseFloat(totalSum) - parseFloat(balanceAmount);
 
   const groupEquipments = (equipments) => {
     const groupedEquipments = {};
@@ -198,201 +283,234 @@ const Generate_Bill = () => {
     (acc, curr) => acc + curr.total_price,
     0
   );
-
+  console.log();
   return (
-    <div className=" ml-28 w-full justify-center ">
+    <div className=" ml-40 w-full justify-center ">
       <div>
-        <div className="flex flex-col items-start max-w-[793px]  ">
-          <div className="flex gap-5 text-sm font-medium tracking-tight text-black max-md:flex-wrap">
+        <div ref={targetRef} className=" mt-10">
+          <div className="flex flex-col items-start max-w-[793px]  ">
+            <div className="flex gap-5 text-sm font-medium tracking-tight text-black max-md:flex-wrap">
+              <img
+                loading="lazy"
+                srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
+                className="shrink-0 aspect-[0.67] w-[66px]"
+              />
+              <div className="flex flex-col grow shrink-0 self-end px-5 mt-5 basis-0 w-fit">
+                <div className="text-base font-bold tracking-wider">
+                  Jeevan Hospital
+                </div>
+                <div className="mt-2">Reg. No. DR86486</div>
+                <div className="mt-2">DP Road, Pune - 411056</div>
+                <div className="mt-2">
+                  Ph : 0208064299, Timings : AVAILABE 24 HOURS & 7 DAYS{" "}
+                </div>
+              </div>
+            </div>
             <img
               loading="lazy"
-              srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/701f1459f8665cbf7b9e5c66bc1a73eb5653f41aa2edeb0fc27459ba1f1d173d?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-              className="shrink-0 aspect-[0.67] w-[66px]"
+              className="w-full  bg-slate-700 border mt-[22px] border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
             />
-            <div className="flex flex-col grow shrink-0 self-end px-5 mt-5 basis-0 w-fit">
-              <div className="text-base font-bold tracking-wider">
-                Jeevan Hospital
-              </div>
-              <div className="mt-2">Reg. No. DR86486</div>
-              <div className="mt-2">DP Road, Pune - 411056</div>
-              <div className="mt-2">
-                Ph : 0208064299, Timings : AVAILABE 24 HOURS & 7 DAYS{" "}
-              </div>
-            </div>
-          </div>
-          <img
-            loading="lazy"
-            className="w-full  bg-slate-700 border mt-[22px] border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
-          />
 
-          <div className="self-stretch mt-[20px] w-full max-md:max-w-full">
-            <div className="flex gap-5 max-md:flex-col max-md:gap-0">
-              {patientData && (
-                <div className="flex flex-col w-[42%] max-md:ml-0 max-md:w-full">
-                  <div className="flex flex-col grow px-5 text-sm font-medium text-black max-md:mt-2.5">
-                    <div className="flex gap-2.5">
-                      <div>Patient </div>
-                      <div>UID:</div>
-                      <div className="flex-auto">{patientData.PatientID}</div>
-                    </div>
-                    <div className="flex gap-1.5 mt-2.5">
-                      <div>Name:</div>
-                      <div className="flex-auto uppercase">
-                        {patientData.FirstName}
+            <div className="self-stretch mt-[20px] w-full max-md:max-w-full">
+              <div className="flex gap-5 max-md:flex-col max-md:gap-0">
+                {patientData && (
+                  <div className="flex flex-col w-[42%] max-md:ml-0 max-md:w-full">
+                    <div className="flex flex-col grow px-5 text-sm font-medium text-black max-md:mt-2.5">
+                      <div className="flex gap-2.5">
+                        <div>Patient </div>
+                        <div>UID:</div>
+                        <div className="flex-auto">{patientData.PatientID}</div>
                       </div>
-                      <div className="flex-auto"> ({patientData.Gender})</div>
-                    </div>
-                    <div className="flex gap-1 mt-2.5">
-                      <div>DOB:</div>
-                      <div className="flex-auto">{patientData.DOB}</div>
-                    </div>
-                    <div className="flex gap-1 mt-2">
-                      <div>Address:</div>
-                      <div>{patientData.city}</div>
-                    </div>
-                    <div className=" flex mt-2  mr-[145px] whitespace-nowrap">
-                      <div className="grow uppercase">Pin code :</div>
-                      {patientData.PinCode}
-                    </div>
+                      <div className="flex gap-1.5 mt-2.5">
+                        <div>Name:</div>
+                        <div className="flex-auto uppercase">
+                          {patientData.FirstName}
+                        </div>
+                        <div className="flex-auto"> ({patientData.Gender})</div>
+                      </div>
+                      <div className="flex gap-1 mt-2.5">
+                        <div>DOB:</div>
+                        <div className="flex-auto">{patientData.DOB}</div>
+                      </div>
+                      <div className="flex gap-1 mt-2">
+                        <div>Address:</div>
+                        <div>{patientData.city}</div>
+                      </div>
+                      <div className=" flex mt-2  mr-[145px] whitespace-nowrap">
+                        <div className="grow uppercase">Pin code :</div>
+                        {patientData.PinCode}
+                      </div>
 
-                    <div className=" flex mt-2 mwhitespace-nowrap">
-                      <div className="grow uppercase">Contact:</div>
-                      <div className=" mr-32">
-                      {patientData.phone}
+                      <div className=" flex mt-2 mwhitespace-nowrap">
+                        <div className="grow uppercase">Contact:</div>
+                        <div className=" mr-32">{patientData.phone}</div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
-              {admissionID.length > 0 && (
-                <div className="flex flex-col ml-5 w-[58%] max-md:ml-0 max-md:w-full">
-                  <div className="flex flex-col text-sm font-medium text-black max-md:mt-3 max-md:max-w-full">
-                    <div className="flex flex-col items-start self-end max-w-full w-[321px]">
-                      <div className="flex gap-2 ml-4 whitespace-nowrap max-md:ml-2.5">
-                        <div>Date:</div>
-                        <div className="flex-auto tracking-tighter">
-                          {currentDate.toLocaleDateString()}
+                )}
+                {admissionID.length > 0 && (
+                  <div className="flex flex-col ml-5 w-[58%] max-md:ml-0 max-md:w-full">
+                    <div className="flex flex-col text-sm font-medium text-black max-md:mt-3 max-md:max-w-full">
+                      <div className="flex flex-col items-start self-end max-w-full w-[321px]">
+                        <div className="flex gap-2 ml-4 whitespace-nowrap max-md:ml-2.5">
+                          <div>Date:</div>
+                          <div className="flex-auto tracking-tighter">
+                            {currentDate.toLocaleDateString()}
+                          </div>
+                        </div>
+                        <div className="flex gap-5 self-stretch px-4 mt-2.5">
+                          <div className="grow">
+                            Admission No : {admissionID[0].admission_id}
+                          </div>
+                        </div>
+                        <div className="flex gap-1.5 mt-2.5 ml-4 max-md:ml-2.5">
+                          <div className="grow">Admission Date:</div>
+                          <div className="tracking-tighter">
+                            {admissionID[0].admission_date}
+                          </div>
                         </div>
                       </div>
-                      <div className="flex gap-5 self-stretch px-4 mt-2.5">
-                        <div className="grow">
-                          Admission No : {admissionID[0].admission_id}
+                      <div className="flex gap-5 px-5 mt-2 max-md:flex-wrap">
+                        <div className="flex flex-auto gap-1">
+                          <div className=" ml-[100px] grow tracking-normal ">
+                            {" "}
+                            Discharge Date:
+                          </div>
+                          <div className="mr-[100px] ">
+                            {admissionID[0].discharge_date}
+                          </div>
                         </div>
                       </div>
-                      <div className="flex gap-1.5 mt-2.5 ml-4 max-md:ml-2.5">
-                        <div className="grow">Admission Date:</div>
-                        <div className="tracking-tighter">
-                          {admissionID[0].admission_date}
+                      <div className="flex gap-1.5 self-center px-5 mt-2 tracking-normal">
+                        <div className="grow mr-[60px]">
+                          Bed No. : {admissionID[0].bed}
                         </div>
+                        <div className="">Ward : {admissionID[0].ward} </div>
                       </div>
-                    </div>
-                    <div className="flex gap-5 px-5 mt-2 max-md:flex-wrap">
-                      <div className="flex flex-auto gap-1">
-                        <div className=" ml-[100px] grow tracking-normal ">
-                          {" "}
-                          Discharge Date:
-                        </div>
-                        <div className="mr-[100px] ">
-                          {admissionID[0].discharge_date}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-1.5 self-center px-5 mt-2 tracking-normal">
-                      <div className="grow mr-[60px]">
-                        Bed No. : {admissionID[0].bed}
-                      </div>
-                      <div className="">Ward : {admissionID[0].ward} </div>
                     </div>
                   </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex gap-1 px-5 mt-3 text-sm font-medium text-black whitespace-nowrap">
+              <div className="grow">Address:</div>
+              <div>Pune,</div>
+              <div className="flex gap-0.5">
+                <div className="grow uppercase">Pune,-</div>
+                <div>411051,</div>
+              </div>
+            </div>
+            <div className="flex gap-2.5 px-5 mt-2.5 text-sm font-medium text-black">
+              <div className="grow tracking-wide">Consulting Doctors:</div>
+              <div className="flex-auto tracking-normal">
+                Dr. Akshara Raje (General Physician)
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col pb-1.5 text-sm font-medium text-black max-w-[793px]">
+            <img
+              loading="lazy"
+              className="w-full border mt-[22px] border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
+            />
+            <div className="self-center mt-6 text-base font-bold tracking-wider">
+              PROVISIONAL BILL
+            </div>
+            <img
+              loading="lazy"
+              className="mt-2 w-full border border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
+            />
+            <div className="flex gap-5 justify-between mt-1 w-full max-md:flex-wrap max-md:max-w-full ml-7">
+              <div className="flex gap-5">
+                <div className="flex-auto tracking-wider">Primary Code</div>
+                <div className="tracking-wide ml-4">Particulars</div>
+              </div>
+              <div className="tracking-wide mr-16">Amount</div>
+            </div>
+            <img
+              loading="lazy"
+              className="w-full border mt-[10px] border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
+            />
+            <div className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
+              <div className="flex gap-5 justify-between">
+                <div className="flex flex-col self-start tracking-tight whitespace-nowrap ml-7">
+                  <div>100000</div>
+                  <div className="mt-2.5">300000</div>
+                  <div className="mt-2.5">500000</div>
                 </div>
-              )}
+                <div className="flex flex-col ml-16">
+                  <div className="tracking-tight">Rooms & Nursing Charges</div>
+                  <div className="mt-2 flex-auto ">Equipment Charges</div>
+                  <div className="mt-1.5 tracking-normal">Medicines</div>
+                </div>
+              </div>
+              <div className="flex flex-col self-start tracking-tight whitespace-nowrap mr-12">
+                <div className="tracking-tight">{totalAmount}</div>
+                <div className="mt-2.5">{totalPrice}</div>
+                <div className="mt-2.5">{mediTotal}</div>
+              </div>
+            </div>
+            <img
+              loading="lazy"
+              className="mt-2 w-full border border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
+            />
+            <div className="flex flex-col self-end px-2 mt-5 mr-12">
+              <div className="self-end mt-2.5">
+                Total Bill Amount : {totalSum}
+              </div>
+              <div className="self-end mt-2.5">
+                Deposit Amount : {balanceAmount}
+              </div>
+              <div className="mt-2.5 mb-2.5 font-bold">
+                Final Paid amount : {balancetotal}
+              </div>
             </div>
           </div>
 
-          <div className="flex gap-1 px-5 mt-3 text-sm font-medium text-black whitespace-nowrap">
-            <div className="grow">Address:</div>
-            <div>Pune,</div>
-            <div className="flex gap-0.5">
-              <div className="grow uppercase">Pune,-</div>
-              <div>411051,</div>
+          <div className="flex flex-col px-5 max-w-[793px] ">
+            <img
+              loading="lazy"
+              className="w-full border border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
+            />
+            <div className="self-center mt-5 text-base font-bold tracking-wider text-black uppercase">
+              Detailed Breakup
             </div>
           </div>
-          <div className="flex gap-2.5 px-5 mt-2.5 text-sm font-medium text-black">
-            <div className="grow tracking-wide">Consulting Doctors:</div>
-            <div className="flex-auto tracking-normal">
-              Dr. Akshara Raje (General Physician)
-            </div>
-          </div>
+          <EquipmentTable
+            groupedEquipments={groupedEquipments}
+            totalPrice={totalPrice}
+            generateFinalBill={generateFinalBill}
+          />
+          <MedicineTable
+            mediData={mediData}
+            mediTotal={mediTotal}
+          ></MedicineTable>
         </div>
-        <div className="flex flex-col pb-1.5 text-sm font-medium text-black max-w-[793px]">
-          <img
-            loading="lazy"
-            className="w-full border mt-[22px] border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
-          />
-          <div className="self-center mt-6 text-base font-bold tracking-wider">
-            PROVISIONAL BILL
-          </div>
-          <img
-            loading="lazy"
-            className="mt-2 w-full border border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
-          />
-          <div className="flex gap-5 justify-between mt-1 w-full max-md:flex-wrap max-md:max-w-full">
-            <div className="flex gap-5">
-              <div className="flex-auto tracking-wider">Primary Code</div>
-              <div className="tracking-wide">Particulars</div>
+        <div className="  ml-40">
+          <button
+            className="top-[23px] ml-10 rounded-md items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue w-48 mt-3 gap-[6px] leading-[10px] left-[940px] absolute font-medium bg-btn h-10 text-white"
+            type="submit"
+            onClick={generateFinalBill}
+          >
+            Generate final Bill
+          </button>
+          <button
+            className="absolute top-[35px] left-[805px] rounded-md  h-10 bg-theme-white-default box-border w-[156px] flex flex-col items-start justify-start py-2.5 px-5 text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark"
+            onClick={() =>
+              generatePDF(targetRef, {
+                filename: "Final Bill.pdf",
+              })
+            }
+          >
+            <div className="w-24 pb-20 mx-[!important] absolute top-[calc(50%_-_12px)] left-[calc(50%_-_48px)] flex flex-row items-center justify-start gap-[8px] ">
+              <img
+                className="w-4 relative h-4 overflow-hidden shrink-0"
+                alt=""
+                src={download}
+              />
+              <div className="relative ">Download </div>
             </div>
-            <div className="tracking-wide">Amount</div>
-          </div>
-          <img
-            loading="lazy"
-            className="w-full border mt-[10px] border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
-          />
-          <div className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
-            <div className="flex gap-5 justify-between">
-              <div className="flex flex-col self-start tracking-tight whitespace-nowrap">
-                <div>100000</div>
-                <div className="mt-2.5">300000</div>
-                <div className="mt-2.5">500000</div>
-              </div>
-              <div className="flex flex-col">
-                <div className="tracking-tight">Rooms & Nursing Charges</div>
-                <div className="mt-2 flex-auto ">Equipment Charges</div>
-                <div className="mt-1.5 tracking-normal">Medicines</div>
-              </div>
-            </div>
-            <div className="flex flex-col self-start tracking-tight whitespace-nowrap">
-              <div className="tracking-tight">
-               {totalAmount}
-               
-              </div>
-              <div className="mt-2.5">
-               {totalPrice}
-              </div>
-              <div className="mt-2.5">{mediTotal}</div>
-            </div>
-          </div>
-          <img
-            loading="lazy"
-            className="mt-2 w-full border border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
-          />
-          <div className="flex flex-col self-end px-2 mt-5">
-            <div className="self-end mt-2.5">Total Bill Amount: {totalSum}</div>
-            <div className="self-end mt-2.5">Amount Paid:  {balanceAmount}</div>
-            <div className="mt-2.5 mb-2.5">Paid amount in words: {balancetotal}</div>
-          </div>
-        </div>
-
-        <div className="flex flex-col px-5 max-w-[793px] ">
-          <img
-            loading="lazy"
-            className="w-full border border-black border-solid stroke-[1px] stroke-black max-md:max-w-full"
-          />
-          <div className="self-center mt-5 text-base font-bold tracking-wider text-black uppercase">
-            Detailed Breakup
-          </div>
-         
-         <EquipmentTable  groupedEquipments={groupedEquipments} totalPrice={totalPrice} generateFinalBill={generateFinalBill}/>
-         <MedicineTable mediData={mediData} mediTotal={mediTotal}></MedicineTable>
+          </button>
         </div>
       </div>
     </div>
