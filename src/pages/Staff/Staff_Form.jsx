@@ -19,7 +19,7 @@ return(
  <div className="self-stretch relative h-[60px] overflow-hidden shrink-0 bg-theme-white-default bottom-3  rounded-lg mt-12">
  <div className="absolute w-full top-[60px] right-[0px] left-[0px] bg-gray-200 box-border h-0 border-t-[1px] border-solid border-border-light" />
  <div className="absolute top-[18px] left-[22px] text-[20px] text-slate-600 leading-[24px] font-medium">
-   Attendace
+ Attendance
  </div>
 
 

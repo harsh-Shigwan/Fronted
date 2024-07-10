@@ -1,6 +1,6 @@
 import react  from 'react';
 import { useNavigate } from 'react-router-dom';
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 import { useState } from 'react';
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -220,7 +220,7 @@ export default function Add_Doctor() {
                     Working details
                   </div>
                   <div >
-                    <input className="justify-between  border-transparent  w-[500px] items-stretch bg-slate-100 flex gap-5 mt-2 px-3.5 py-4 rounded-md max-md:max-w-full max-md:flex-wrap" type='text' name='working_details'  value={formData.working_details}
+                    <input className="justify-between  border-transparent  w-[500px] items-stretch text-slate-600 text-sm font-medium bg-slate-100 flex gap-5 mt-2 px-3.5 py-4 rounded-md max-md:max-w-full max-md:flex-wrap" type='text' name='working_details'  value={formData.working_details}
                 onChange={handleChange}
                 fullWidth   placeholder='Enter other working places'>
                    
@@ -336,10 +336,10 @@ export default function Add_Doctor() {
         )}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
           <Button
-            color="inherit"
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            sx={{ mr: 1 }}
+          variant="outlined" size="medium"
+          disabled={activeStep === 0}
+          onClick={handleBack}
+          sx={{ mr: 1 }}
           >
             Back
           </Button>

@@ -7,7 +7,7 @@ import sourceData from "../../Data/sourceData.json";
 import Bars from "../../components/Charts/Bars";
 import month from "../../Data/month.json";
 import DoctorCard from "../../components/DoctorCard";
-import baseURL from "../../assests/API_URL";
+import baseURL from "../../assets/API_URL";
 import DateChart from "../../components/Graph/DateChart";
 
 const Home = () => {

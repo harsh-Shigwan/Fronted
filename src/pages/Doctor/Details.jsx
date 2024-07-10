@@ -5,7 +5,7 @@ import download from "../../Data/download.png";
 import search from "../../Data/search.png";
 import edit from "../../Data/edit.png";
 import generatePDF from "react-to-pdf";
-import baseURL from "../../assests/API_URL";
+import baseURL from "../../assets/API_URL";
 import {
   Table,
   TableHead,

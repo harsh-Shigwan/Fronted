@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import { useNavigate , useParams } from 'react-router-dom';
+import { Link, useNavigate , useParams } from 'react-router-dom';
 import axios from 'axios';
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 import Breadcrumb from '../../components/Breadcrumb';
 import { colors } from '@mui/material';
 const IPD_Form = () => {
@@ -318,9 +318,9 @@ return(
           </div>
         </div>
         <div className="flex items-stretch justify-between gap-5 mt-32 self-end">
-          <div className="text-blue-700 text-base font-semibold leading-4 items-stretch border grow justify-center px-8 py-4 rounded-lg border-solid border-blue-700 max-md:px-5">
+          <Link to={"/Patient/IPD"} className="text-blue-700 text-base font-semibold leading-4 items-stretch border grow justify-center px-8 py-4 rounded-lg border-solid border-blue-700 max-md:px-5">
             Cancel
-          </div>
+          </Link>
           <button
             className="text-white text-base font-semibold leading-4 items-stretch border border-[color:var(--Theme-Primary-Default,#4C6FFF)] bg-blue-700 grow justify-center px-7 py-4 rounded-lg border-solid max-md:px-5"
             type="submit"
@@ -340,49 +340,3 @@ return(
 }
 
 export default IPD_Form
-
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-
-// const IPD_Form = () => {
-  // const [patients, setPatients] = useState([]);
-  // const [searchQuery, setSearchQuery] = useState('');
-
-  // useEffect(() => {
-  //   const fetchPatients = async () => {
-  //     try {
-  //       const response = await axios.get(`http://127.0.0.1:8000/api/patient/api/patients/?search=${searchQuery}`);
-  //       setPatients(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching patients:', error);
-  //     }
-  //   };
-
-  //   fetchPatients();
-  // }, [searchQuery]);
-
-  // const handleSearchChange = (event) => {
-  //   setSearchQuery(event.target.value);
-  // };
-
-//   return (
-//     <div>
-//       <h1>Patient List</h1>
-//       <input
-//         type="text"
-//         placeholder="Search by name or ID"
-//         value={searchQuery}
-//         onChange={handleSearchChange}
-//       />
-//       <ul>
-//         {patients.map((patient) => (
-//           <li key={patient.PatientID}>
-//             {patient.fullname} - ID: {patient.PatientID}
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
-
-// export default IPD_Form;

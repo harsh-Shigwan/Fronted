@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -365,15 +365,15 @@ const EditPatient = () => {
         )}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
           <Button
-            color="inherit"
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            sx={{ mr: 1 }}
+          variant="outlined" size="medium"
+          disabled={activeStep === 0}
+          onClick={handleBack}
+          sx={{ mr: 1 }}
           >
             Back
           </Button>
           <Button variant="contained" onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}>
-            {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
+            {activeStep === steps.length - 1 ? 'Update' : 'Next'}
           </Button>
         </Box>
       </form>

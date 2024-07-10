@@ -6,6 +6,7 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import download from "../../../Data/download.png";
 import search from "../../../Data/search.png";
 import generatePDF from "react-to-pdf";
+import baseURL from "../../../assets/API_URL";
 const TotalWard = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -24,7 +25,7 @@ const TotalWard = () => {
     event.preventDefault();
     console.log("Form Data Submitted:", formData);
     axios
-      .post("http://127.0.0.1:8000/ipd/wards/", formData, {
+      .post(`${baseURL}/ipd/wards/`, formData, {
         headers: {
           Authorization: `Token ${token}`,
         },
@@ -61,7 +62,7 @@ const TotalWard = () => {
           <div className="flex flex-col px-7 mt-6 max-md:px-5 max-md:max-w-full">
             <div className="flex gap-5 justify-between max-md:flex-wrap max-md:max-w-full">
               <div className="flex mt-1 flex-col flex-1 self-start">
-                <div className=" text-slate-400 text-sm font-medium">
+                <div className=" text-sm text-slate-600 font-medium">
                   {" "}
                   Ward Name
                 </div>

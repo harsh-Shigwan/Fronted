@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import baseURL from "../../assests/API_URL";
+import baseURL from "../../assets/API_URL";
 const EditIPD = () => {
   const { pk } = useParams();
   const navigate = useNavigate();
@@ -274,15 +274,15 @@ const EditIPD = () => {
               </div>
             </div>
             <div className="flex items-stretch justify-between gap-5 mt-8 self-end">
-              <div className="text-blue-700 text-base font-semibold leading-4 items-stretch border grow justify-center px-8 py-4 rounded-lg border-solid border-blue-700 max-md:px-5">
+              <Link to={"/Patient/IPD"} className="text-blue-700 text-base font-semibold leading-4 items-stretch border grow justify-center px-8 py-4 rounded-lg border-solid border-blue-700 max-md:px-5">
                 Cancel
-              </div>
+              </Link>
               <button
                 className="text-white text-base font-semibold leading-4 items-stretch border border-[color:var(--Theme-Primary-Default,#4C6FFF)] bg-blue-700 grow justify-center px-7 py-4 rounded-lg border-solid max-md:px-5"
                 type="submit"
                 onClick={handleSubmit}
               >
-                Submit
+                Update
               </button>
             </div>
           </div>

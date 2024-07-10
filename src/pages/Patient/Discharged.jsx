@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import baseURL from "../../assests/API_URL";
+import baseURL from "../../assets/API_URL";
 
 const Discharged = () => {
   let { admission_id } = useParams();

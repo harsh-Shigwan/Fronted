@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 const Add_Staff = () => {
   const token =  JSON.parse(localStorage.getItem("Token"))
   const [formData, setFormData] = useState({

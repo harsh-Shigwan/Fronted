@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import Breadcrumb from '../../components/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; 
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 const steps = ['Step 1', 'Step 2', 'Step 3'];
 
 export default function Add_Medicines() {

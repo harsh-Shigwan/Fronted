@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Breadcrumb from '../../components/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 import axios from 'axios'; 
 const steps = ['Basic Details', 'Emgergency Datails', 'Insurance Details'];
 const token = JSON.parse(localStorage.getItem("Token"));

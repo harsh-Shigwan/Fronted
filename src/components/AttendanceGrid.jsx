@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import baseURL from '../assests/API_URL';
+import baseURL from '../assets/API_URL';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const AttendanceGrid = () => {

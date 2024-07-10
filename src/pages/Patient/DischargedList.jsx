@@ -7,6 +7,7 @@ import edit from "../../Data/edit.png";
 import generatePDF from 'react-to-pdf';
 import Breadcrumb from "../../components/Breadcrumb";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import baseURL from "../../assets/API_URL";
 import {
   Table,
   TableHead,
@@ -21,7 +22,7 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import baseURL from "../../assests/API_URL";
+
 
 const DischargedList = () => {
   const token = JSON.parse(localStorage.getItem("Token"));

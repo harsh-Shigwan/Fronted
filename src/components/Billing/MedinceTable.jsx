@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import baseURL from "../../assests/API_URL";
+import baseURL from "../../assets/API_URL";
 
 const MedicineTable = ({ mediTotal, mediData }) => {
   const [medicineNames, setMedicineNames] = useState({});

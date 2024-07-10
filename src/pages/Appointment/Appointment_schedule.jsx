@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Breadcrumb from '../../components/Breadcrumb';
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 import CustomDropdown from '../../components/CustomDropdown';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const AppointmentSchedule = () => {
   const { pk } = useParams();
@@ -157,7 +157,8 @@ const AppointmentSchedule = () => {
                   <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[500px] position: absolute text-slate-600 mt-[86px] rounded-md">
                     {patientsList
                       .filter((patient) =>
-                        patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())
+                        patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())||
+                      patient.PatientID.toString().toLowerCase().includes(patientInput.toLowerCase())
                       )
                       .map((patient) => (
                         <div
@@ -165,7 +166,7 @@ const AppointmentSchedule = () => {
                           className="p-2 cursor-pointer hover:bg-gray-200"
                           onClick={() => handlePatientSelect(patient)}
                         >
-                          {patient.FirstName}
+                        {patient.PatientID} {patient.FirstName}
                         </div>
                       ))}
                   </div>
@@ -239,7 +240,7 @@ const AppointmentSchedule = () => {
             </div>
           </div>
           <div className="flex gap-5 justify-between self-end mt-14 mr-8 mb-9 text-base font-semibold leading-4 whitespace-nowrap max-md:mt-10 max-md:mr-2.5">
-            <div className="grow justify-center px-8 py-4 text-blue-700 rounded-lg border border-blue-700 border-solid max-md:px-5">Cancel</div>
+            <Link to="/Appointment" className="grow justify-center px-8 py-4 text-blue-700 rounded-lg border border-blue-700 border-solid max-md:px-5">Cancel</Link>
             <button className="grow justify-center px-10 py-4 text-white bg-blue-700 rounded-lg border border-solid border-[color:var(--Theme-Primary-Default,#4C6FFF)] max-md:px-5" type="submit">
               Update
             </button>

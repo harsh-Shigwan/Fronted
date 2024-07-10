@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import baseURL from "../assests/API_URL";
+import baseURL from "../assets/API_URL";
 const token = JSON.parse(localStorage.getItem("Token"));
 
 const Logout = () => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 const IPD_View = () => {
     const [ myData , setMyData]=useState([]);
     const token =  JSON.parse(localStorage.getItem("Token"))

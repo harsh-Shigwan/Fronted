@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import baseURL from '../../../assests/API_URL';
+import baseURL from '../../../assets/API_URL';
 
 const MediDetails = ({ addItem , patientId }) => {
   const [itemName, setItemName] = useState('');

@@ -16,7 +16,7 @@ import {
   TablePagination,
   Button,
 } from "@mui/material";
-import baseURL from "../../assests/API_URL";
+import baseURL from "../../assets/API_URL";
 import { Link, useNavigate } from "react-router-dom";
 import Breadcrumb from "../../components/Breadcrumb";
 import generatePDF from "react-to-pdf";

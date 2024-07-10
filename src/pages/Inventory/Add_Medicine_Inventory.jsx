@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 import axios from 'axios';
 import Breadcrumb from '../../components/Breadcrumb';
 const Add_Medicine_Inventory = () => {

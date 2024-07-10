@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import baseURL from "../../assests/API_URL";
+import baseURL from "../../assets/API_URL";
 import EquipmentTable from "../../components/Billing/EquipmentTable";
 import MedicineTable from "../../components/Billing/MedinceTable";
 import download from "../../Data/download.png";

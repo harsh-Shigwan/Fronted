@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
-import baseURL from "../../assests/API_URL";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import baseURL from "../../assets/API_URL";
 
-const OPD_New = () => {
-  const { pk } = useParams(); // Get the primary key from the URL params
-  const token = JSON.parse(localStorage.getItem("Token")); // Retrieve token from local storage
-
-  // State variables
+const OPD_edit = () => {
+  const { pk } = useParams(); 
+  const token = JSON.parse(localStorage.getItem("Token"));
   const [patientsList, setPatientsList] = useState([]);
   const [doctorList, setDoctorList] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState("");
@@ -20,19 +18,19 @@ const OPD_New = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ department: "" });
 
-  // Fetch existing OPD record details when component mounts or pk changes
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${baseURL}/api/opd/api/opd-register/${pk}/`, {
           headers: { Authorization: `Token ${token}` },
         });
-        // Set fetched data into state variables
+        
         setSelectedDoctor(response.data.doctor);
         setSelectedPatient(response.data.patient);
         setFormData({ department: response.data.department });
-        setPatientInput(response.data.patient.FirstName); // Ensure this is the correct property for patient's name
-        setDoctorInput(response.data.doctor.name);
+        setPatientInput(response.data.patient.FirstName); 
+        setDoctorInput(response.data.doctor.name); 
       } catch (error) {
         console.error("Error fetching appointment data:", error);
       }
@@ -40,7 +38,7 @@ const OPD_New = () => {
     fetchData();
   }, [pk, token]);
 
-  // Fetch all patients and doctors when component mounts
+ 
   useEffect(() => {
     const fetchPatients = async () => {
       try {
@@ -68,7 +66,7 @@ const OPD_New = () => {
     fetchDoctors();
   }, [token]);
 
-  // Handle input changes for doctor and patient fields
+  
   const handleDoctorInputChange = (e) => {
     setDoctorInput(e.target.value);
     setSelectedDoctor("");
@@ -81,7 +79,7 @@ const OPD_New = () => {
     setShowPatientDropdown(true);
   };
 
-  // Handle selection from dropdown lists
+  
   const handleDoctorSelect = (doctor) => {
     setDoctorInput(doctor.name);
     setSelectedDoctor(doctor.DoctorID);
@@ -94,7 +92,7 @@ const OPD_New = () => {
     setShowPatientDropdown(false);
   };
 
-  // Handle form input change
+  
   const handleChange = (event) => {
     setFormData({ ...formData, department: event.target.value });
   };
@@ -153,7 +151,8 @@ const OPD_New = () => {
                   <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[493px] position: absolute text-slate-600 font-medium mt-[86px] rounded-md">
                     {patientsList
                       .filter((patient) =>
-                        patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())
+                        patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())||
+                      patient.PatientID.toString().toLowerCase().includes(patientInput.toLowerCase())
                       )
                       .map((patient) => (
                         <div
@@ -161,7 +160,7 @@ const OPD_New = () => {
                           className="p-2 cursor-pointer hover:bg-gray-200"
                           onMouseDown={() => handlePatientSelect(patient)}
                         >
-                          {patient.FirstName}
+                        {patient.PatientID} {patient.FirstName}
                         </div>
                       ))}
                   </div>
@@ -213,12 +212,12 @@ const OPD_New = () => {
           </div>
 
           <div className="flex items-stretch justify-between gap-5 mt-8 self-end">
-            <div
+            <Link to={"/Patient/OPD"}
               className="text-blue-700 text-base font-semibold leading-4 items-stretch border grow justify-center px-8 py-4 rounded-lg border-solid border-blue-700 max-md:px-5"
-              onClick={() => navigate("/Patient/OPD")}
+            
             >
               Cancel
-            </div>
+            </Link>
             <button
               className="text-white text-base font-semibold leading-4 items-stretch border border-[color:var(--Theme-Primary-Default,#4C6FFF)] bg-blue-700 grow justify-center px-7 py-4 rounded-lg border-solid max-md:px-5"
               type="submit"
@@ -232,4 +231,4 @@ const OPD_New = () => {
   );
 };
 
-export default OPD_New;
+export default OPD_edit;

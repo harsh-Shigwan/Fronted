@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import Plus from "../../Data/Plus.png";
-import baseURL from "../../assests/API_URL";
+//import baseURL from "../../assests/API_URL";
 import { useNavigate } from "react-router-dom";
 
 const Staff_Mangement = () => {
@@ -28,7 +28,7 @@ const handle = () => {
           alt=""
           src={Plus}
         />
-        <div className="relative font-semibold">Attendace</div>
+        <div className="relative font-semibold">Attendance</div>
       </div>
     </button>
  

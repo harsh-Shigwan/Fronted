@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import baseURL from "../assests/API_URL";
-import logo from "../Data/logo.png"
+import baseURL from "../assets/API_URL";
+import logo from "../Data/logo.png";
+
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -13,54 +14,58 @@ const Login = () => {
     email: "",
   });
   const [error, setError] = useState("");
-  const [ errorMessage , setErrorMessage] = useState("");
-  const [ isSubmit , setIsSubmit] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({});
+  const [isSubmit, setIsSubmit] = useState(false);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
- const validate =(val)=>{
-   const error = {};
-   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-  if (!formData.hospital) {
-    error.hospital = "Hospital name is required*";
-  }
-  if (!formData.username) {
-    error.username = "Username is required*";
-  }
-  if (!formData.email) {
-    error.email = "Email is required*";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(formData.email)) {
-    error.email = "Invalid email address";
-  }
-  if (!formData.password) {
-    error.password = "Password is required*";
-  } else if (formData.password.length < 8) {
-    error.password = "Password must be at least 8 characters long";
-  }
-    return error;
-  
- };  
- useEffect(()=>{
-if (Object.keys(error).length === 0 && isSubmit){
-}
- },[formData])
+
+  const validate = () => {
+    const errors = {};
+    if (!formData.hospital) {
+      errors.hospital = "Hospital name is required*";
+    }
+    if (!formData.username) {
+      errors.username = "Username is required*";
+    }
+    if (!formData.email) {
+      errors.email = "Email is required*";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(formData.email)) {
+      errors.email = "Invalid email address";
+    }
+    if (!formData.password) {
+      errors.password = "Password is required*";
+    } else if (formData.password.length < 8) {
+      errors.password = "Password must be at least 8 characters long";
+    }
+    setErrorMessage(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(validate(formData));
     setIsSubmit(true);
+
+    if (!validate()) {
+      return;
+    }
+
     try {
       const response = await axios.post(
         `${baseURL}/api/hos_loginlogin/`,
         formData
       );
-      const token = response.data.token; 
+      const token = response.data.token;
       localStorage.setItem("Token", JSON.stringify(token));
       navigate("/home");
- 
     } catch (error) {
-      setError(error.response.data.message || "Login failed");
+      if (error.response && error.response.status === 401) {
+        setError("Wrong password. Please try again.");
+      } else {
+        setError(error.response?.data.message || "Wrong username or password");
+      }
       console.log("Error response data:", error.response?.data);
-      alert("Login failed")
     }
   };
 
@@ -84,12 +89,9 @@ if (Object.keys(error).length === 0 && isSubmit){
             Lets see what we have new, check it out! So maybe write here
             something more.
           </div>
-
-       
         </div>
         <div className="flex flex-col flex-1 justify-center my-auto whitespace-nowrap rounded-2xl bg-slate-50 text-zinc-800 max-md:max-w-full">
           <div className="flex flex-col h-[1000px] p-5 max-md:px-5 max-md:max-w-full">
-            
             <div className="mt-8 text-3xl font-semibold leading-10 text-center">
               Welcome...!
             </div>
@@ -99,7 +101,7 @@ if (Object.keys(error).length === 0 && isSubmit){
             <div className="mt-12 text-sm font-medium text-slate-600 max-md:mt-10">
               Hospital Name
             </div>{" "}
-            <p className="text-red-500  text-sm mt-1">{ errorMessage.hospital}</p>
+            <p className="text-red-500 text-sm mt-1">{errorMessage.hospital}</p>
             <input
               type="text"
               name="hospital"
@@ -111,47 +113,45 @@ if (Object.keys(error).length === 0 && isSubmit){
             <div className="mt-9 text-sm font-medium text-slate-600">
               Username
             </div>{" "}
-            <p className="text-red-500  text-sm mt-1">{ errorMessage.username}</p>
+            <p className="text-red-500 text-sm mt-1">{errorMessage.username}</p>
             <input
               type="text"
               name="username"
               value={formData.username}
               onChange={handleChange}
               placeholder="  Enter Username"
-              className="shrink-0  mt-3 border-transparent  pl-3 bg-white rounded-md shadow h-[46px]"
+              className="shrink-0 mt-3 border-transparent pl-3 bg-white rounded-md shadow h-[46px]"
             />{" "}
             <div className="mt-9 text-sm font-medium text-slate-600">Email</div>{" "}
-            <p className="text-red-500  text-sm mt-1">{ errorMessage.email}</p>
+            <p className="text-red-500 text-sm mt-1">{errorMessage.email}</p>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="  Enter email"
-              className="shrink-0 mt-3 border-transparent  pl-3 bg-white rounded-md shadow h-[46px]"
+              className="shrink-0 mt-3 border-transparent pl-3 bg-white rounded-md shadow h-[46px]"
             />{" "}
             <div className="mt-9 text-sm font-medium text-slate-600">
-               Password
+              Password
             </div>{" "}
-            <p className="text-red-500  text-sm mt-1">{ errorMessage.password}</p>
+            <p className="text-red-500 text-sm mt-1">{errorMessage.password}</p>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="  Enter Paswword"
-              className="shrink-0 mt-3 border-transparent pl-3
-               bg-white rounded-md shadow h-[46px]"
+              placeholder="  Enter Password"
+              className="shrink-0 mt-3 border-transparent pl-3 bg-white rounded-md shadow h-[46px]"
             />{" "}
-           
-            <button type="submit"
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+            <button
+              type="submit"
               onClick={handleSubmit}
               className="justify-center items-center text-[20px] px-40 py-4 mt-8  font-semibold leading-4 text-white bg-blue-500 rounded-lg max-md:px-5"
             >
               Sign in
             </button>{" "}
-           
-            
           </div>
         </div>{" "}
       </div>

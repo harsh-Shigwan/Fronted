@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 import sourceData from "../../../Data/sourceData.json";
 import month from "../../../Data/month.json";
-import baseURL from "../../../assests/API_URL";
+import baseURL from "../../../assets/API_URL";
 import { MdArrowBackIos } from "react-icons/md";
 import { isBefore } from 'date-fns';
 import axios from 'axios';

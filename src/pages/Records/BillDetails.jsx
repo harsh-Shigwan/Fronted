@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const baseURL = "http://127.0.0.1:8000";
-
+import baseURL from "../../assets/API_URL";
 const BillDetails = ({ onAddItem }) => {
   const [quantity, setQuantity] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
@@ -167,9 +166,8 @@ const BillDetails = ({ onAddItem }) => {
               <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[400px] absolute text-slate-600 mt-[8px] rounded-md ml-[200px] font-medium">
                 {patientsList
                   .filter((patient) =>
-                    patient.FirstName.toLowerCase().includes(
-                      patientInput.toLowerCase()
-                    )
+                    patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())||
+                  patient.PatientID.toString().toLowerCase().includes(patientInput.toLowerCase())
                   )
                   .map((patient) => (
                     <div
@@ -177,7 +175,7 @@ const BillDetails = ({ onAddItem }) => {
                       className="p-2 cursor-pointer hover:bg-gray-200"
                       onMouseDown={() => handlePatientSelect(patient)}
                     >
-                      {patient.FirstName}
+                    {patient.PatientID} {patient.FirstName}
                     </div>
                   ))}
               </div>

@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import baseURL from "../assests/API_URL";
+import baseURL from "../assets/API_URL";
 function Signin() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({

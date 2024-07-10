@@ -4,7 +4,7 @@ import Plus from "../../Data/Plus.png";
 import download from "../../Data/download.png";
 import searchIcon from "../../Data/search.png";
 import edit from "../../Data/edit.png";
-import baseURL from "../../assests/API_URL";
+import baseURL from "../../assets/API_URL";
 import generatePDF from "react-to-pdf";
 import {
   Table,
@@ -207,6 +207,7 @@ console.log("dm",DoctorMap );
                                 <TableCell>{user.time_slot}</TableCell>
                                 <TableCell>{user.status}</TableCell>
                                
+                 
                                 <TableCell>{DoctorMap[user.doctor]}</TableCell>
                                 
                                 <TableCell>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Breadcrumb from '../../components/Breadcrumb';
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 import axios from 'axios';
 const Add_Equipment = () => {
     const navigate = useNavigate();

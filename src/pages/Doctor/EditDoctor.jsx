@@ -7,7 +7,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Breadcrumb from '../../components/Breadcrumb';
 import axios from 'axios';
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 const steps = ['Step 1', 'Step 2', 'Step 3'];
 
 export default function Add_Doctor() {

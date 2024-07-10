@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 import axios from 'axios';
 
 const Shifts = () => {

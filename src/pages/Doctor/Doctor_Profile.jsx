@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import sourceData from "../../Data/sourceData.json";
-import baseURL from '../../assests/API_URL';
+import baseURL from '../../assets/API_URL';
 import axios from 'axios';
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 const Doctor_Profile = () => {
