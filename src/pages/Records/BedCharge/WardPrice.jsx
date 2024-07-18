@@ -25,7 +25,7 @@ const WardPrice = ({ items, deleteItem, patientId }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {items.map((item, idx) => (
+            {items.reverse().map((item, idx) => (
               <TableRow key={idx}>
                 <TableCell>{item.itemName}</TableCell>
                 <TableCell>{item.quantity}</TableCell>

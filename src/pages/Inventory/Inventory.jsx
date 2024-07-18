@@ -82,6 +82,9 @@ const Inventory = () => {
   const targetRef = useRef();
   const [searchTerm, setSearchTerm] = useState("");
 
+  const totalItems = myData.length;
+  const startIndex = page * rowperpage;
+
   return (
     <div>
       <Breadcrumb></Breadcrumb>
@@ -191,7 +194,7 @@ const Inventory = () => {
                                 page * rowperpage,
                                 page * rowperpage + rowperpage
                               )
-                              .filter(
+                              .reverse().filter(
                                 (item) =>
                                   {
                                     const toSearch = searchTerm.toLowerCase();
@@ -210,9 +213,9 @@ const Inventory = () => {
                                   }
                                   
                               )
-                              .map((user) => (
+                              .map((user , index) => (
                                 <TableRow key={user.id}>
-                                  <TableCell>{user.id}</TableCell>
+                                  <TableCell>{totalItems - (startIndex + index)}</TableCell>
                                   <TableCell>{user.name} </TableCell>
                                   <TableCell>{user.quantity}</TableCell>
                                   <TableCell>{user.manufacturer}</TableCell>

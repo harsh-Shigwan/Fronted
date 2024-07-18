@@ -27,7 +27,7 @@ const List = ({ items, deleteItem, patientId }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {items.map((item, idx) => (
+            {items.reverse().map((item, idx) => (
               <TableRow key={idx}>
                 <TableCell>{item.medicine}</TableCell>
                 <TableCell>{item.quantity_used}</TableCell>

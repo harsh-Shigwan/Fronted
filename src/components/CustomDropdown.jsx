@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const CustomDropdown = ({ options, value, onChange }) => {
+const CustomDropdown = ({ options, value, onChange ,labeled}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [openAbove, setOpenAbove] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -45,15 +45,15 @@ const CustomDropdown = ({ options, value, onChange }) => {
   return (
     <div className="relative" ref={toggleRef}>
       <div
-        className={`flex gap-5 justify-between p-4 mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100 cursor-pointer ${isFocused ? 'border-2 border-black' : ''}`}
+        className={`flex gap-5 justify-between p-4 mt-2 text-base leading-4 text-gray-500 font-medium rounded-md bg-slate-100 cursor-pointer ${isFocused ? 'border-2 border-black' : ''}`}
         onClick={() => { setIsOpen(!isOpen); setIsFocused(true); }}
       >
-        {value ? options.find(option => option.value === value).label : 'Select the option'}
+        {value ? options.find(option => option.value === value).label :  labeled || 'Select a value'}
       </div>
       {isOpen && (
         <div
           ref={dropdownRef}
-          className={`absolute flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-full text-slate-600 mt-1 rounded-md z-10 ${openAbove ? 'bottom-full mb-1' : 'top-full mt-1'}`}
+          className={`absolute flex flex-col max-h-48 overflow-y-auto bg-white border text-base font-medium border-gray-300 w-full text-slate-600 mt-1 rounded-md z-10 ${openAbove ? 'bottom-full mb-1' : 'top-full mt-1'}`}
         >
           {options.map(option => (
             <div

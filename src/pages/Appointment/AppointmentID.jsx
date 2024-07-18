@@ -68,6 +68,7 @@ const AppointmentID = () => {
   const handlePatientInputChange = (e) => {
     setPatientInput(e.target.value);
     setSelectedPatient('');
+    setShowPatientDropdown(true);
   };
 
   const handleDoctorInputChange = (e) => {
@@ -76,7 +77,7 @@ const AppointmentID = () => {
   };
 
   const handlePatientSelect = (patient) => {
-    setPatientInput(patient.FirstName);
+    setPatientInput(patient.fullname);
     setSelectedPatient(patient.PatientID);
     setShowPatientDropdown(false);
   };
@@ -151,7 +152,7 @@ const AppointmentID = () => {
                   className="flex gap-5 justify-between p-4 mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100"
                   onChange={handlePatientInputChange}
                   onFocus={() => setShowPatientDropdown(true)}
-            //      onBlur={() => setTimeout(() => setShowPatientDropdown(false), 100)}
+                  //onBlur={() => setTimeout(() => setShowPatientDropdown(false), 100)}
                   value={patientInput}
                   placeholder="Type or select the patient"
                 />
@@ -159,7 +160,7 @@ const AppointmentID = () => {
                   <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[500px] absolute text-slate-600 mt-[86px] rounded-md">
                     {patientsList
                       .filter((patient) =>
-                        patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())
+                        patient.fullname.toLowerCase().includes(patientInput.toLowerCase())
                       )
                       .map((patient) => (
                         <div
@@ -167,7 +168,7 @@ const AppointmentID = () => {
                           className="p-2 cursor-pointer hover:bg-gray-200"
                           onClick={() => handlePatientSelect(patient)}
                         >
-                          {patient.FirstName}
+                          {patient.fullname}
                         </div>
                       ))}
                   </div>

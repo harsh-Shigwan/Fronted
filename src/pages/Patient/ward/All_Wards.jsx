@@ -132,7 +132,7 @@ const All_Wards = () => {
                             page * rowperpage,
                             page * rowperpage + rowperpage
                           )
-                          .filter((item) => {
+                          .reverse().filter((item) => {
                             const searchLowerCase = searh.toLowerCase();
                             const totalBedsString = item.total_beds ? String(item.total_beds) : '';
                             const idString = item.id ? String(item.id) : '';
@@ -144,9 +144,9 @@ const All_Wards = () => {
                               idString.includes(searchLowerCase)
                             );
                           })
-                          .map((user) => (
+                          .map((user, index) => (
                             <TableRow key={user.id}>
-                              <TableCell>{user.id}</TableCell>
+                              <TableCell>{index + 1}</TableCell>
                               <TableCell>{user.name} </TableCell>
                               <TableCell style={{alignItems:"center"}}>{user.total_beds}</TableCell>
                                        

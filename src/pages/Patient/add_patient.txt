@@ -1,0 +1,151 @@
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Breadcrumb from '../../components/Breadcrumb';
+import { useNavigate } from 'react-router-dom';
+import baseURL from '../../assets/API_URL';
+import axios from 'axios'; 
+import CustomDropdown from '../../components/CustomDropdown';
+
+const steps = ['Basic Details', 'Emergency Details', 'Insurance Details' , 'Deposit Details'];
+const token = JSON.parse(localStorage.getItem("Token"));
+
+export default function Add_Patient() {
+  const [activeStep, setActiveStep] = React.useState(0);
+  const currentDate = new Date().toISOString().split('T')[0];
+  const [gender, setGender] = React.useState('');
+  const [bloodGroup, setBloodGroup] = React.useState('');
+  const [errors, setErrors] = React.useState({});
+  const [formData, setFormData] = React.useState({
+    FirstName: '',
+    phone: '',
+    email: '',
+    RelationShip: '',
+    fullname: '',
+    Gender: '',
+    blood: '',
+    city: '',
+    phone_no: '',
+    DOB: '',
+    referred: '',
+    allergy: '',
+    PinCode: '',
+    initial_balance: '',
+    facility_code: '',
+    membernum: '',
+    Insurance_name: '',
+    cardnum: '',
+    Insurance_Provider: '',
+    Register_Date: currentDate
+  });
+  const navigate = useNavigate();
+
+  const handleNext = () => {
+    let isValid = true; // Assume the form is valid by default
+    let newErrors = {};
+
+    // Add your validation logic here
+    if (activeStep === 0) {
+      if (!formData.FirstName) {
+        newErrors.FirstName = 'First name is required';
+        isValid = false;
+      }
+      if (!formData.phone) {
+        newErrors.phone = 'Phone number is required';
+        isValid = false;
+      }
+    }
+
+    if (isValid) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setErrors({});
+    } else {
+      setErrors(newErrors);
+    }
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleSubmit = () => {
+    console.log('Form Data Submitted:', formData);
+    formData.owner_token = token;
+
+    axios.post(`${baseURL}/api/patient/api/patients/`, formData, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    })
+      .then((response) => {
+        console.log('API Response:', response.data);
+        navigate('/Patient/Patient_Details');
+      })
+      .catch((error) => {
+        console.error('API Error:', error);
+        console.log('Error response data:', error.response?.data);
+      });
+  };
+
+  return (
+    <div>
+      <Breadcrumb />
+      <Box sx={{ width: '100%' }}>
+        <Stepper activeStep={activeStep}>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <form>
+          {activeStep === 0 && (
+            <div>
+              <TextField
+                label="First Name"
+                value={formData.FirstName}
+                onChange={(e) => setFormData({ ...formData, FirstName: e.target.value })}
+                error={!!errors.FirstName}
+                helperText={errors.FirstName}
+              />
+              <TextField
+                label="Phone"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                error={!!errors.phone}
+                helperText={errors.phone}
+              />
+              {/* Add other fields as needed */}
+            </div>
+          )}
+          {activeStep === 1 && (
+            <div>Emergency Details Form</div>
+          )}
+          {activeStep === 2 && (
+            <div>Insurance Details Form</div>
+          )}
+          {activeStep === 3 && (
+            <div>Deposit Details Form</div>
+          )}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
+            <Button
+              variant="outlined" size="medium"
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              sx={{ mr: 1 }}
+            >
+              Back
+            </Button>
+            <Button variant="contained" onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}>
+              {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
+            </Button>
+          </Box>
+        </form>
+      </Box>
+    </div>
+  );
+}

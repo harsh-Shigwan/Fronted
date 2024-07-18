@@ -61,7 +61,7 @@ const BillDetails = ({ onAddItem }) => {
 
   const handlePatientSelect = (patient) => {
     setSelectedPatient(patient.PatientID);
-    setPatientInput(patient.FirstName);
+    setPatientInput(patient.fullname);
     setShowPatientDropdown(false);
   };
 
@@ -129,6 +129,7 @@ const BillDetails = ({ onAddItem }) => {
               className="flex gap-5 justify-between font-medium p-4 mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100 ml-10 w-[400px]"
               onChange={handleItemInputChange}
               onFocus={() => setShowItemDropdown(true)}
+              onBlur={() => setShowItemDropdown(false)}
               value={itemsInput}
               placeholder="Type or select the Items"
             />
@@ -159,6 +160,7 @@ const BillDetails = ({ onAddItem }) => {
               className="flex gap-5 justify-between font-medium p-4 mt-2 text-base leading-4 text-gray-500 rounded-md bg-slate-100 ml-[200px] w-[400px]"
               onChange={handlePatientInputChange}
               onFocus={() => setShowPatientDropdown(true)}
+              onBlur={() => setTimeout(() => setShowPatientDropdown(false), 100)}
               value={patientInput}
               placeholder="Type or select the patient"
             />
@@ -166,7 +168,7 @@ const BillDetails = ({ onAddItem }) => {
               <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[400px] absolute text-slate-600 mt-[8px] rounded-md ml-[200px] font-medium">
                 {patientsList
                   .filter((patient) =>
-                    patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())||
+                    patient.fullname.toLowerCase().includes(patientInput.toLowerCase())||
                   patient.PatientID.toString().toLowerCase().includes(patientInput.toLowerCase())
                   )
                   .map((patient) => (
@@ -175,7 +177,7 @@ const BillDetails = ({ onAddItem }) => {
                       className="p-2 cursor-pointer hover:bg-gray-200"
                       onMouseDown={() => handlePatientSelect(patient)}
                     >
-                    {patient.PatientID} {patient.FirstName}
+                    {patient.PatientID} {patient.fullname}
                     </div>
                   ))}
               </div>

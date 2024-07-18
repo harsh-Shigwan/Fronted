@@ -5,18 +5,22 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import Breadcrumb from '../../components/Breadcrumb';
 import axios from 'axios';
 import baseURL from '../../assets/API_URL';
+import CustomDropdown from '../../components/CustomDropdown';
+
 const steps = ['Step 1', 'Step 2', 'Step 3'];
 
 export default function Add_Doctor() {
   const { pk } = useParams();
   const [activeStep, setActiveStep] = useState(0);
   const token = JSON.parse(localStorage.getItem("Token"));
+  const [gender, setGender] = useState('');
   const [formData, setFormData] = useState({
     name: '',
-    Email: '',
+    email: '',
     phone_number: '',
     dob: '',
     specialty: '',
@@ -31,6 +35,38 @@ export default function Add_Doctor() {
   });
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState();
+
+  useEffect(() => {
+    if (pk) {
+      axios.get(`${baseURL}/doctor/api/doctors/${pk}/`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      })
+      .then((response) => {
+        const data = response.data;
+        setFormData({
+          name: data.name || '',
+          email: data.email || '',
+          phone_number: data.phone_number || '',
+          dob: data.dob || '',
+          specialty: data.specialty || '',
+          Gender: data.Gender || '',
+          Address: data.Address || '',
+          PinCode: data.PinCode || '',
+          experience: data.experience || '',
+          education_qualification: data.education_qualification || '',
+          working_details: data.working_details || '',
+          identity_proof: data.identity_proof || '',
+          medical_license: data.medical_license || '',
+        });
+        setGender(data.Gender || '');
+      })
+      .catch((error) => {
+        console.error('API Error:', error);
+      });
+    }
+  }, [pk, token]);
 
   const handleChange = (e) => {
     setFormData({
@@ -49,13 +85,26 @@ export default function Add_Doctor() {
 
   const handleFileChange = (fieldName, event) => {
     const file = event.target.files[0];
-    console.log('file:', file);
     if (file) {
       setFormData((prevFormData) => ({
         ...prevFormData,
         [fieldName]: file,
       }));
     }
+  };
+
+  const options = [
+    { value: '', label: 'Select the option' },
+    { value: 'Male', label: 'Male' },
+    { value: 'Female', label: 'Female' }
+  ];
+
+  const handleGenderChange = (selectedGender) => {
+    setGender(selectedGender);
+    setFormData({
+      ...formData,
+      Gender: selectedGender,
+    });
   };
 
   const handleSubmit = () => {
@@ -81,22 +130,6 @@ export default function Add_Doctor() {
       });
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${baseURL}/doctor/api/doctors/${pk}/`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        });
-        setFormData(response.data);
-      } catch (error) {
-        console.error("Error fetching equipment data:", error);
-        console.log("Error response data:", error.response?.data);
-      }
-    };
-    fetchData();
-  }, [baseURL, pk, token]);
   return (
     <div>
     <Breadcrumb></Breadcrumb>
@@ -125,7 +158,7 @@ export default function Add_Doctor() {
                 <div className="text-slate-600 text-sm font-medium mt-8 max-md:max-w-full">
                   E-mail ID
                 </div>
-                <input className="text-gray-500 text-base border-transparent font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text'name='Email' value={formData.Email}
+                <input className="text-gray-500 text-base border-transparent font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text'name='email' value={formData.email}
                     onChange={handleChange}
                     fullWidth placeholder='Enter e-mail id' >
                 
@@ -133,12 +166,9 @@ export default function Add_Doctor() {
                 <div className="text-slate-600 text-sm font-medium mt-9 max-md:max-w-full">
                   Gender
                 </div>
-                <input className="text-gray-500  text-base border-transparent font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' name='Gender' value={formData.Gender}
-                    onChange={handleChange}
-                    fullWidth placeholder='Gender' >
-                 
-                </input>
-
+                <CustomDropdown options={options}
+                value={gender}
+                onChange={handleGenderChange}></CustomDropdown>
                 {/* <div>
                 <select className="justify-between border-transparent w-[500px] items-stretch bg-slate-100 flex gap-5 mt-3 pl-4 pr-2.5 py-4 rounded-md max-md:max-w-full max-md:flex-wrap" type='select' name='Gender' value={formData.Gender}
                     onChange={handleChange}

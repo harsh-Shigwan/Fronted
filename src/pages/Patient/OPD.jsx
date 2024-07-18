@@ -102,7 +102,7 @@ const OPD = () => {
     setPage(0);
   };
 
-  // Create a mapping of PatientID to FirstName
+  
   const patientMap = patients.reduce((map, patient) => {
     map[patient.PatientID] = patient.FirstName;
     return map;
@@ -201,11 +201,11 @@ const OPD = () => {
                           .slice(
                             page * rowPerPage,
                             page * rowPerPage + rowPerPage
-                          )
-                          .map((user) => (
+                          ).reverse()
+                          .map((user,index) => (
                             <TableRow key={user.visit_id}>
                               <TableCell>
-                                {user.visit_id}
+                              { index + 1}
                               </TableCell>
                               <TableCell >
                                 {user.visit_date}

@@ -9,11 +9,16 @@ import Breadcrumb from '../../components/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
 import baseURL from '../../assets/API_URL';
 import axios from 'axios'; 
-const steps = ['Basic Details', 'Emgergency Datails', 'Insurance Details'];
+import CustomDropdown from '../../components/CustomDropdown';
+const steps = ['Basic Details', 'Emgergency Datails', 'Insurance Details', 'Deposit Details'];
 const token = JSON.parse(localStorage.getItem("Token"));
 export default function Add_Patient() {
   const [activeStep, setActiveStep] = React.useState(0);
   const currentDate = new Date().toISOString().split('T')[0];
+  const [ gender , setGender] = React.useState('');
+  const [ bloodGroop , setBloodGroop] = React.useState('');
+  
+  const [errors, setErrors] = React.useState({});
   const [formData, setFormData] = React.useState({
     FirstName: '',
     phone:'',
@@ -38,6 +43,57 @@ export default function Add_Patient() {
 
   });
   const navigate = useNavigate();
+  const validateFirstPage = () => {
+    const newErrors = {};
+    if (!formData.fullname) newErrors.fullname = 'This field is required.';
+    if (!formData.Gender) newErrors.Gender = 'This field is required.';
+    if (!formData.DOB) newErrors.DOB = 'This field is required.';else if (new Date(formData.DOB) > new Date()) {
+      newErrors.DOB = " Wrong date.";
+    }
+    if (!formData.email) newErrors.email = 'This field is required.';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid.';
+    if (!formData.phone_no) newErrors.phone_no = 'This field is required.';
+    else if (!/^\d{10}$/.test(formData.phone_no)) newErrors.phone_no = 'Phone number is invalid.';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateSecondPage = () => {
+    const newErrors = {};
+    if (!formData.email) newErrors.email = 'This field is required.';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid.';
+    if (!formData.phone) newErrors.phone = 'This field is required.';
+    else if (!/^\d{10}$/.test(formData.phone)) newErrors.phone_no = 'Phone number is invalid.';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const validateThirdPage = () => {
+    const newErrors = {};
+    // Add your validation logic for the third page here
+    if (!formData.Insurance_name) newErrors.Insurance_name = 'This field is required.';
+    if (!formData.cardnum) newErrors.cardnum = 'This field is required.';
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const handleNext = () => {
+    let isValid = false;
+  
+    if (activeStep === 0) {
+      isValid = validateFirstPage();
+    } else if (activeStep === 1) {
+      isValid = validateSecondPage();
+    } else if (activeStep === 2) {
+      isValid = validateThirdPage();
+    }
+  
+    if (isValid) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+  };
+
   
   const handleChange = (e) => {
     setFormData({
@@ -46,18 +102,16 @@ export default function Add_Patient() {
     });
   };
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
   const handleSubmit = () => {
+    if(validateFirstPage() && validateSecondPage() ){
     console.log('Form Data Submitted:', formData);
 const token =  JSON.parse(localStorage.getItem("Token"))
   formData.owner_token = token;
-   // Use Axios to send a POST request with the form data
+   
     axios.post(`${baseURL}/api/patient/api/patients/`, formData, {
       headers: {
        Authorization: `Token ${token}`,
@@ -73,7 +127,42 @@ const token =  JSON.parse(localStorage.getItem("Token"))
         console.log( "Error response data:", error.response?.data)
         // Add logic to handle the API error, if needed
       });
+    }
   };
+ 
+  const options = [
+    { value: '', label: 'Select the option' },
+    { value: 'Male', label: 'Male' },
+    { value: 'Female', label: 'Female' }
+  ];
+
+  const bloodGroupOptions = [
+    { value: '', label: 'Select Blood Group' },
+    { value: 'A+', label: 'A+' },
+    { value: 'A-', label: 'A-' },
+    { value: 'B+', label: 'B+' },
+    { value: 'B-', label: 'B-' },
+    { value: 'AB+', label: 'AB+' },
+    { value: 'AB-', label: 'AB-' },
+    { value: 'O+', label: 'O+' },
+    { value: 'O-', label: 'O-' }
+  ];
+ const labeled="select the blood group";
+ const labelGender = "select the gender";
+  const handleGenderChange = ( selecetedGender) => {
+    setGender(selecetedGender);
+    setFormData({
+      ...formData,
+      Gender: selecetedGender,
+    })
+  }
+  const handlebloodGroupChange = ( selecetedbloodGroup) => {
+    setBloodGroop(selecetedbloodGroup);
+    setFormData({
+      ...formData,
+      blood: selecetedbloodGroup,
+    })
+  }
   return (
     <div>
     <Breadcrumb></Breadcrumb>
@@ -87,58 +176,43 @@ const token =  JSON.parse(localStorage.getItem("Token"))
       </Stepper>
       <form>
         {activeStep === 0 && (
-          <div><div className=" bg-white flex h-[600px] flex-col pb-6 px-6 max-md:px-5">
+          <div><div className=" bg-white flex w-[1110px] flex-col pb-6 px-6 max-md:px-5">
           <div className="w-[1000px] h-full">
             <div className="gap-5 flex max-md:flex-col h-full max-md:items-stretch max-md:gap-0">
               <div className="flex flex-col items-stretch w-6/12 max-md:w-full max-md:ml-0">
                 <div className="items-stretch flex grow flex-col pt-7 max-md:max-w-full max-md:mt-10">
                   <div className="text-slate-600 text-sm font-medium max-md:max-w-full">
-                    Full name
+                    Full name <span style={{ color: 'red' }}>*</span>
                   </div>
                   <div >
                 <input className="text-gray-500 border-transparent text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 w-[500px] rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' placeholder='Enter your name' name="fullname"
                 value={formData.fullname}
                 onChange={handleChange}
-                fullWidth></input>
+                fullWidth></input>  {errors.fullname && <span style={{ color: 'red' }}>{errors.fullname}</span>}
                   </div>
                   <div className="text-slate-600 text-sm font-medium mt-8 max-md:max-w-full">
-                    E-mail ID
+                    E-mail ID <span style={{ color: 'red' }}>*</span>
                   </div>
                   <div >
                   <input className="text-gray-500 border-transparent text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 w-[500px] rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' placeholder=' Enter e-mail id' name="email"
                   value={formData.email}
                   onChange={handleChange}
                   fullWidth></input>
-                   
+                  {errors.email && <span style={{ color: 'red' }}>{errors.email}</span>}
+
                   </div>
                   <div className="text-slate-600 text-sm font-medium mt-9 max-md:max-w-full">
-                    Gender
+                    Gender <span style={{ color: 'red' }}>*</span>
                   </div>
                   <div >
-                    <div className="text-gray-500 text-base font-medium leading-4">
-                    <input className="justify-between border-transparent w-[500px] items-stretch bg-slate-100 flex gap-5 mt-3 pl-4 pr-2.5 py-4 rounded-md max-md:max-w-full max-md:flex-wrap" type='text' name="Gender"
-                    value={formData.Gender}
-                    onChange={handleChange}
-                    fullWidth>
-          
-        </input>
-                    </div>
-                   
+                    <CustomDropdown options={options} onChange={handleGenderChange} labeled={labelGender}
+                    value={gender}></CustomDropdown>
+                    {errors.Gender && <span style={{ color: 'red' }}>{errors.Gender}</span>}
                   </div>
                   <div className="text-slate-600 text-sm font-medium mt-9 max-md:max-w-full">
                     Blood Group
                   </div>
-                  <div >
-                    <div className="text-gray-500 text-base font-medium leading-4">
-                    <input className="justify-between border-transparent w-[500px] items-stretch bg-slate-100 flex gap-5 mt-3 pl-4 pr-2.5 py-4 rounded-md max-md:max-w-full max-md:flex-wrap" type='text' name="blood"
-                    value={formData.blood}
-                    onChange={handleChange}
-                    fullWidth>
-            
-        </input>
-                    </div>
-                 
-                  </div>
+                  <CustomDropdown options={bloodGroupOptions} labeled={labeled} value={bloodGroop} onChange={handlebloodGroupChange}/>
                   <div className="text-slate-600 text-sm font-medium mt-8 max-md:max-w-full">
                     City
                   </div>
@@ -146,7 +220,7 @@ const token =  JSON.parse(localStorage.getItem("Token"))
                   <input className="text-gray-500 border-transparent text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 w-[500px] rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' placeholder='   Enter city'  name="city"
                 value={formData.city}
                 onChange={handleChange}
-                fullWidth ></input>
+                fullWidth required ></input>
         
                   </div>
                 </div>
@@ -154,27 +228,27 @@ const token =  JSON.parse(localStorage.getItem("Token"))
               <div className="flex flex-col items-stretch w-6/12 ml-5 max-md:w-full max-md:ml-0">
                 <div className="items-stretch flex grow flex-col pt-7 max-md:max-w-full max-md:mt-10">
                   <div className="text-slate-600 text-sm font-medium max-md:max-w-full">
-                    Phone number
+                    Phone number <span style={{ color: 'red' }}>*</span>
                   </div>
                   <div >
-                  <input className="text-gray-500  w-[480px] border-transparent text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4  rounded-md items-start max-md:max-w-full max-md:pr-5" type='number' placeholder='     Enter phone number'  name="phone_no"
+                  <input className="text-gray-500  w-[480px] border-transparent text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4  rounded-md items-start max-md:max-w-full max-md:pr-5" type='number' placeholder='  Enter phone number'  name="phone_no"
                 value={formData.phone_no}
                 onChange={handleChange}
-                fullWidth></input>
-               
+                fullWidth required></input>
+                {errors.phone_no && <span style={{ color: 'red' }}>{errors.phone_no}</span>}
                   </div>
                   <div className="text-slate-600 text-sm font-medium mt-8 max-md:max-w-full">
-                    Date of birth
+                    Date of birth <span style={{ color: 'red' }}>*</span>
                   </div>
                   <div >
                     <div className="text-gray-500 text-base font-medium leading-4 grow shrink basis-auto">
                     <input className="items-stretch w-[480px] border-transparent bg-slate-100 flex justify-between gap-5 mt-3 pl-4 pr-7 py-3 rounded-md max-md:max-w-full max-md:flex-wrap max-md:pr-5" type='date' name="DOB"
                 value={formData.DOB}
                 onChange={handleChange}
-                fullWidth ></input>
-                     
+                fullWidth required></input>
+                
                     </div>
-                   
+                    {errors.DOB && <span style={{ color: 'red' }}>{errors.DOB}</span>}
                   </div>
                   <div className="text-slate-600 text-sm font-medium mt-8 max-md:max-w-full">
                     Referred by
@@ -221,23 +295,24 @@ const token =  JSON.parse(localStorage.getItem("Token"))
               <div className="flex flex-col items-stretch w-6/12 max-md:w-full max-md:ml-0">
                 <div className="items-stretch flex grow flex-col pt-7 max-md:max-w-full max-md:mt-10">
                   <div className="text-slate-600 text-sm font-medium max-md:max-w-full">
-                    Full name
+                   Emgergency Contact name <span style={{ color: 'red' }}>*</span>
                   </div>
                   <div>
                    <input  className="text-gray-500 border-transparent text-base font-medium w-[500px] leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' placeholder='Enter full name of relative' name="FirstName"
                    value={formData.FirstName}
                    onChange={handleChange}
                    fullWidth></input>
-                
+                   {errors.FirstName && <span style={{ color: 'red' }}>{errors.FirstName}</span>}
                   </div>
                   <div className="text-slate-600 text-sm font-medium mt-9 max-md:max-w-full">
-                    Phone number
+                    Phone number <span style={{ color: 'red' }}>*</span>
                   </div>
                   <div >
                    <input className="text-gray-500 w-[500px] border-transparent  text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" placeholder='Enter phone number' type='number' name="phone"
                    value={formData.phone}
                    onChange={handleChange}
                    fullWidth></input>
+                   {errors.phone && <span style={{ color: 'red' }}>{errors.phone}</span>}
                   </div>
                 </div>
               </div>
@@ -251,6 +326,7 @@ const token =  JSON.parse(localStorage.getItem("Token"))
                    value={formData.email}
                    onChange={handleChange}
                    fullWidth></input>
+                   {errors.email && <span style={{ color: 'red' }}>{errors.email}</span>}
                   </div>
                   <div className="text-slate-600  text-sm font-medium mt-[44px] max-md:max-w-full">
                     Relationship
@@ -301,18 +377,7 @@ const token =  JSON.parse(localStorage.getItem("Token"))
                    fullWidth >
              
             </input>
-            <div className="items-stretch border bg-white flex w-[166px] max-w-full flex-col justify-center mt-8 px-5 py-2.5 rounded-[100px] border-solid border-blue-700">
-              <div className="items-stretch flex justify-between gap-2">
-                <img
-                  loading="lazy"
-                  srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/8bb2b7e1275c47c1e7c55188e2f4bc2b26c582e99433118612c30017c515b679?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/8bb2b7e1275c47c1e7c55188e2f4bc2b26c582e99433118612c30017c515b679?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/8bb2b7e1275c47c1e7c55188e2f4bc2b26c582e99433118612c30017c515b679?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/8bb2b7e1275c47c1e7c55188e2f4bc2b26c582e99433118612c30017c515b679?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/8bb2b7e1275c47c1e7c55188e2f4bc2b26c582e99433118612c30017c515b679?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/8bb2b7e1275c47c1e7c55188e2f4bc2b26c582e99433118612c30017c515b679?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/8bb2b7e1275c47c1e7c55188e2f4bc2b26c582e99433118612c30017c515b679?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/8bb2b7e1275c47c1e7c55188e2f4bc2b26c582e99433118612c30017c515b679?apiKey=8cd55a55d3fd4759ad0a38ee8bf55a48&"
-                  className="aspect-square object-contain object-center w-5 overflow-hidden shrink-0 max-w-full"
-                />
-                <div className="text-blue-700 text-sm font-semibold grow whitespace-nowrap">
-                  Add Insurance
-                </div>
-              </div>
-            </div>
+          
           </div>
         </div>
         <div className="flex flex-col items-stretch w-6/12 ml-5 max-md:w-full max-md:ml-0">
@@ -335,21 +400,29 @@ const token =  JSON.parse(localStorage.getItem("Token"))
                    fullWidth>
             
             </input>
-            <div className="text-slate-600 text-sm font-medium mt-9 max-md:max-w-full">
-             Initial Deposit
-            </div>
-            <input className="text-gray-500 border-transparent  text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' placeholder='Enter initial balance'name="initial_balance"
-                   value={formData.initial_balance}
-                   onChange={handleChange}
-                   fullWidth>
-          
-            </input>
+
+           
           </div>
         </div>
       </div>
     </div>
   
   </div></div>
+        )} {activeStep === 3 && (
+          <div className="items-stretch w-[1100px] bg-white flex flex-col pb-12 px-6 max-md:px-5">
+    <div className="max-md:max-w-full">
+      <div className="gap-5 flex max-md:flex-col max-md:items-stretch max-md:gap-0">
+        <div className="flex flex-col items-stretch w-6/12 max-md:w-full max-md:ml-0">
+          <div className="items-stretch flex grow flex-col pt-7 max-md:max-w-full max-md:mt-10">
+          <div className='items-stretch flex grow flex-col pt-7 max-md:max-w-full max-md:mt-10'>  <div className="text-slate-600 text-sm font-medium mt-9 max-md:max-w-full">
+           Deposit Amount 
+         </div>
+         <input className="text-gray-500 border-transparent w-[500px]  text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' placeholder='Enter initial balance'name="initial_balance"
+                value={formData.initial_balance}
+                onChange={handleChange}
+                fullWidth>
+       
+         </input></div></div></div></div></div></div>
         )}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
           <Button

@@ -195,7 +195,7 @@ const Details = () => {
                               page * rowsPerPage,
                               page * rowsPerPage + rowsPerPage
                             )
-                            .map((user) => (
+                            .reverse().map((user) => (
                               <TableRow key={user.DoctorID}>
                               <TableCell>{user.DoctorID}</TableCell>
                                 <TableCell>{user.name}</TableCell>

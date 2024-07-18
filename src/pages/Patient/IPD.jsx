@@ -82,7 +82,7 @@ const IPD = () => {
 
   // Create patientMap
   const patientMap = patients.reduce((map, patient) => {
-    map[patient.PatientID] = patient.FirstName;
+    map[patient.PatientID] = patient.fullname;
     return map;
   }, {});
   const wardMap = ward.reduce((map, patient) => {
@@ -185,7 +185,7 @@ const IPD = () => {
                             .slice(
                               page * rowsPerPage,
                               page * rowsPerPage + rowsPerPage
-                            )
+                            ).reverse()
                             .filter((item) => {
                               const searchLowerCase = search.toLowerCase();
                               const admissionIdString = item.admission_id
@@ -210,7 +210,7 @@ const IPD = () => {
                             })
                             .map((user, index) => (
                               <TableRow key={index}>
-                                <TableCell>{user.admission_id}</TableCell>
+                                <TableCell>{index + 1}</TableCell>
                                 <TableCell>{user.admission_date}</TableCell>
                                 <TableCell>{wardMap[user.ward]}</TableCell>
                                 <TableCell>{user.bed}</TableCell>
@@ -234,7 +234,7 @@ const IPD = () => {
                                     >
                                       <div className="flex flex-row items-center justify-start gap-[6px]">
                                         <div className="relative leading-[10px] font-medium">
-                                          Discharged
+                                          Discharge
                                         </div>
                                       </div>
                                     </Link>

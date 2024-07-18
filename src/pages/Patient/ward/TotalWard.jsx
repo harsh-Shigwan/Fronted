@@ -32,6 +32,7 @@ const TotalWard = () => {
       })
       .then((response) => {
         console.log("API Response:", response.data);
+        window.location.reload();
       })
       .catch((error) => {
         console.error("API Error:", error);

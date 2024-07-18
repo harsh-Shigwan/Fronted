@@ -104,7 +104,7 @@ const Appointment = () => {
     return map;
   },{})
   const patientMap = patients.reduce((map, patient) => {
-    map[patient.PatientID] = patient.FirstName;
+    map[patient.PatientID] = patient.fullname;
     return map;
   }, {});
 console.log("pm",patientMap);
@@ -180,7 +180,7 @@ console.log("dm",DoctorMap );
                         <TableBody>
                           {appointments
                             .slice(page * rowperpage, page * rowperpage + rowperpage)
-                            .filter((item) => {
+                            .reverse().filter((item) => {
                               const tosearch = search.toLowerCase();
                               const idString = item.id ? String(item.id) : '';
                               const timeSlotString = item.time_slot ? String(item.time_slot).toLowerCase() : '';
@@ -199,9 +199,9 @@ console.log("dm",DoctorMap );
                                 doctorString.includes(tosearch)
                               );
                             })
-                            .map((user) => (
+                            .map((user , index) => (
                               <TableRow key={user.id}>
-                                <TableCell>{user.id}</TableCell>
+                                <TableCell>{index + 1}</TableCell>
                                 <TableCell>{patientMap[user.patient] || 'Unknown'}</TableCell>
                                 <TableCell>{user.date}</TableCell>
                                 <TableCell>{user.time_slot}</TableCell>

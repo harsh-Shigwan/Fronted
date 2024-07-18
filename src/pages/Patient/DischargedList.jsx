@@ -142,7 +142,7 @@ const DischargedList = () => {
                               page * rowPerPage,
                               page * rowPerPage + rowPerPage
                             )
-                            .filter((item) => {
+                            .reverse().filter((item) => {
                               const searchLowerCase = search.toLowerCase();
                               const idString = item.id ? String(item.id) : '';
 

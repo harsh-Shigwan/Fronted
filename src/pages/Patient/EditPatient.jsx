@@ -10,12 +10,14 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Breadcrumb from '../../components/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
+import CustomDropdown from '../../components/CustomDropdown';
  
-const steps = ['Step 1', 'Step 2', 'Step 3'];
+const steps = ['Basic Details', 'Emgergency Datails', 'Insurance Details'];
 const EditPatient = () => {
   const { pk } = useParams(); 
   const token =  JSON.parse(localStorage.getItem("Token"))
   const [activeStep, setActiveStep] = React.useState(0);
+  const [gender, setGender] = useState('');
   const [formData, setFormData] = React.useState({
     FirstName: '',
     phone: '',
@@ -38,24 +40,45 @@ const EditPatient = () => {
     Insurance_Provider: '',
   });
 
-  useEffect(() => {
- 
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${baseURL}/api/patient/api/patients/${pk}/`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        });
-        setFormData(response.data); 
-      } catch (error) {
-        console.error('Error fetching patient data:', error);
-        console.log("Error response data:", error.response?.data);
-      }
-    };
+  
 
-    fetchData(); 
-  }, [pk]); 
+  useEffect(() => {
+    if (pk) {
+      axios.get(`${baseURL}/api/patient/api/patients/${pk}/`,{
+        headers: {
+          Authorization: `Token ${token}`,
+        }
+      })
+        .then((response) => {
+          const data = response.data;
+          setFormData({
+            FirstName: data.FirstName || '',
+            phone: data.phone || '',
+            email: data.email || '',
+            RelationShip: data.RelationShip || '',
+            fullname: data.fullname || '',
+            Gender: data.Gender || '',
+            blood: data.blood || '',
+            city: data.city || '',
+            phone_no: data.phone_no || '',
+            DOB: data.DOB || '',
+            referred: data.referred || '',
+            allergy: data.allergy || '',
+            PinCode: data.PinCode || '',
+            initial_balance: data.initial_balance || '',
+            facility_code: data.facility_code || '',
+            membernum: data.membernum || '',
+            Insurance_name: data.Insurance_name || '',
+            cardnum: data.cardnum || '',
+            Insurance_Provider: data.Insurance_Provider || '',
+          });
+          setGender(data.Gender || '');
+        })
+        .catch((error) => {
+          console.error('API Error:', error);
+        });
+    }
+  }, [pk,token]);
 
   const handleChange = (e) => {
    
@@ -85,6 +108,18 @@ const EditPatient = () => {
          console.log("Error response data:", error.response?.data);
     }
   };
+  const options = [
+    { value: '', label: 'Select the option' },
+    { value: 'Male', label: 'Male' },
+    { value: 'Female', label: 'Female' }
+  ];
+  const handleGenderChange = (selectedGender) => {
+    setGender(selectedGender);
+    setFormData({
+      ...formData,
+      Gender: selectedGender,
+    });
+  };
 
   return (
     <div>
@@ -99,7 +134,7 @@ const EditPatient = () => {
       </Stepper>
       <form>
         {activeStep === 0 && (
-          <div><div className=" bg-white flex h-[600px] flex-col pb-6 px-6 max-md:px-5">
+          <div><div className=" bg-white flex w-[1110px]  flex-col pb-6 px-6 max-md:px-5">
           <div className="w-[1000px] h-full">
             <div className="gap-5 flex max-md:flex-col h-full max-md:items-stretch max-md:gap-0">
               <div className="flex flex-col items-stretch w-6/12 max-md:w-full max-md:ml-0">
@@ -126,17 +161,9 @@ const EditPatient = () => {
                   <div className="text-slate-600 text-sm font-medium mt-9 max-md:max-w-full">
                     Gender
                   </div>
-                  <div >
-                    <div className="text-gray-500 text-base font-medium leading-4">
-                    <input className="justify-between border-transparent w-[500px] items-stretch bg-slate-100 flex gap-5 mt-3 pl-4 pr-2.5 py-4 rounded-md max-md:max-w-full max-md:flex-wrap" type='text' name="Gender"
-                    value={formData.Gender}
-                    onChange={handleChange}
-                    fullWidth>
-          
-        </input>
-                    </div>
-                   
-                  </div>
+                  <CustomDropdown options={options}
+                value={gender}
+                onChange={handleGenderChange}></CustomDropdown>
                   <div className="text-slate-600 text-sm font-medium mt-9 max-md:max-w-full">
                     Blood Group
                   </div>
@@ -227,7 +254,7 @@ const EditPatient = () => {
         </div></div>
         )}
         {activeStep === 1 && (
-          <div><div className="items-stretch w-[1100px] bg-white flex flex-col pb-12 px-6 max-md:px-5">
+          <div><div className="items-stretch w-[1110px]  bg-white flex flex-col pb-12 px-6 max-md:px-5">
           <div className="max-md:max-w-full">
             <div className="gap-5 flex max-md:flex-col max-md:items-stretch max-md:gap-0">
               <div className="flex flex-col items-stretch w-6/12 max-md:w-full max-md:ml-0">
@@ -281,7 +308,7 @@ const EditPatient = () => {
         </div></div>
         )}
         {activeStep === 2 && (
-          <div><div className="items-stretch w-[1100px] bg-white flex flex-col pb-12 px-6 max-md:px-5">
+          <div><div className="items-stretch w-[1110px] bg-white flex flex-col pb-12 px-6 max-md:px-5">
     <div className="max-md:max-w-full">
       <div className="gap-5 flex max-md:flex-col max-md:items-stretch max-md:gap-0">
         <div className="flex flex-col items-stretch w-6/12 max-md:w-full max-md:ml-0">

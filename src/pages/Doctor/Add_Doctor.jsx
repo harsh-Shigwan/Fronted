@@ -11,14 +11,17 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Breadcrumb from '../../components/Breadcrumb';
 import axios from 'axios';
-const steps = ['Step 1', 'Step 2', 'Step 3'];
+import CustomDropdown from '../../components/CustomDropdown';
+const steps = ['Basic Infromation', 'Qualificaiton-experience', 'Documents'];
 
 export default function Add_Doctor() {
   const [activeStep, setActiveStep] = useState(0);
   const token =  JSON.parse(localStorage.getItem("Token"))
+  const [ gender , setGender] = useState('');
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     name: '',
-    Email: '',
+    email: '',
     phone_number: '',
     dob: '',
     specialty: '',
@@ -32,7 +35,12 @@ export default function Add_Doctor() {
     medical_liscence: '',
   });
   const navigate = useNavigate();
-  
+
+  const options = [
+    { value: '', label: 'Select the option' },
+    { value: 'Male', label: 'Male' },
+    { value: 'Female', label: 'Female' }
+  ];
  
   const handleChange = (e) => {
     setFormData({
@@ -42,16 +50,28 @@ export default function Add_Doctor() {
   };
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    let isValid = false;
+    if (activeStep === 0) {
+      isValid = validateFirstPage();
+    } else if (activeStep === 1) {
+      isValid = validateSecondPage();
+    } else if (activeStep === 2) {
+       isValid = validateThirdPage();
+    }
+
+    if (isValid) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
   };
+
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
   const handleSubmit = () => {
+    if(validateFirstPage() && validateSecondPage() && validateThirdPage()){
     console.log('Form Data Submitted:', formData);
     const token = JSON.parse(localStorage.getItem("Token"));
-    //Use Axios to send a POST request with the form data
     axios.post(`${baseURL}/doctor/api/doctors/`, formData , { headers: { 'Content-Type': 'multipart/form-data',
       Authorization: `Token ${token}`,
         
@@ -63,8 +83,8 @@ export default function Add_Doctor() {
       .catch((error) => {
         console.error('API Error:', error);
         console.log("Error response data:", error.response?.data);
-        // Add logic to handle the API error, if needed
       });
+    }
   };
 
   const [selectedFile, setSelectedFile] = useState();
@@ -79,7 +99,58 @@ export default function Add_Doctor() {
       }));
     }
   };
+  const handleGenderChange = (selectedGender) => {
+    setGender(selectedGender);
+    setFormData({
+      ...formData,
+      Gender: selectedGender,
+    });
+  };
 
+  const validateFirstPage = () => {
+    const newErrors = {};
+    if (!formData.name) newErrors.name = "This field is required.";
+    if (!formData.Gender) newErrors.Gender = "This field is required.";
+    if (!formData.dob) newErrors.dob = "This field is required.";
+    else if (new Date(formData.dob) > new Date()) {
+      newErrors.dob = " Wrong date.";
+    }
+    if (!formData.email) newErrors.email = "This field is required.";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "email is invalid.";
+    if (!formData.phone_number) newErrors.phone_number = "This field is required.";
+    else if (!/^\d{10}$/.test(formData.phone_number))
+      newErrors.phone_number = "Phone number is invalid.";
+    if (!formData.Address) newErrors.Address = "This field is required.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateSecondPage = () => {
+    const newErrors = {};
+    if (!formData.education_qualification)
+      newErrors.education_qualification = "Education qualification is required.";
+    if (!formData.specialty)
+      newErrors.specialty = "Specialty is required.";
+    if (!formData.experince)
+      newErrors.experince = "Experience is required.";
+    if (!formData.working_details)
+      newErrors.working_details = "Working details are required.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateThirdPage =()=>{
+    const newErrors = {};
+
+    if (!formData.identity_proof) newErrors.identity_proof = "Identity proof is required.";
+    if (!formData.medical_liscence) newErrors.medical_liscence = "Medical license is required.";
+  
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }
   
   return (
     <div>
@@ -99,54 +170,49 @@ export default function Add_Doctor() {
             <div className="flex flex-col items-stretch w-6/12 max-md:w-full max-md:ml-0">
               <div className="items-stretch flex flex-col pt-7 max-md:max-w-full max-md:mt-10">
                 <div className="text-slate-600 text-sm font-medium max-md:max-w-full">
-                  Full name
+                  Full name <span style={{ color: 'red' }}>*</span>
                 </div>
                 <input className="text-gray-500 border-transparent text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' name="name" value={formData.name}
                     onChange={handleChange}
                     fullWidth placeholder='Enter full name'>
                 
                 </input>
+                {errors.name && <span style={{ color: 'red' }}>{errors.name}</span>}
                 <div className="text-slate-600 text-sm font-medium mt-8 max-md:max-w-full">
-                  E-mail ID
+                  E-mail ID <span style={{ color: 'red' }}>*</span>
                 </div>
-                <input className="text-gray-500 text-base border-transparent font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text'name='Email' value={formData.Email}
+                <input className="text-gray-500 text-base border-transparent font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text'name='email' value={formData.email}
                     onChange={handleChange}
                     fullWidth placeholder='Enter e-mail id' >
                 
                 </input>
+                {errors.email && <span style={{ color: 'red' }}>{errors.email}</span>}
                 <div className="text-slate-600 text-sm font-medium mt-9 max-md:max-w-full">
-                  Gender
+                  Gender <span style={{ color: 'red' }}>*</span>
                 </div>
-                <input className="text-gray-500  text-base border-transparent font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' name='Gender' value={formData.Gender}
-                    onChange={handleChange}
-                    fullWidth placeholder='Gender' >
-                 
-                </input>
+                   <CustomDropdown
+              options={options}
+              value={gender}
+              onChange={handleGenderChange}
+            />
+            {errors.Gender && <span style={{ color: 'red' }}>{errors.Gender}</span>}
 
-                {/* <div>
-                <select className="justify-between border-transparent w-[500px] items-stretch bg-slate-100 flex gap-5 mt-3 pl-4 pr-2.5 py-4 rounded-md max-md:max-w-full max-md:flex-wrap" type='select' name='Gender' value={formData.Gender}
-                    onChange={handleChange}
-                    fullWidth placeholder='Gender'>
-            <option className='text-gray-500 text-base font-medium leading-4' value="male">Male</option>
-            <option className='text-gray-500 text-base font-medium leading-4' value="female">Female</option>
-            <option className='text-gray-500 text-base font-medium leading-4' value="other">Other</option>
-        </select>
         
-                </div> */}
                 <div className="text-slate-600 text-sm font-medium mt-8 max-md:max-w-full">
-                  Address
+                  Address <span style={{ color: 'red' }}>*</span>
                 </div>
                 <input className="text-gray-500 text-base border-transparent font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-2 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' name='Address' value={formData.Address}
                     onChange={handleChange}
                     fullWidth placeholder='Enter Address'>
                   
                 </input>
+                {errors.Address && <span style={{ color: 'red' }}>{errors.Address}</span>}
               </div>
             </div>
             <div className="flex flex-col items-stretch w-6/12 ml-5 max-md:w-full max-md:ml-0">
               <div className="items-stretch flex grow flex-col py-7 max-md:max-w-full max-md:mt-10">
                 <div className="text-slate-600 text-sm font-medium max-md:max-w-full">
-                  Phone number
+                  Phone number <span style={{ color: 'red' }}>*</span>
                 </div>
                 <input className="text-gray-500  text-base border-transparent font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' name='phone_number' value={formData.phone_number}
                     onChange={handleChange}
@@ -154,9 +220,9 @@ export default function Add_Doctor() {
                  
                 </input>
 
-                
+                {errors.phone_number && <span style={{ color: 'red' }}>{errors.phone_number}</span>}
                 <div className="text-slate-600 text-sm font-medium mt-8 max-md:max-w-full">
-               BirthDate
+               BirthDate <span style={{ color: 'red' }}>*</span>
                 </div>
             
                  <input className="text-gray-500 border-transparent text-base font-medium leading-4 bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5"  type='date' name="dob" onChange={handleChange} placeholder='dob' value={formData.dob}>
@@ -164,6 +230,7 @@ export default function Add_Doctor() {
                 </input>
                 
               
+                {errors.dob && <span style={{ color: 'red' }}>{errors.dob}</span>}
                 {/* <div className="text-slate-600 text-sm font-medium mt-9 max-md:max-w-full">
                   Blood Group
                 </div>
@@ -192,19 +259,20 @@ export default function Add_Doctor() {
         </div>
         )}
         {activeStep === 1 && (
-          <div>  <div className="items-stretch w-[1100px] bg-white flex flex-col pb-12 px-7 max-md:px-5">
+          <div>  <div className="items-stretch w-[1120px]  bg-white flex flex-col pb-12 px-7 max-md:px-5">
           <div className="max-md:max-w-full">
             <div className="gap-5 flex max-md:flex-col max-md:items-stretch max-md:gap-0">
               <div className="flex flex-col items-stretch w-6/12 max-md:w-full max-md:ml-0">
                 <div className="items-stretch flex grow flex-col pt-7 max-md:max-w-full max-md:mt-10">
                   <div className="text-slate-600 text-sm font-medium max-md:max-w-full">
-                    Educational qualification
+                    Educational qualification <span style={{ color: 'red' }}>*</span>
                   </div>
                   <input className="text-gray-500  text-base border-transparent font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-3 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' name='education_qualification' value={formData.education_qualification}
                     onChange={handleChange}
                     fullWidth placeholder='Educational Details' >
                  
                 </input>
+                {errors.education_qualification && <span style={{ color: 'red' }}>{errors.education_qualification}</span>}
                   {/* <div>
                   <select className="justify-between border-transparent  w-[500px] items-stretch bg-slate-100 flex gap-5 mt-2 px-3.5 py-4 rounded-md max-md:max-w-full max-md:flex-wrap" type='select' name='EducationQualification'  value={formData.EducationQualification}
                 onChange={handleChange}
@@ -217,7 +285,7 @@ export default function Add_Doctor() {
                      
                   </div> */}
                   <div className="text-slate-600 text-sm font-medium mt-8 max-md:max-w-full">
-                    Working details
+                    Working details <span style={{ color: 'red' }}>*</span>
                   </div>
                   <div >
                     <input className="justify-between  border-transparent  w-[500px] items-stretch text-slate-600 text-sm font-medium bg-slate-100 flex gap-5 mt-2 px-3.5 py-4 rounded-md max-md:max-w-full max-md:flex-wrap" type='text' name='working_details'  value={formData.working_details}
@@ -225,28 +293,30 @@ export default function Add_Doctor() {
                 fullWidth   placeholder='Enter other working places'>
                    
                     </input>
-                    
+                    {errors.working_details && <span style={{ color: 'red' }}>{errors.working_details}</span>}
                   </div>
                 </div>
               </div>
               <div className="flex flex-col items-stretch w-6/12 ml-5 max-md:w-full max-md:ml-0">
                 <div className="items-stretch flex grow flex-col mt-6 py-0.5 max-md:max-w-full max-md:mt-10">
                   <div className="text-slate-600 text-sm font-medium max-md:max-w-full">
-                    Specialization
+                    Specialization <span style={{ color: 'red' }}>*</span>
                   </div>
                   <input className="text-gray-500  border-transparent text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-2 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5 " type='text' name='specialty'  value={formData.specialty}
                 onChange={handleChange}
                 fullWidth  placeholder='Enter Specialization'>
                    
                   </input>
+                  {errors.specialty && <span style={{ color: 'red' }}>{errors.specialty}</span>}
                   <div className="text-slate-600 text-sm font-medium mt-8 max-md:max-w-full">
-                    Experience
+                    Experience <span style={{ color: 'red' }}>*</span>
                   </div>
                   <input className="text-gray-500  border-transparent text-base font-medium leading-4 whitespace-nowrap bg-slate-100 justify-center mt-2 pl-4 pr-16 py-4 rounded-md items-start max-md:max-w-full max-md:pr-5" type='text' name='experince'  value={formData.experince}
                 onChange={handleChange}
                 fullWidth  placeholder=' Enter experience'>
                    
                   </input>
+                  {errors.experince && <span style={{ color: 'red' }}>{errors.experince}</span>}
                 </div>
               </div>
             </div>
@@ -256,9 +326,9 @@ export default function Add_Doctor() {
         </div>
         )}
         {activeStep === 2 && (
-          <div> <div className="bg-white w-[1000px] flex flex-col pl-7 pr-20 pt-7 pb-12 items-start max-md:px-5">
+          <div> <div className="bg-white w-[1120px]   flex flex-col pl-7 pr-20 pt-7 pb-12 items-start max-md:px-5">
           <div className="text-slate-600 text-sm font-medium max-md:max-w-full">
-            Identity Proof
+            Identity Proof <span style={{ color: 'red' }}>*</span>
           </div>
           <div >
             <div className="text-gray-500 text-base font-medium leading-4 grow shrink basis-auto">
@@ -290,11 +360,12 @@ export default function Add_Doctor() {
             </div> 
            
           </div>
+          {errors.identity_proof && <span style={{ color: 'red' }}>{errors.identity_proof}</span>}
           <div className="text-slate-400 text-xs mt-2 max-md:max-w-full">
             Note : Accepted Format PNG,JPG,PDF)
           </div>
           <div className="text-slate-600 text-sm font-medium mt-12 max-md:max-w-full max-md:mt-10">
-            Medical Registration Proof
+            Medical Registration Proof <span style={{ color: 'red' }}>*</span>
           </div>
           <div >
             
@@ -319,7 +390,7 @@ export default function Add_Doctor() {
   onChange={(e) => handleFileChange('medical_liscence', e)}/>
               {formData.medical_liscence && (
                 <div>
-                  <p>  Uploaded</p>
+                  <p>File Uploaded</p>
                 
                 </div>
               )}
@@ -327,6 +398,7 @@ export default function Add_Doctor() {
             </div>
            
           </div>
+          {errors.medical_liscence && <span style={{ color: 'red' }}>{errors.medical_liscence}</span>}
           <div className="text-slate-400 text-xs mt-2 max-md:max-w-full">
             Note : Accepted Format PNG,JPG,PDF
           </div>

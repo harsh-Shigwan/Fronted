@@ -19,6 +19,7 @@ const Generate_Bill = () => {
   const [mediData, setMediData] = useState([]);
   const [balanceAmount, setBalanceAmount] = useState(null);
   const [patientMedicineUsages, setPatientMedicineUsages] = useState([]);
+    const gstAmount = (totalAmount * 0.05).toFixed(2);
   const targetRef = useRef();
   useEffect(() => {
     const fetchData = async () => {
@@ -250,9 +251,10 @@ const Generate_Bill = () => {
   }, [patientId, token, baseURL]);
 
   const totalSum =
-    parseFloat(totalPrice) + parseFloat(mediTotal) + parseFloat(totalAmount);
-  const balancetotal = parseFloat(totalSum) - parseFloat(balanceAmount);
-
+    parseFloat(totalPrice) + parseFloat(mediTotal) + parseFloat(totalAmount );
+    const afterGstAmount =  parseFloat(totalPrice) + parseFloat(mediTotal) + parseFloat(totalAmount ) + parseFloat(gstAmount);
+  const balancetotal = (parseFloat(afterGstAmount) - parseFloat(balanceAmount)).toFixed(2);
+ // const amountAfterGST = totalSum + gstAmount;
   const groupEquipments = (equipments) => {
     const groupedEquipments = {};
 
@@ -283,9 +285,10 @@ const Generate_Bill = () => {
     (acc, curr) => acc + curr.total_price,
     0
   );
-  console.log();
+  
+
   return (
-    <div className=" ml-40 w-full justify-center ">
+    <div className=" ml-20 w-full justify-center ">
       <div>
         <div ref={targetRef} className=" mt-10">
           <div className="flex flex-col items-start max-w-[793px]  ">
@@ -459,9 +462,15 @@ const Generate_Bill = () => {
                 Total Bill Amount : {totalSum}
               </div>
               <div className="self-end mt-2.5">
+                GST ( 5%) : {gstAmount}
+              </div>
+              <div className="self-end mt-2.5">
+               After GST Total Bill Amount : {afterGstAmount}
+              </div>
+              <div className="self-end mt-2.5">
                 Deposit Amount : {balanceAmount}
               </div>
-              <div className="mt-2.5 mb-2.5 font-bold">
+              <div className="self-end mt-3 mb-3 font-bold">
                 Final Paid amount : {balancetotal}
               </div>
             </div>

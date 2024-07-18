@@ -113,13 +113,18 @@ const AttendanceGrid = () => {
   };
 
   useEffect(() => {
-    // Scroll to the current day
-    const today = new Date().getDate();
-    const todayElement = document.getElementById(`date-${today}`);
-    if (todayElement) {
-      dateContainerRef.current.scrollLeft = todayElement.offsetLeft - dateContainerRef.current.offsetLeft - (dateContainerRef.current.clientWidth / 2) + (todayElement.clientWidth / 2);
+    const lastDateElement = document.getElementById(`date-${dates.length}`);
+    if (lastDateElement) {
+      dateContainerRef.current.scrollLeft = lastDateElement.offsetLeft - dateContainerRef.current.offsetLeft - (dateContainerRef.current.clientWidth / 2) + (lastDateElement.clientWidth / 2);
     }
-  }, [currentMonth]);
+  }, [currentMonth, dates]);
+  
+
+  const isToday = (dateString) => {
+    const today = new Date();
+    const [day, month, year] = dateString.split('-');
+    return today.getDate() === parseInt(day) && (today.getMonth() + 1) === parseInt(month) && today.getFullYear() === parseInt(year);
+  };
 
   return (
     <div className="container w-[1120px] ">
@@ -160,6 +165,11 @@ const AttendanceGrid = () => {
                       type="checkbox"
                       checked={attendance[st.id]?.[date] || false}
                       onChange={(e) => handleCheckboxChange(e, st.id, date)}
+                      disabled={!isToday(date)}
+                      style={{
+                        backgroundColor: attendance[st.id]?.[date] ? 'green' : 'red',
+                      }}
+
                     />
                   </td>
                 ))}

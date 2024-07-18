@@ -56,7 +56,7 @@ const MedicineTable = ({ mediTotal, mediData }) => {
   const groupedMediData = groupMediData(mediData);
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 ">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="border-y-2 border-black text-black">
           <tr>
@@ -93,7 +93,7 @@ const MedicineTable = ({ mediTotal, mediData }) => {
           </tr>
         </thead>
         <tbody className="text-gray-700 divide-y border-black divide-gray-200">
-          {groupedMediData.map((equipment, index) => (
+          {groupedMediData.reverse().map((equipment, index) => (
             <tr key={index}>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {equipment.medicine}

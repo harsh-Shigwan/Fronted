@@ -38,7 +38,7 @@ const OPD_New = () => {
   };
 
   const handlePatientSelect = (patient) => {
-    setPatientInput(patient.FirstName);
+    setPatientInput(patient.fullname);
     setSelectedPatient(patient.PatientID);
     setShowPatientDropdown(false);
   };
@@ -63,6 +63,7 @@ const OPD_New = () => {
       );
       console.log("API Response:", response.data);
       navigate("/Patient/OPD");
+      window.location.reload();
     } catch (error) {
       console.error("API Error:", error);
       console.log("Error response data:", error.response?.data);
@@ -123,7 +124,7 @@ const OPD_New = () => {
                   <div className="flex flex-col  max-h-48 overflow-y-auto bg-white border border-gray-300  w-[493px]	position: absolute text-slate-600  font-medium  mt-[86px]  rounded-md">
                     {patientsList
                       .filter((patient) =>
-                        patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())||
+                        patient.fullname.toLowerCase().includes(patientInput.toLowerCase())||
                       patient.PatientID.toString().toLowerCase().includes(patientInput.toLowerCase())
                       )
                       .map((patient) => (
@@ -132,7 +133,7 @@ const OPD_New = () => {
                           className="p-2 cursor-pointer hover:bg-gray-200"
                           onMouseDown={() => handlePatientSelect(patient)}
                         >
-                        {patient.PatientID} {patient.FirstName}
+                        {patient.PatientID} {patient.fullname}
                         </div>
                       ))}
                   </div>

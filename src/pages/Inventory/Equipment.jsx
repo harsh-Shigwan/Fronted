@@ -193,7 +193,7 @@ const Equipment = () => {
                         <TableBody>
                           {myData
                             .slice(page * rowperpage, page * rowperpage + rowperpage)
-                            .filter((item) =>{
+                            .reverse().filter((item) =>{
                               const toSearch = searchTerm.toLowerCase();
                               const nameMatch = item.name ? item.name.toLowerCase().includes(toSearch) : false;
                               const quantityMatch = item.quantity ? String(item.quantity).includes(toSearch) : false;
@@ -208,9 +208,9 @@ const Equipment = () => {
                                      purchaseDateMatch ||
                                      unitPriceMatch;
                             })
-                            .map((user) => (
+                            .map((user, index) => (
                               <TableRow key={user.id}>
-                                <TableCell>{user.id}</TableCell>
+                                <TableCell>{index + 1}</TableCell>
                                 <TableCell>{user.name} </TableCell>
                                 <TableCell>{user.quantity}</TableCell>
                                 <TableCell>{user.manufacturer}</TableCell>

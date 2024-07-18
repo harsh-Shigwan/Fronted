@@ -29,7 +29,7 @@ const OPD_edit = () => {
         setSelectedDoctor(response.data.doctor);
         setSelectedPatient(response.data.patient);
         setFormData({ department: response.data.department });
-        setPatientInput(response.data.patient.FirstName); 
+        setPatientInput(response.data.patient.fullname); 
         setDoctorInput(response.data.doctor.name); 
       } catch (error) {
         console.error("Error fetching appointment data:", error);
@@ -87,7 +87,7 @@ const OPD_edit = () => {
   };
 
   const handlePatientSelect = (patient) => {
-    setPatientInput(patient.FirstName);
+    setPatientInput(patient.fullname);
     setSelectedPatient(patient.PatientID);
     setShowPatientDropdown(false);
   };
@@ -151,7 +151,7 @@ const OPD_edit = () => {
                   <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[493px] position: absolute text-slate-600 font-medium mt-[86px] rounded-md">
                     {patientsList
                       .filter((patient) =>
-                        patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())||
+                        patient.fullname.toLowerCase().includes(patientInput.toLowerCase())||
                       patient.PatientID.toString().toLowerCase().includes(patientInput.toLowerCase())
                       )
                       .map((patient) => (
@@ -160,7 +160,7 @@ const OPD_edit = () => {
                           className="p-2 cursor-pointer hover:bg-gray-200"
                           onMouseDown={() => handlePatientSelect(patient)}
                         >
-                        {patient.PatientID} {patient.FirstName}
+                        {patient.PatientID} {patient.fullname}
                         </div>
                       ))}
                   </div>

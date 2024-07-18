@@ -1,8 +1,7 @@
-// src/components/ErrorPage404.js
+
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ExclamationCircleIcon } from '@heroicons/react/outline'; // Optional: Using Heroicons for icons
-
+import { ExclamationCircleIcon } from '@heroicons/react/outline'; 
 const ErrorPage404 = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

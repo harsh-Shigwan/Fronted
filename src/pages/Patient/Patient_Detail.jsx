@@ -273,7 +273,7 @@ const Patient_Detail = () => {
                               phoneNoString.includes(toSearch) ||
                               dobString.includes(toSearch)
                             );
-                          })
+                          }).reverse()
                           .map((user) => (
                             <TableRow key={user.PatientID}>
                               <TableCell>{user.PatientID}</TableCell>

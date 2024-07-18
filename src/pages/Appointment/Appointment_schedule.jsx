@@ -34,7 +34,7 @@ const AppointmentSchedule = () => {
           },
         });
         setSelectedPatient(response.data.patient);
-        setPatientInput(patientResponse.data.FirstName);
+        setPatientInput(patientResponse.data.fullname);
         setSelectedDoctor(response.data.doctor);
         setDate(response.data.date);
         setTimeSlot(response.data.time_slot);
@@ -85,7 +85,7 @@ const AppointmentSchedule = () => {
   };
 
   const handlePatientSelect = (patient) => {
-    setPatientInput(patient.FirstName);
+    setPatientInput(patient.fullname);
     setSelectedPatient(patient.PatientID);
     setShowPatientDropdown(false);
   };
@@ -157,7 +157,7 @@ const AppointmentSchedule = () => {
                   <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[500px] position: absolute text-slate-600 mt-[86px] rounded-md">
                     {patientsList
                       .filter((patient) =>
-                        patient.FirstName.toLowerCase().includes(patientInput.toLowerCase())||
+                        patient.fullname.toLowerCase().includes(patientInput.toLowerCase())||
                       patient.PatientID.toString().toLowerCase().includes(patientInput.toLowerCase())
                       )
                       .map((patient) => (
@@ -166,7 +166,7 @@ const AppointmentSchedule = () => {
                           className="p-2 cursor-pointer hover:bg-gray-200"
                           onClick={() => handlePatientSelect(patient)}
                         >
-                        {patient.PatientID} {patient.FirstName}
+                        {patient.PatientID} {patient.fullname}
                         </div>
                       ))}
                   </div>

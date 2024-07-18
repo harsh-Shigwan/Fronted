@@ -27,7 +27,7 @@ console.log(items)
             </TableRow>
           </TableHead>
 		  <TableBody>
-		  {items.map((item, index) => (
+		  {items.reverse().map((item, index) => (
 			  <TableRow key={index}>
 			  <TableCell>{item.selectedItem}</TableCell>
 			  <TableCell>{item.quantity}</TableCell>

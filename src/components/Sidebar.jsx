@@ -69,7 +69,7 @@ const routes = [
     icon: <FaWindowRestore />,
   },
  {
-    path: "/Staff_Mangement",
+    path: "/Staff_form",
     name: "Staff",
     icon:<IoPeople />,
   },{

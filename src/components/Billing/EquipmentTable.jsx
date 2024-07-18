@@ -2,7 +2,7 @@ import React from "react";
 
 const EquipmentTable = ({ groupedEquipments, totalPrice, generateFinalBill }) => {
   return (
-    <div className="mt-5">
+    <div className="mt-5 ">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="border-y-2 border-black text-black">
           <tr>
@@ -39,7 +39,7 @@ const EquipmentTable = ({ groupedEquipments, totalPrice, generateFinalBill }) =>
           </tr>
         </thead>
         <tbody className="text-gray-700 divide-y border-black divide-gray-200">
-          {groupedEquipments.map((equipment, index) => (
+          {groupedEquipments.reverse().map((equipment, index) => (
             <tr key={index}>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {equipment.name}
