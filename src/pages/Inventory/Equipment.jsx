@@ -147,7 +147,7 @@ const Equipment = () => {
                       className="absolute top-[11px] left-[937px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
                       onClick={handle3}
                     >
-                      <div className="w-24 my-0 mx-[!important] absolute top-[10px] left-[30px] flex flex-row items-center justify-start gap-[8px] z-[0]">
+                      <div className="w-36 my-0 mx-[!important] absolute top-[10px] left-[16px] flex flex-row items-center justify-start gap-[8px] z-[0]">
                         <img
                           className="w-5 relative h-5 object-cover"
                           alt=""

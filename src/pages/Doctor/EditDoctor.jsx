@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import Breadcrumb from '../../components/Breadcrumb';
 import axios from 'axios';
 import baseURL from '../../assets/API_URL';
-import CustomDropdown from '../../components/CustomDropdown';
+import CustomDropdown from '../../components/DropDown/CustomDropdown';
 
 const steps = ['Step 1', 'Step 2', 'Step 3'];
 

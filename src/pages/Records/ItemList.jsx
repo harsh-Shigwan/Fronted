@@ -13,7 +13,7 @@ console.log(items)
   return (
     <div>
     
-    <div className="self-stretch  mt-16  overflow-hidden shrink-0  items-start justify-start text-text-body-light">
+    <div className="self-stretch  mt-16  overflow-hidden shrink-0  items-start justify-start text-text-body-light ">
    
       <TableContainer >
         <Table>
@@ -26,7 +26,7 @@ console.log(items)
 			  <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
-		  <TableBody>
+		  <TableBody className=" bg-white">
 		  {items.reverse().map((item, index) => (
 			  <TableRow key={index}>
 			  <TableCell>{item.selectedItem}</TableCell>

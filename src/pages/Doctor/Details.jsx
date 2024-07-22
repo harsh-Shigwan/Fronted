@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import Plus from "../../Data/Plus.png";
-import download from "../../Data/download.png";
-import search from "../../Data/search.png";
-import edit from "../../Data/edit.png";
+import Plus from "../../Data/Plus.svg";
+import download from "../../Data/download.svg";
+import wow from "../../Data/carbon_search.svg";
+import edit from "../../Data/edit.svg";
+import { BsFiletypePdf } from "react-icons/bs";
 import generatePDF from "react-to-pdf";
 import baseURL from "../../assets/API_URL";
 import {
@@ -46,7 +47,7 @@ const Details = () => {
   };
 
   async function deleteData(DoctorID) {
-    const deleteUrl = `${baseURL}/api/doctor/api/doctors/${DoctorID}/`;
+    const deleteUrl = `${baseURL}/doctor/api/doctors/${DoctorID}/`;
     try {
       const response = await axios.delete(deleteUrl, {
         headers: {
@@ -95,13 +96,17 @@ const Details = () => {
                     Doctors
                   </div>
                   <input
-                    className="absolute top-[11px] left-[588px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-5"
+                    className="absolute top-[11px] left-[588px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-8"
                     value={search}
                     onChange={handleSearchChange}
                     placeholder="Search"
                   />
-                  <div className="absolute top-[18px] left-[600px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
-                    
+                  <div className="absolute top-[9px] left-[485px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
+                  <img
+                  className="w-5 relative h-10  overflow-hidden shrink-0"
+                  alt=""
+                  src={wow}
+                />
                   </div>
 
                   <button
@@ -135,7 +140,7 @@ const Details = () => {
                     </div>
                   </button>
                 </div>
-                <div className="self-stretch shrink-0  items-start justify-start text-text-body-light">
+                <div className="self-stretch shrink-0  items-start justify-start text-text-body-light bg-white">
                   <page>
                     <TableContainer ref={targetRef}>
                       <Table>
@@ -203,22 +208,30 @@ const Details = () => {
                                 <TableCell>{user.education_qualification}</TableCell>
                                 <TableCell>{user.experince}</TableCell>
                                 <TableCell>{user.phone}</TableCell>
-                                <div className="w-[250px] relative my-0 mx-[!important] left-[0px] bg-whitesmoke shadow-[0px_-1px_0px_#edf2f7_inset] h-[52px] overflow-hidden shrink-0 z-[22]">
+                                <div className="w-[250px] relative my-0 mx-[!important] left-[0px] bg-white shadow-[0px_-1px_0px_#edf2f7_inset] h-[52px] overflow-hidden shrink-0 ">
                                   <img
                                     className="absolute top-[calc(50%_-_12px)] left-[24px] w-6 h-6 hidden"
                                     alt=""
                                     src=""
                                   />
-                                  <Link to={`/Doctor/Details/EditDoctor/${user.DoctorID}`}>
+                                  <Link
+                                  to={`/Doctor/Details/${user.DoctorID}`}
+                                >
+                                  <div
+                                    className="absolute top-[15px] left-[0px] w-6 h-20 overflow-hidden"
+                                    
+                                  ><BsFiletypePdf className="w-5 h-5" /></div>
+                                </Link>
+                                  <Link to={`/Appointment/Appointment_form/Appoointment_schedule/${user.DoctorID}`}>
                                   <img
-                                    className="absolute top-[calc(50%_-_12px)] left-[21px] w-6 h-6 overflow-hidden"
+                                    className="absolute top-[calc(50%_-_12px)] left-[51px] w-6 h-6 overflow-hidden"
                                     alt=""
                                     src={edit}
                                   />
                                   </Link>
                                             
                                   <Link 
-                                    className="absolute top-[13px] left-[71px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
+                                    className="absolute top-[13px] left-[100px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
                                     to={`/Doctor/Details/Doctor_Profile/${user.DoctorID}`}
                                   >
                                     <div className="flex flex-row items-center justify-start gap-[6px]">
@@ -233,7 +246,7 @@ const Details = () => {
                                     </div>
                                   </Link>
                                   <button
-                                  className="absolute top-[13px] left-[151px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
+                                  className="absolute top-[13px] left-[181px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
                                   onClick={() => deleteData(user.DoctorID)}
                                 >
                                   <div className="flex flex-row items-center justify-start gap-[6px]">

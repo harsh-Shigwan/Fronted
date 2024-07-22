@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Plus from "../../Data/Plus.png";
 import download from "../../Data/download.png";
-import AttendanceGrid from '../../components/AttendanceGrid';
+import AttendanceGrid from '../../components/HorizontalGrid/AttendanceGrid';
 import { useNavigate } from "react-router-dom";
 const  Staff_Form = () => {
 const navigate = useNavigate();

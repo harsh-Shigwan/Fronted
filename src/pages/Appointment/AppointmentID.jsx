@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Breadcrumb from '../../components/Breadcrumb';
 import baseURL from '../../assets/API_URL';
-import CustomDropdown from '../../components/CustomDropdown';
+import CustomDropdown from '../../components/DropDown/CustomDropdown';
 import { Link, useParams } from 'react-router-dom';
 
 const AppointmentID = () => {

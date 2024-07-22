@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import baseURL from '../../assets/API_URL';
-import CustomDropdown from '../../components/CustomDropdown';
+import CustomDropdown from '../../components/DropDown/CustomDropdown';
 const Add_Staff = () => {
   const token =  JSON.parse(localStorage.getItem("Token"))
   const [formData, setFormData] = useState({

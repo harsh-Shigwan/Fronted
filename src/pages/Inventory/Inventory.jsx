@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import Plus from "../../Data/Plus.png";
-import download from "../../Data/download.png";
-import search from "../../Data/search.png";
-import edit from "../../Data/edit.png";
+import Plus from "../../Data/Plus.svg";
+import download from "../../Data/download.svg";
+import search from "../../Data/carbon_search.svg";
+import edit from "../../Data/edit.svg";
 import baseURL from "../../assets/API_URL";
 import generatePDF from "react-to-pdf";
 import {
@@ -96,7 +96,7 @@ const Inventory = () => {
                 <img
                   loading="lazy"
                   src="https://cdn.builder.io/api/v1/image/assets/TEMP/664eea8faccff020e391200fb7ea74ef1669b35756bd9c9b7d4632c24ef130ab?apiKey=8d6992485656477797592f8415f51272&"
-                  className="self-start w-2.5 aspect-[0.71] fill-white"
+                  className="self-start w-2.5  fill-white"
                 />
                 <div className="grow">Add Medicine</div>
               </div>
@@ -144,13 +144,13 @@ const Inventory = () => {
                       className="absolute top-[11px] left-[937px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
                       onClick={handle}
                     >
-                      <div className="w-24 my-0 mx-[!important] absolute top-[10px] left-[30px] flex flex-row items-center justify-start gap-[8px] z-[0]">
+                      <div className="w-36 my-0 mx-[!important] absolute top-[10px] left-[10px] flex flex-row items-center justify-start gap-[0px]  z-[0]">
                         <img
-                          className="w-5 relative h-5 object-cover"
+                          className="w-5 relative  h-5 object-cover"
                           alt=""
                           src={Plus}
                         />
-                        <div className="relative font-semibold">
+                        <div className="relative  ml-3 font-semibold">
                           Add Medicines
                         </div>
                       </div>

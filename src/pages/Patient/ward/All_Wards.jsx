@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import download from "../../../Data/download.png";
-import search from "../../../Data/search.png";
-import edit from "../../../Data/edit.png";
+import download from "../../../Data/download.svg";
+import search from "../../../Data/carbon_search.svg";
+import edit from "../../../Data/edit.svg";
 import baseURL from "../../../assets/API_URL";
 import generatePDF from "react-to-pdf";
 import {

@@ -33,7 +33,7 @@ function Records() {
     
 
     return (
-        <div className='  w-[1000px] ml-16 rounded-lg shadow-md mt-10 '>
+        <div className='  w-[1000px] ml-16 rounded-lg shadow-lg mt-10 '>
         <Breadcrumb></Breadcrumb>
      
        

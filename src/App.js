@@ -57,7 +57,6 @@ import All_Wards from "./pages/Patient/ward/All_Wards";
 import Generate_Bill from "./pages/Records/Generate_Bill";
 import Discharged from "./pages/Patient/Discharged";
 import DischargedList from "./pages/Patient/DischargedList";
-import SideBarLayout from "./components/SideBarLayout";
 import AuthenticationRoute from "./components/AuthenticationRoute";
 import ErrorPage404 from "./components/ErrorPage404";
 import Shifts from "./pages/Staff/Shifts";
@@ -68,6 +67,10 @@ import DateChart from "./components/Graph/DateChart";
 import AppointmentSchedule from "./pages/Appointment/Appointment_schedule";
 import Edit_Equipment from "./pages/Inventory/Edit_Equipment";
 import Edit_Medicine from "./pages/Inventory/Edit_Medicine";
+import PatientPdf from "./pages/Patient/PatientPdf";
+import DoctorPdf from "./pages/Doctor/DoctorPdf";
+import Visit from "./pages/Patient/Tabs/Visit";
+import VisitDoctor from "./pages/Records/DoctorVisit/VisitDoctor";
 //import Medicine from './pages/Pharmacy/Medicine';
 
 const App = () => {
@@ -116,6 +119,10 @@ const App = () => {
             element={<EditPatient />}
           />{" "}
           <Route
+            path="/Patient/PatientPdf/:pk"
+            element={<PatientPdf />}
+          />{" "}
+          <Route
             path="/Patient/OPD/Add_Patient/OPD_View/:visit_id"
             element={<OPD_View />}
           ></Route>
@@ -146,6 +153,10 @@ const App = () => {
             path="/Doctor/Details/EditDoctor/:pk"
             element={<EditDoctor />}
           />
+          <Route
+          path="/Doctor/Details/:pk"
+          element={<DoctorPdf />}
+        />
           {/*Invoice */}
           <Route
             path="/Invoice_Generator/generate-bill/:patientId/:totalAmount"
@@ -154,6 +165,7 @@ const App = () => {
           <Route path="/Invoice_Generator/BedCharge/:patientId" element={<BedPerCharge/>}/>
           <Route path="/Invoice_Generator" element={<Records />}></Route>
          <Route path="/Invoice_Generator/medi/:patientId" element={<Medi/>}></Route>
+         <Route path="/Invoice_Generator/medi/visit/:patientId" element={<VisitDoctor/>}></Route>
           <Route path="/Pharmacy" element={<Pharmacy />} />
           <Route path="/Pharmacy/Add_Records" element={<Add_Records />}></Route>
           <Route path="/Pharmacy/Medicines" element={<Medicines />}></Route>

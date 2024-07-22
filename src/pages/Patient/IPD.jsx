@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import Plus from "../../Data/Plus.png";
-import download from "../../Data/download.png";
-import searchIcon from "../../Data/search.png";
-import edit from "../../Data/edit.png";
+import Plus from "../../Data/Plus.svg";
+import download from "../../Data/download.svg";
+import show from "../../Data/carbon_search.svg";
+import edit from "../../Data/edit.svg";
 import { Link, useNavigate } from "react-router-dom";
 import baseURL from "../../assets/API_URL";
 import generatePDF from "react-to-pdf";
@@ -103,19 +103,18 @@ const IPD = () => {
                     In Patient Department
                   </div>
                   <input
-                    className="absolute top-[11px] left-[358px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid pl-5 border-black"
+                    className="absolute top-[11px] left-[358px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid pl-8 border-black"
                     value={search}
                     onChange={(e) => {
                       setSearch(e.target.value);
                     }}
                     placeholder="search..."
                   />
-                  <div className="absolute top-[18px] left-[500px] h-[23.75px] flex flex-row ml-28 items-start justify-start">
+                  <div className="absolute top-[8px] left-[255px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
                   <img
-                  className="w-5 relative h-5 overflow-hidden bg-slate-900 shrink-0"
-                  alt="Search"
-                  src={searchIcon}
-                />
+                  className="w-5 relative h-10  overflow-hidden shrink-0 "
+                   src={show}>
+                </img>
                   </div>
 
                   <button

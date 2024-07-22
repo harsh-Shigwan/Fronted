@@ -3,7 +3,7 @@ import axios from 'axios';
 import baseURL from '../assets/API_URL';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-const AttendanceGrid = () => {
+const AppointmentTimeSlotGrid = () => {
   const token = JSON.parse(localStorage.getItem("Token"));
   const [staff, setStaff] = useState([]);
   const [attendance, setAttendance] = useState({});
@@ -95,9 +95,9 @@ const AttendanceGrid = () => {
     const today = new Date();
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      if (date <= today) {
-        dates.push(`${day.toString().padStart(2, '0')}-${(month + 1).toString().padStart(2, '0')}-${year}`);
-      }
+     
+        dates.push(`${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
+      
     }
     return dates;
   };
@@ -118,12 +118,18 @@ const AttendanceGrid = () => {
       dateContainerRef.current.scrollLeft = lastDateElement.offsetLeft - dateContainerRef.current.offsetLeft - (dateContainerRef.current.clientWidth / 2) + (lastDateElement.clientWidth / 2);
     }
   }, [currentMonth, dates]);
-  
 
   const isToday = (dateString) => {
     const today = new Date();
-    const [day, month, year] = dateString.split('-');
+    const [year, month, day] = dateString.split('-');
     return today.getDate() === parseInt(day) && (today.getMonth() + 1) === parseInt(month) && today.getFullYear() === parseInt(year);
+  };
+
+  // Dummy data for appointment times
+  const appointmentTimeSlots = {
+    "2024-07-01": ["09:00 AM - 10:00 AM", "10:30 AM - 11:30 AM"],
+    "2024-07-02": ["11:00 AM - 12:00 PM", "01:00 PM - 02:00 PM"],
+    // Add more dates and time slots as needed
   };
 
   return (
@@ -131,13 +137,13 @@ const AttendanceGrid = () => {
       <h1 className="text-2xl font-bold mb-4">Staff Attendance</h1>
       <div className="flex justify-between mb-4">
         <button
-          className="px-4 py-2  text-md flex items-center font-semibold text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark justify-center rounded bg-theme-white-default mb-6"
+          className="px-4 py-2 text-md flex items-center font-semibold text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark justify-center rounded bg-theme-white-default mb-6"
           onClick={handlePreviousMonth}
         >
-          <FaChevronLeft className="mr-2" />Previous Month
+          <FaChevronLeft className="mr-2" /> Previous Month
         </button>
         <button
-          className="px-4 py-2  text-md font-semibold text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark justify-center rounded bg-theme-white-default mb-6  flex items-center"
+          className="px-4 py-2 text-md font-semibold text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark justify-center rounded bg-theme-white-default mb-6 flex items-center"
           onClick={handleNextMonth}
         >
           Next Month <FaChevronRight className="ml-2" />
@@ -147,30 +153,25 @@ const AttendanceGrid = () => {
         <table className="min-w-full bg-white">
           <thead className="bg-gray-800 text-white h-[55px] border-indigo-200">
             <tr>
-              <th className=" sticky left-0 z-10 py-2 px-4 bg-indigo-100 text-text-body-light  text-lg font-medium"> ID's</th>
+              <th className="sticky left-0 z-10 py-2 px-4 bg-indigo-100 text-text-body-light text-lg font-medium">ID's</th>
               <th className="sticky left-[55px] z-10 py-2 px-4 bg-indigo-100 text-text-body-light text-lg font-medium">Staff Name</th>
               {dates.map((date, index) => (
                 <th key={date} id={`date-${index + 1}`} className="py-2 px-4 whitespace-nowrap bg-indigo-100 text-text-body-light text-lg font-medium">{date}</th>
               ))}
             </tr>
           </thead>
-          <tbody className=' h-auto' >
+          <tbody className='h-auto'>
             {staff.map(st => (
               <tr key={st.id} className="text-center">
-                <td className=" sticky left-0  px-4 py-2 bg-theme-white-default text-text-body-light ">{st.id}</td>
-                <td className="sticky left-[55px]  px-4 py-2 min-w-[220px]   bg-theme-white-default text-text-body-light ">{st.name}</td>
+                <td className="sticky left-0 px-4 py-2 bg-theme-white-default text-text-body-light">{st.id}</td>
+                <td className="sticky left-[55px] px-4 py-2 min-w-[220px] bg-theme-white-default  text-slate-600">{st.name}</td>
                 {dates.map(date => (
-                  <td key={date} className=" px-4 py-2">
-                    <input
-                      type="checkbox"
-                      checked={attendance[st.id]?.[date] || false}
-                      onChange={(e) => handleCheckboxChange(e, st.id, date)}
-                      disabled={!isToday(date)}
-                      style={{
-                        backgroundColor: attendance[st.id]?.[date] ? 'green' : 'red',
-                      }}
-
-                    />
+                  <td key={date} className="px-4 py-2">
+                    {appointmentTimeSlots[date]?.map((timeSlot, index) => (
+                      <div key={index} className="mb-1 text-slate-600">
+                        {timeSlot}
+                      </div>
+                    )) || <div className='text-slate-600'>No Appointments</div>}
                   </td>
                 ))}
               </tr>
@@ -182,4 +183,4 @@ const AttendanceGrid = () => {
   );
 };
 
-export default AttendanceGrid;
+export default AppointmentTimeSlotGrid;

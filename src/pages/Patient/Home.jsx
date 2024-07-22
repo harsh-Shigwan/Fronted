@@ -27,6 +27,82 @@ const Home = () => {
   const [ admissionData , setAdmissionData] = useState([])
   const [ ipdDate ,  setIpdDate] = useState([])
   const [ opdDate , setOpdDate] = useState([])
+  const [bedData, setBedData] = useState([]);
+ 
+  const [uniqueWardNames, setUniqueWardNames] = useState([]);
+  const [ uniqueNamesOccupiedBed , setUniqueNamesOccupiedBed] = useState([]);
+  const [totalBedsCount, setTotalBedsCount] = useState([]);
+const [OccupiedBedCount, setOccupiedBedCount] = useState([]);
+
+  useEffect(() => {
+    const fetchBedData = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/api/ipd/beds/`, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+        const data = response.data;
+  
+        const totalBedsCountMap = {};
+        const totalOccupiedBedCountMap = {};
+        const uniqueNamesSet = new Set();
+        const uniqueNamesOccupiedSet = new Set();
+  
+        data.forEach(item => {
+          const wardName = item.ward.name;
+          const totalBeds = item.ward.total_beds;
+  
+          if (item.is_available) {
+            if (!totalBedsCountMap[wardName]) {
+              totalBedsCountMap[wardName] = {};
+            }
+            if (totalBedsCountMap[wardName][totalBeds]) {
+              totalBedsCountMap[wardName][totalBeds]++;
+            } else {
+              totalBedsCountMap[wardName][totalBeds] = 1;
+            }
+  
+            uniqueNamesSet.add(wardName);
+          } else {
+            if (!totalOccupiedBedCountMap[wardName]) {
+              totalOccupiedBedCountMap[wardName] = {};
+            }
+            if (totalOccupiedBedCountMap[wardName][totalBeds]) {
+              totalOccupiedBedCountMap[wardName][totalBeds]++;
+            } else {
+              totalOccupiedBedCountMap[wardName][totalBeds] = 1;
+            }
+  
+            uniqueNamesOccupiedSet.add(wardName);
+          }
+        });
+  
+        // Transform maps to arrays for charts
+        const totalBedsCountArr = Object.keys(totalBedsCountMap).map(wardName => ({
+          wardName,
+          count: Object.values(totalBedsCountMap[wardName]).reduce((a, b) => a + b, 0)
+        }));
+        
+        const totalOccupiedBedCountArr = Object.keys(totalOccupiedBedCountMap).map(wardName => ({
+          wardName,
+          count: Object.values(totalOccupiedBedCountMap[wardName]).reduce((a, b) => a + b, 0)
+        }));
+  
+        setTotalBedsCount(totalBedsCountArr);
+        setOccupiedBedCount(totalOccupiedBedCountArr);
+        setUniqueWardNames(Array.from(uniqueNamesSet));
+        setUniqueNamesOccupiedBed(Array.from(uniqueNamesOccupiedSet));
+  
+      } catch (error) {
+        console.error('Error fetching bed data:', error);
+      }
+    };
+  
+    fetchBedData();
+  }, []);
+  
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -183,6 +259,8 @@ const Home = () => {
   const noti=()=>{
     alert("Coming Soon...")
   }
+
+
   return (
     <div>
       <div className="w-[1100px] relative bg-whitesmoke h-[870px] flex flex-col items-start justify-start p-[30px] box-border gap-[30px] text-left text-sm text-black font-text-small">
@@ -299,13 +377,13 @@ const Home = () => {
        <DateChart dates={admissionData} dates1={ipdDate} dates2={opdDate}/>
 
           <div className="absolute top-[0px] left-[831.51px] w-[253.04px] h-[402px] flex flex-col items-start justify-start gap-[30px] text-smi text-input-muted-placeholder">
-            <div className="self-stretch rounded-2xl bg-theme-white-default shadow-[0px_0px_1px_rgba(12,26,_75,_0.24),_0px_3px_8px-1px_rgba(50,_50,_71,_0.05)] flex flex-col items-start justify-start p-6 gap-[24px]">
+           {/*  <div className="self-stretch rounded-2xl bg-theme-white-default shadow-[0px_0px_1px_rgba(12,26,_75,_0.24),_0px_3px_8px-1px_rgba(50,_50,_71,_0.05)] flex flex-col items-start justify-start p-6 gap-[24px]">
               <div className="w-[162px] relative h-12">
                 <div className="absolute h-[95.83%] w-[101.85%] top-[2.08%] right-[-2.17%] bottom-[2.08%] left-[0.31%] rounded-2xl hidden">
                   <div className="absolute h-full w-full top-[0%] right-[0%] bottom-[0%] left-[0%] rounded-3xs bg-gray-200 [backdrop-filter:blur(10px)]" />
                 </div>
                 <div className="absolute top-[calc(50%_-_6px)] left-[16.51px] leading-[13px] font-medium hidden w-[81px] h-[11px]">
-                  E-mail
+                  E-mail 
                 </div>
                 <div className="absolute h-full top-[0px] right-[0.51px] bottom-[0px] w-[161px] flex flex-col items-start justify-start text-sm text-theme-white-default">
                   <div className="w-[218px] flex flex-col items-start justify-start">
@@ -322,7 +400,47 @@ const Home = () => {
               <div className="w-[217px] relative text-sm leading-[23px] text-table-body-strong inline-block">
                 Check updates, notifications etc
               </div>
-            </div>
+            </div>*/}<div className="self-stretch rounded-2xl bg-theme-white-default shadow-[0px_0px_1px_rgba(12,26,_75,_0.24),_0px_3px_8px-1px_rgba(50,_50,_71,_0.05)] flex flex-col items-start justify-start p-0 gap-[24px] text-base text-theme-dark-default">
+            <div className="dataCard revenueCard w-56">
+            <Doughnut
+              style={{ maxWidth: "500px" }}
+              data={{
+                datasets: [
+                  {
+                    label: "Available Beds",
+                    data:  totalBedsCount.map(item => item.count),
+                    backgroundColor: [
+                      "rgba(120, 149, 255, 1)",
+                      "rgba(255, 146, 174, 1)",
+                      "rgba(255, 239, 94, 1)",
+                     
+                      "rgba(128, 255, 190, 1)",
+                    ],
+                    borderColor: [
+                      "rgba(120, 149, 255, 1)",
+                      "rgba(255, 146, 174, 1)",
+                      "rgba(255, 239, 94, 1)",
+                     
+                      "rgba(128, 255, 190, 1)",
+                    ],
+                  },
+                ],
+                labels: totalBedsCount.map(item => item.wardName),
+              }}
+              options={{
+                plugins: {
+                  title: {
+                    text: "Available Beds",
+                  },
+                },
+                cutout: "60%",
+                radius: "80%",
+              }}
+            />
+          </div>
+          
+</div>
+
             <div className="self-stretch rounded-2xl bg-theme-white-default shadow-[0px_0px_1px_rgba(12,26,_75,_0.24),_0px_3px_8px-1px_rgba(50,_50,_71,_0.05)] flex flex-col items-start justify-start p-0 gap-[24px] text-base text-theme-dark-default">
               <div className="dataCard revenueCard w-56">
                 <Doughnut
@@ -336,11 +454,13 @@ const Home = () => {
                           "rgba(120, 149, 255, 1)",
                           "rgba(255, 146, 174, 1)",
                           "rgba(255, 239, 94, 1)",
+                          "rgba(128, 255, 190, 1)",
                         ],
                         borderColor: [
                           "rgba(120, 149, 255, 1)",
                           "rgba(255, 146, 174, 1)",
                           "rgba(255, 239, 94, 1)",
+                          "rgba(128, 255, 190, 1)",
                         ],
                       },
                     ],
@@ -349,7 +469,7 @@ const Home = () => {
                   options={{
                     plugins: {
                       title: {
-                        text: "Total Department Beds",
+                        text: "Total Beds",
                       },
                     },
                     cutout: "60%", // Adjust the cutout value to minimize inner width
@@ -358,6 +478,44 @@ const Home = () => {
                 />
               </div>
             </div>
+            
+          <div className="self-stretch rounded-2xl bg-theme-white-default shadow-[0px_0px_1px_rgba(12,26,_75,_0.24),_0px_3px_8px-1px_rgba(50,_50,_71,_0.05)] flex flex-col items-start justify-start p-0 gap-[24px] text-base text-theme-dark-default mb-10">
+            <div className="dataCard revenueCard w-56">
+              <Doughnut
+                style={{ maxWidth: "500px" }}
+                data={{
+                  datasets: [
+                    {
+                      label: "",
+                      data: OccupiedBedCount.map(item => item.count),
+                      backgroundColor: [
+                        "rgba(120, 149, 255, 1)",
+                        "rgba(255, 146, 174, 1)",
+                        "rgba(255, 239, 94, 1)",
+                        "rgba(128, 255, 190, 1)",
+                      ],
+                      borderColor: [
+                        "rgba(120, 149, 255, 1)",
+                        "rgba(255, 146, 174, 1)",
+                        "rgba(255, 239, 94, 1)",
+                        "rgba(128, 255, 190, 1)"
+                      ],
+                    },
+                  ],
+                  labels:OccupiedBedCount.map(item => item.wardName),
+                }}
+                options={{
+                  plugins: {
+                    title: {
+                      text: "occupied Beds",
+                    },
+                  },
+                  cutout: "60%", //inner
+                  radius: "80%",
+                }}
+              />
+            </div>
+          </div>
           </div>
         </div>
         <div className="self-stretch relative h-[12px] text-right text-theme-primary-default">
@@ -366,15 +524,12 @@ const Home = () => {
       
         </div>
       </div>
-        <div className="">
-         
-        <div className="flex   w-[1090px] flex-nowrap overflow-x-auto mt-24">
-        {doctors.slice(0, 4).map((doctor, index) => (
-          <DoctorCard key={index} doctor={doctor} />
-        ))}
-      </div>
-         
-        </div>
+      <div className="flex flex-row justify-start w-[825px] mt-24">
+      {doctors.slice(0, 3).map((doctor, index) => (
+        <DoctorCard key={index} doctor={doctor} />
+      ))}
+    </div>
+    
         <div>
     
         </div>

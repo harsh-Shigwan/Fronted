@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import Plus from "../../Data/Plus.png";
-import download from "../../Data/download.png";
-import search from "../../Data/search.png";
+import download from "../../Data/download.svg";
+import searchicon from "../../Data/carbon_search.svg";
 import edit from "../../Data/edit.png";
 import generatePDF from 'react-to-pdf';
 import Breadcrumb from "../../components/Breadcrumb";
@@ -76,7 +76,7 @@ const DischargedList = () => {
 
   const getPatientName = (patientId) => {
     const patient = patientData.find(item => item.PatientID === patientId);
-    return patient ? patient.FirstName : '';
+    return patient ? patient.fullname : '';
   };
 
   return (
@@ -104,7 +104,7 @@ const DischargedList = () => {
                     <img
                       className="w-5 relative h-5  overflow-hidden shrink-0"
                       alt=""
-                      src={search}
+                      src={searchicon}
                     />
                   </div>
                   <button
@@ -142,14 +142,14 @@ const DischargedList = () => {
                               page * rowPerPage,
                               page * rowPerPage + rowPerPage
                             )
-                            .reverse().filter((item) => {
+                           .filter((item) => {
                               const searchLowerCase = search.toLowerCase();
                               const idString = item.id ? String(item.id) : '';
 
                               return (
                                 searchLowerCase === "" || idString.includes(searchLowerCase)
                               );
-                            })
+                            }) .reverse()
                             .map((user) => (
                               <TableRow key={user.id}>
                                 <TableCell style={{ paddingRight: "140px", paddingLeft: "100px" }}>

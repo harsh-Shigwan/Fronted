@@ -67,8 +67,8 @@ const IPD_Form = () => {
     setSelectedWardId(event.id);
     setShowWardDropdown(false);
   }
-  const handleSubmit = () => {
-  
+  const handleSubmit = (event) => {
+   event.preventDefault();
     console.log('Form Data Submitted:', formData);
     axios.post(`${baseURL}/api/ipd/ipd-registrations/`, formData, {
       headers: {
@@ -78,7 +78,7 @@ const IPD_Form = () => {
       .then((response) => {
         console.log('API Response:', response.data);
         navigate('/Patient/IPD');
-        window.location.reload();
+      
       })
       .catch((error) => {
         console.error('API Error:', error);
@@ -199,6 +199,7 @@ const IPD_Form = () => {
   console.log('patient',patients)
 return(
   <div>
+  <Breadcrumb></Breadcrumb>
   <fieldset>
     <form
       className="items-stretch w-[1100px] bg-slate-50 flex flex-col pt-5 pb-12 px-8 max-md:px-5"
@@ -334,10 +335,7 @@ return(
           <button
             className="text-white text-base font-semibold leading-4 items-stretch border border-[color:var(--Theme-Primary-Default,#4C6FFF)] bg-blue-700 grow justify-center px-7 py-4 rounded-lg border-solid max-md:px-5"
             type="submit"
-            onClick={() => {
-              handleSubmit(); // Manually call the submit function
-              handle(); // Call any other functions if needed
-            }}
+           
           >
             Submit
           </button>

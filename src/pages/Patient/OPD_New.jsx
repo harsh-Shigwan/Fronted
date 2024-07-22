@@ -3,6 +3,7 @@ import Breadcrumb from "../../components/Breadcrumb";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import baseURL from "../../assets/API_URL";
+import DoctorDropDown from "../../components/DropDown/DoctorDropDown";
 
 const OPD_New = () => {
   const token = JSON.parse(localStorage.getItem("Token"));
@@ -63,7 +64,7 @@ const OPD_New = () => {
       );
       console.log("API Response:", response.data);
       navigate("/Patient/OPD");
-      window.location.reload();
+     
     } catch (error) {
       console.error("API Error:", error);
       console.log("Error response data:", error.response?.data);
@@ -144,32 +145,16 @@ const OPD_New = () => {
                 <div className="text-sm text-slate-600 font-medium max-md:max-w-full">
                   Select a Doctor
                 </div>
-                <input
-                  type="text"
-                  className="flex gap-5 justify-between p-4 mt-2 text-base leading-4 text-gray-500  rounded-md bg-slate-100 "
-                  onChange={handleDoctorInputChange}
-                  onFocus={() => setShowDoctorDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowDoctorDropdown(false), 100)}
-                  value={doctorInput}
-                  placeholder="Type or select the doctor"
-                />
-                {showDoctorDropdown && (
-                  <div className="flex flex-col mt-[86px]  max-h-48 overflow-y-auto bg-white border border-gray-300  w-[493px]	position: absolute text-slate-600 font-medium rounded-md">
-                    {doctorList
-                      .filter((doctor) =>
-                        doctor.name.toLowerCase().includes(doctorInput.toLowerCase())
-                      )
-                      .map((doctor) => (
-                        <div
-                          key={doctor.DoctorID}
-                          className="p-2 cursor-pointer hover:bg-gray-200"
-                          onMouseDown={() => handleDoctorSelect(doctor)}
-                        >
-                          {doctor.name}
-                        </div>
-                      ))}
-                  </div>
-                )}
+                <div className="flex flex-col flex-1 py-0.5  w-[500px]">
+                <DoctorDropDown
+                selectedDoctor={selectedDoctor}
+                setSelectedDoctor={setSelectedDoctor}
+                doctorInput={doctorInput}
+                setDoctorInput={setDoctorInput}
+                showDoctorDropdown={showDoctorDropdown}
+                setShowDoctorDropdown={setShowDoctorDropdown}
+              />
+              </div>
               </div>
             </div>
             <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap  w-[500px]">

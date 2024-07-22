@@ -7,7 +7,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-
+import { BsFiletypePdf } from "react-icons/bs";
 import Over_View from './Tabs/Over_View';
 import Visit from './Tabs/Visit';
 import Treatment_History from './Tabs/Treatment_History';
@@ -65,7 +65,7 @@ const Patient_Profile = () => {
           <Tab label="Over View" {...a11yProps(0)} />
         
           <Tab label="Tretment History" {...a11yProps(1)} />
-          <Tab label="Billing" {...a11yProps(2)} />
+          <Tab label="Deposit Amount Bill" {...a11yProps(2)} />
           <Tab label="Lab" {...a11yProps(3)} />
         
          

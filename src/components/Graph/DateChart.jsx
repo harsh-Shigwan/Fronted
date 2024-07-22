@@ -122,8 +122,8 @@ const DateChart = ({ dates, dates1, dates2 }) => {
   return (
     <div>
    
-      <div className="">
-        <div className="dataCard w-[800px] customerCard rounded-2xl shadow-[0px_3px_8px_rgba(50,_50,_71,_0.05),_0px_0px_1px_rgba(12,_26,_75,_0.24)]">
+      <div className=" ">
+        <div className="dataCard w-[800px] customerCard rounded-2xl shadow-[0px_3px_8px_rgba(50,_50,_71,_0.05),_0px_0px_1px_rgba(12,_26,_75,_0.24)] bg-white">
         <div className="  pt-1  flex flex-row">
         <button
         className="px-4 py-2 ml-5  mt-2  text-sm flex items-center font- text-theme-primary-dark border-[1px] border-solid border-theme-primary-dark justify-center rounded bg-theme-white-default mb-0 "

@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import Plus from "../../Data/Plus.png";
-import download from "../../Data/download.png";
-import searchIcon from "../../Data/search.png";
-import edit from "../../Data/edit.png";
+import Plus from "../../Data/Plus.svg";
+import download from "../../Data/download.svg";
+import searchIcon from "../../Data/carbon_search.svg";
+import edit from "../../Data/edit.svg";
 import baseURL from "../../assets/API_URL";
 import generatePDF from "react-to-pdf";
+import { format } from "date-fns";
 import {
   Table,
   TableHead,
@@ -25,10 +26,9 @@ const Appointment = () => {
   const DoctorAPI = `${baseURL}/doctor/api/doctors/`;
   const [appointments, setAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
-  const [ doctor , setDoctor]= useState([]);
+  const [doctor, setDoctor] = useState([]);
   const [isError, setIsError] = useState("");
   const token = JSON.parse(localStorage.getItem("Token"));
-
 
   const fetchData = async () => {
     try {
@@ -46,27 +46,40 @@ const Appointment = () => {
         headers: {
           Authorization: `Token ${token}`,
         }
-      })
+      });
+
+      // Check each appointment and update status if necessary
+      const now = new Date();
+      const updatedAppointments = appointmentsResponse.data.map(appointment => {
+        const timeSlotDate = new Date(appointment.time_slot);
+        if (timeSlotDate < now && appointment.status !== "completed") {
+          // Update status to "completed"
+          axios.put(`${appointmentsAPI}${appointment.id}/`, 
+            { ...appointment, status: "completed" },
+            { headers: { Authorization: `Token ${token}` } }
+          ).catch(error => console.error("Error updating status:", error));
+          return { ...appointment, status: "completed" };
+        }
+        return appointment;
+      });
+
       setDoctor(doctorResponse.data);
-      setAppointments(appointmentsResponse.data);
+      setAppointments(updatedAppointments);
       setPatients(patientsResponse.data);
     } catch (error) {
       setIsError(error.toJSON().message);
     }
   };
-  console.log("d",doctor);
-  console.log("p",patients);
 
   async function deleteData(id) {
     const deleteUrl = `${baseURL}/api/appointment/appointments/${id}/`;
     try {
-      const response = await axios.delete(deleteUrl , {
+      const response = await axios.delete(deleteUrl, {
         headers: {
           Authorization: `Token ${token}`,
         },
       });
       alert("Data deleted successfully:", response.data);
-      // After deletion, you can update the state to remove the deleted row from the UI
       setAppointments((prevData) =>
         prevData.filter((row) => row.id !== id)
       );
@@ -76,7 +89,6 @@ const Appointment = () => {
     }
   }
 
-  
   useEffect(() => {
     fetchData();
   }, []);
@@ -100,15 +112,14 @@ const Appointment = () => {
   const targetRef = useRef();
   const [search, setSearch] = useState("");
   const DoctorMap = doctor.reduce((map, doctor) => {
-    map[doctor.DoctorID]=doctor.name;
+    map[doctor.DoctorID] = doctor.name;
     return map;
-  },{})
+  }, {})
   const patientMap = patients.reduce((map, patient) => {
     map[patient.PatientID] = patient.fullname;
     return map;
   }, {});
-console.log("pm",patientMap);
-console.log("dm",DoctorMap );
+
   return (
     <div>
       <Breadcrumb />
@@ -124,7 +135,7 @@ console.log("dm",DoctorMap );
                   </div>
                   <input
                     className="absolute top-[11px] pl-3 left-[588px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black"
-                    placeholder="Search appointments..."
+                    placeholder="Search..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
@@ -159,7 +170,7 @@ console.log("dm",DoctorMap );
                     </div>
                   </button>
                 </div>
-                <div className="self-stretch h-[572px] overflow-hidden shrink-0 items-start justify-start text-text-body-light">
+                <div className="self-stretch h-[572px] bg-white overflow-hidden shrink-0 items-start justify-start text-text-body-light">
                   <page>
                     <TableContainer ref={targetRef}>
                       <Table>
@@ -170,8 +181,6 @@ console.log("dm",DoctorMap );
                             <TableCell>Date</TableCell>
                             <TableCell>Time Slot</TableCell>
                             <TableCell>Status</TableCell>
-                         
-                       
                             <TableCell>Doctor</TableCell>
                             <TableCell></TableCell>
                             <TableCell>Action</TableCell> 
@@ -184,7 +193,6 @@ console.log("dm",DoctorMap );
                               const tosearch = search.toLowerCase();
                               const idString = item.id ? String(item.id) : '';
                               const timeSlotString = item.time_slot ? String(item.time_slot).toLowerCase() : '';
-                              const dateString = item.date ? String(item.date).toLowerCase() : '';
                               const statusString = item.status ? String(item.status).toLowerCase() : '';
                               const patientName = patientMap[item.patient] ? patientMap[item.patient].toLowerCase() : '';
                               const doctorString = DoctorMap[item.doctor] ? String(item.doctor).toLowerCase() : '';
@@ -193,7 +201,6 @@ console.log("dm",DoctorMap );
                                 tosearch === "" ||
                                 idString.includes(tosearch) ||
                                 timeSlotString.includes(tosearch) ||
-                                dateString.includes(tosearch) ||
                                 statusString.includes(tosearch) ||
                                 patientName.includes(tosearch) ||
                                 doctorString.includes(tosearch)
@@ -203,46 +210,40 @@ console.log("dm",DoctorMap );
                               <TableRow key={user.id}>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{patientMap[user.patient] || 'Unknown'}</TableCell>
-                                <TableCell>{user.date}</TableCell>
-                                <TableCell>{user.time_slot}</TableCell>
+                                <TableCell>{format(new Date(user.time_slot), 'dd-MM-yyyy')}</TableCell>
+                                <TableCell>{format(new Date(user.time_slot), 'HH:mm')}</TableCell>
                                 <TableCell>{user.status}</TableCell>
-                               
-                 
                                 <TableCell>{DoctorMap[user.doctor]}</TableCell>
-                                
-                                <TableCell>
-                                 
-                                </TableCell>
-                                <div className="w-[250px] relative  bg-whitesmoke h-[52px] overflow-hidden shrink-0 ">
-                                <img
-                                  className="absolute top-[calc(50%_-_12px)] left-[24px] w-6 h-6 hidden"
-                                  alt=""
-                                  src=""
-                                />
-                                <Link to={`Appointment_form/Appoointment_schedule/${user.id}`}>
+                                <TableCell></TableCell>
+                                <div className="w-[250px] relative  bg-white h-[52px] overflow-hidden shrink-0 shadow-[0px_-1px_0px_#edf2f7_inset] ">
                                   <img
-                                    className="absolute top-[calc(50%_-_12px)] left-[21px] w-6 h-6 overflow-hidden"
+                                    className="absolute top-[calc(50%_-_12px)] left-[24px] w-6 h-6 hidden"
                                     alt=""
-                                    src={edit}
+                                    src=""
                                   />
-                                </Link>
-                             
-                                <button
-                                  className="absolute top-[13px] left-[91px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
-                                  onClick={() => deleteData(user.id)}
-                                >
-                                  <div className="flex flex-row items-center justify-start gap-[6px]">
+                                  <Link to={`Appointment_form/Appoointment_schedule/${user.id}`}>
                                     <img
-                                      className="w-2.5 relative h-2.5 hidden"
+                                      className="absolute top-[calc(50%_-_12px)] left-[21px] w-6 h-6 overflow-hidden"
                                       alt=""
-                                      src="/icon.svg"
+                                      src={edit}
                                     />
-                                    <div className="relative leading-[10px] font-medium">
-                                      Delete
+                                  </Link>
+                                  <button
+                                    className="absolute top-[13px] left-[91px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
+                                    onClick={() => deleteData(user.id)}
+                                  >
+                                    <div className="flex flex-row items-center justify-start gap-[6px]">
+                                      <img
+                                        className="w-2.5 relative h-2.5 hidden"
+                                        alt=""
+                                        src="/icon.svg"
+                                      />
+                                      <div className="relative leading-[10px] font-medium">
+                                        Delete
+                                      </div>
                                     </div>
-                                  </div>
-                                </button>
-                              </div>
+                                  </button>
+                                </div>
                               </TableRow>
                             ))}
                         </TableBody>

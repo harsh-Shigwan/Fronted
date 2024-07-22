@@ -7,144 +7,151 @@
 .main_container {
   display: flex;
   background-color: #F7FAFC;
- 
-  
-  
 }
+
 main {
   padding: 5px;
   color: #F7FAFC;
-
+  
 }
 
 .title {
   font-size: 3rem;
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust height as needed */
 }
 
 /* Sidebar */
 .sidebar {
   background: #FFFFFF;
   color: white;
-  height: full;
-  overflow-y: auto;
-  
+  height: 135vh;
+  width: 250px; /* Adjust width as needed */
+  overflow: hidden; /* Hide scrollbars */
+}
+
+/* Hide scrollbars for Webkit browsers (Chrome, Safari) */
+.sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .top_section {
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 10px;
+  padding: 10px 20px;
 }
-.logo {
 
+.logo {
   color: #233876;
-  margin-top:25px;
-  /* text-2xl/font-semibold */
+  margin-top: 25px;
   font-family: 'Manrope', sans-serif;
   font-size: 28px;
-  font-style: normal;
   font-weight: 600;
   line-height: 150%; 
   padding-left: 3px;
-  
 }
+
 .bars {
   width: 30px;
   color: #425466;
   padding-left: 7px;
   margin-top: 30px;
-  
 }
+
 .hide {
   display: none;
-  
 }
 
-
-
-
 .routes {
-
   margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 22px;
-  display: flex;
-padding: 10px 24px;
-
-
+  padding: 10px 24px;
 }
+
 .link {
   height: 24px;
   display: flex;
+  align-items: center;
   color: #425466;
   gap: 10px;
-  
   padding: 5px 10px;
-  border-right: 4px solid transparent;
+  
   transition: 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }
+
 .link:hover {
-  border-right: 4px solid #ccd2d9;
+  border-radius: 8%;
   background: #E1E8FF;
   height: 40px;
   transition: 0.1s cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }
 
 .active {
-  border-right: 4px solid #F7FAFC;
+  border-radius: 8%;
   background: #E1E8FF; 
   color: #4C6FFF;
   height: 40px;
-
-  
 }
-.link_text {
 
+.link_text {
   font-size: 15px;
   padding-left: 24px;
-
-  
-/* Navbar/Link/Default */
-font-family: 'Inter', sans-serif;
-font-size: 14px;
-font-style: normal;
-font-weight: 600;
-line-height: normal;
-
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
 }
 
 .menu {
   display: flex;
+  align-items: center;
   color: #233876;
   height: 30px;
   padding: 5px 10px;
-  border-right: 4px solid transparent;
+  border-radius: 8%;
   transition: 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
   justify-content: space-between; 
 }
+
 .menu_item {
   display: flex;
+  align-items: center;
   margin-top: 2px;
-  gap: 10px;  color: #233876;  
+  gap: 10px;
+  color: #233876;
 }
+
 .menu_container {
   display: flex;
-  flex-direction: column;  color: #233876;
- 
- 
+  flex-direction: column;
+  color: #233876;
 }
+
 .menu_container .link {
   padding-left: 20px;
   border-bottom: #fff 0.5px solid;
   height: 40px;
-  margin-top:4px;
+  margin-top: 4px;
 }
-.icons{
-  padding-left:2px; 
-  
+
+.icons {
+  padding-left: 2px; 
 }
+
+
+/* styles.css */
+.date-time-picker-wrapper {
+  position: relative;
+}
+
+.date-time-picker-wrapper .MuiDateTimePicker-root .MuiCalendarPicker-root {
+  top: -20rem; /* Adjust based on your design */
+  transform: translateY(-10px); /* Fine-tune the positioning */
+  position: absolute !important;
+}
+

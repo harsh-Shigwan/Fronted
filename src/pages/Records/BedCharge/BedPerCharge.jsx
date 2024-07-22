@@ -26,7 +26,7 @@ const BedPerCharge = () => {
   }, [items]);
 
   return (
-    <div className="container mx-auto p-4  w-[1000px] ml-16 rounded-lg shadow-md mt-3 ">
+    <div className="container mx-auto p-4  w-[1000px] ml-16 rounded-lg shadow-lg mt-3  ">
      <Breadcrumb></Breadcrumb>
       <DailyCharge addItem={addItem} />
       <WardPrice items={items} deleteItem={deleteItem} patientId={patientId}  />

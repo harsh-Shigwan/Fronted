@@ -45,3 +45,16 @@ body {
       scrollbar-width: none;  /* Firefox */
 }
 }
+
+
+/* styles.css */
+.date-time-picker-wrapper {
+  position: relative;
+}
+
+.date-time-picker-wrapper .MuiDateTimePicker-root .MuiCalendarPicker-root {
+  top: -20rem; /* Adjust based on your design */
+  transform: translateY(-10px); /* Fine-tune the positioning */
+  position: absolute !important;
+}
+

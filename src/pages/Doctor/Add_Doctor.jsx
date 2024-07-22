@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Breadcrumb from '../../components/Breadcrumb';
 import axios from 'axios';
-import CustomDropdown from '../../components/CustomDropdown';
+import CustomDropdown from '../../components/DropDown/CustomDropdown';
 const steps = ['Basic Infromation', 'Qualificaiton-experience', 'Documents'];
 
 export default function Add_Doctor() {

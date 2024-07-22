@@ -1,26 +1,22 @@
 import React, { useState } from "react";
-import { FaHome, FaBars, FaAngleDown } from "react-icons/fa";
-import { BiSearch } from "react-icons/bi";
+import { FaHome, FaBars } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { NavLink, useNavigate } from "react-router-dom";
 import SidebarMenu from "./SidebarMenu";
 import { BsFillPersonLinesFill } from "react-icons/bs";
 import { IoMdDocument } from "react-icons/io";
-import { BiSolidDetail } from "react-icons/bi";
-import { BiSolidDockRight } from "react-icons/bi";
-import { FaUserDoctor } from "react-icons/fa6";
-import { FaBookMedical } from "react-icons/fa6";
+import { BiSolidDetail, BiSolidDockRight } from "react-icons/bi";
+import { FaUserDoctor, FaBookMedical, FaWindowRestore, FaCalendarPlus } from "react-icons/fa6";
 import { AiFillAppstore } from "react-icons/ai";
-import { FaWindowRestore } from "react-icons/fa6";
-import { FaCalendarPlus } from "react-icons/fa";
 import { VscAccount } from "react-icons/vsc";
 import { IoPeople } from "react-icons/io5";
 import Logout from "../pages/Logout";
+
 const routes = [
   {
     path: "/",
     name: "Patient",
-    icon: < BsFillPersonLinesFill />,
+    icon: <BsFillPersonLinesFill />,
     subRoutes: [
       {
         path: "/Patient/Patient_Details",
@@ -38,53 +34,54 @@ const routes = [
         icon: <BiSolidDockRight />,
       }, 
     ],
- 
   },
-  
   {
     path: "/Doctor",
     name: "Doctor",
     icon: <FaUserDoctor />,
-    subRoutes:[
+    subRoutes: [
       {
         path: "/Doctor/Details",
-        name:"Details",
-        icon:<BiSolidDetail/>,
+        name: "Details",
+        icon: <BiSolidDetail />,
       }
-      
-    ]
-  },{
+    ],
+  },
+  {
     path: "/Appointment",
     name: "Appointment",
-    icon: <FaBookMedical />,   
- 
-  },{
-    path:"/Invoice_Generator",
-    name:"Billing",
-    icon:<AiFillAppstore/>
+    icon: <FaBookMedical />,
+  },
+  {
+    path: "/Invoice_Generator",
+    name: "Billing",
+    icon: <AiFillAppstore />,
   },
   {
     path: "/Inventory",
     name: "Inventory",
     icon: <FaWindowRestore />,
   },
- {
+  {
     path: "/Staff_form",
     name: "Staff",
-    icon:<IoPeople />,
-  },{
+    icon: <IoPeople />,
+  },
+  {
     path: "/Accounts",
     name: "Accounts",
-    icon: <VscAccount/>,
+    icon: <VscAccount />,
   }
 ];
+
 const Sidebar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
   const toggle = () => setIsOpen(!isOpen);
   const navigate = useNavigate();
-  const navi = ()=>{
+  const navi = () => {
     navigate("/");
-  }
+  };
+
   const inputAnimation = {
     hidden: {
       width: 0,
@@ -139,23 +136,25 @@ const Sidebar = ({ children }) => {
               exit="hidden"
               variants={showAnimation}
               className="logo"
-              
             >
               CareChainAI
             </motion.h1>
           )}
-          <div className="bars">
-            <FaBars onClick={toggle} />
-          </div>
+        
         </button>
 
         <section className="routes">
-          {routes.map((route , index) => {
+          {routes.map((route, index) => {
             if (route.subRoutes) {
-              return <SidebarMenu   setIsOpen={setIsOpen}
-              route={route}
-              showAnimation={showAnimation}
-              isOpen={isOpen}/> 
+              return (
+                <SidebarMenu
+                  key={index}
+                  setIsOpen={setIsOpen}
+                  route={route}
+                  showAnimation={showAnimation}
+                  isOpen={isOpen}
+                />
+              );
             }
             return (
               <NavLink
@@ -181,7 +180,9 @@ const Sidebar = ({ children }) => {
               </NavLink>
             );
           })}
-        <Logout></Logout>
+          <div className="">
+            <Logout />
+          </div>
         </section>
       </motion.div>
       <main>{children}</main>

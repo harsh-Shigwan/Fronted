@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import Plus from "../../Data/Plus.png";
-import download from "../../Data/download.png";
-import search from "../../Data/search.png";
+import Plus from "../../Data/Plus.svg";
+import download from "../../Data/download.svg";
+import show from "../../Data/carbon_search.svg"
 import edit from "../../Data/edit.png";
+import editIcon from "../../Data/edit.svg";
+import pdfIcon from "../../Data/pdf.svg"
+import { BsFiletypePdf } from "react-icons/bs";
 import { BsSearch } from "react-icons/bs";
 import { useParams } from "react-router-dom";
 import {
@@ -116,7 +119,7 @@ const Patient_Detail = () => {
   return (
     <div>
       <Breadcrumb></Breadcrumb>
-      <div className="w-[1000px] ml-[70px] mt-0 relative bg-whitesmoke h-[984px] flex flex-col items-center justify-start pt-0 px-[30px] pb-[30px] box-border text-left text-xs text-f2d3d font-table-body-heading">
+      <div className="w-[1000px] ml-[70px] mt-0 relative bg-whitesmoke h-auto flex flex-col items-center justify-start pt-0 px-[30px] pb-[30px] box-border text-left text-xs text-f2d3d font-table-body-heading">
         <div className="flex flex-col items-center justify-start pt-5 px-0 pb-0">
           <div className="h-[692px] flex flex-col items-start justify-start">
             <div className="w-[1110px] relative bg-theme-white-default h-[692px] overflow-hidden shrink-0">
@@ -134,11 +137,11 @@ const Patient_Detail = () => {
                     }}
                     placeholder="Search...."
                   />
-                  <div className="absolute top-[25px] left-[305px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
-                  <div
+                  <div className="absolute top-[8px] left-[305px] h-[23.75px] flex flex-row  ml-28 items-start justify-start">
+                  <img
                   className="w-5 relative h-10  overflow-hidden shrink-0 "
-                  ><BsSearch/>
-                </div>
+                   src={show}>
+                </img>
                   </div>
 
                   <button
@@ -291,16 +294,24 @@ const Patient_Detail = () => {
                                     src=""
                                   />
                                   <Link
+                                    to={`/Patient/PatientPdf/${user.PatientID}`}
+                                  >
+                                    <img
+                                      className="absolute top-[13px] left-[0px] w-6 h-6 overflow-hidden"
+                                      src={pdfIcon}
+                                    ></img>
+                                  </Link>
+                                  <Link
                                     to={`/Patient/Patient_Details/EditPatient/${user.PatientID}`}
                                   >
                                     <img
-                                      className="absolute top-[13px] left-[21px] w-6 h-6 overflow-hidden"
+                                      className="absolute top-[13px] left-[40px] w-6 h-6 overflow-hidden"
                                       alt=""
-                                      src={edit}
+                                      src={editIcon}
                                     />
                                   </Link>
                                  <Link
-                                    className="absolute top-[13px] left-[71px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
+                                    className="absolute top-[13px] left-[91px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
                                     to={`/Patient/Patient_Details/${user.PatientID}`}
                                   >
                                     <div className="flex flex-row items-center justify-start gap-[6px]">
@@ -315,7 +326,7 @@ const Patient_Detail = () => {
                                     </div>
                                   </Link>
                                   <button
-                                    className="absolute top-[13px] left-[151px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
+                                    className="absolute top-[13px] left-[171px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue"
                                     onClick={() =>
                                       deleteData(user.PatientID)
                                     }
