@@ -4,7 +4,7 @@ import Plus from "../../Data/Plus.svg";
 import download from "../../Data/download.svg";
 import wow from "../../Data/carbon_search.svg";
 import edit from "../../Data/edit.svg";
-import { BsFiletypePdf } from "react-icons/bs";
+import pdfIcon from "../../Data/pdf.svg";
 import generatePDF from "react-to-pdf";
 import baseURL from "../../assets/API_URL";
 import {
@@ -217,10 +217,10 @@ const Details = () => {
                                   <Link
                                   to={`/Doctor/Details/${user.DoctorID}`}
                                 >
-                                  <div
-                                    className="absolute top-[15px] left-[0px] w-6 h-20 overflow-hidden"
-                                    
-                                  ><BsFiletypePdf className="w-5 h-5" /></div>
+                                <img
+                                className="absolute top-[13px] left-[0px] w-6 h-6 overflow-hidden"
+                                src={pdfIcon}
+                              ></img>
                                 </Link>
                                   <Link to={`/Appointment/Appointment_form/Appoointment_schedule/${user.DoctorID}`}>
                                   <img

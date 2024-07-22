@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import Plus from "../../Data/Plus.png";
-import download from "../../Data/download.png";
+import Plus from "../../Data/Plus.svg";
+import download from "../../Data/download.svg";
 import search from "../../Data/search.png";
-import edit from "../../Data/edit.png";
+import wow from "../../Data/carbon_search.svg";
+import edit from "../../Data/edit.svg";
 import baseURL from "../../assets/API_URL";
 import generatePDF from "react-to-pdf";
 import {
@@ -137,19 +138,23 @@ const Equipment = () => {
                       className="absolute top-[11px] left-[588px] rounded-[30px] bg-theme-white-default box-border w-[161px] h-[38px] border-[1px] border-solid border-black pl-5"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-                      placeholder="Equipment Search...."
+                      placeholder=" Search...."
                     />
-                    <div className="absolute top-[18px] left-[600px] h-[23.75px] flex flex-row ml-28 items-start justify-start">
-                     
+                    <div className="absolute top-[8px] left-[600px] h-[23.75px] flex flex-row ml-28 items-start justify-start">
+                    <img
+                    className="w-5 relative h-10  overflow-hidden shrink-0"
+                    alt=""
+                    src={wow}
+                  />
                     </div>
 
                     <button
                       className="absolute top-[11px] left-[937px] rounded-md bg-theme-primary-dark w-[156px] flex flex-col items-start justify-start py-2.5 px-5  h-10 box-border text-theme-white-default"
                       onClick={handle3}
                     >
-                      <div className="w-36 my-0 mx-[!important] absolute top-[10px] left-[16px] flex flex-row items-center justify-start gap-[8px] z-[0]">
+                      <div className="w-36 my-0 mx-[!important] absolute top-[10px] left-[1px] flex flex-row items-center justify-start gap-[8px] z-[0]">
                         <img
-                          className="w-5 relative h-5 object-cover"
+                          className="w-5  ml-5 relative h-5 object-cover"
                           alt=""
                           src={Plus}
                         />
@@ -190,7 +195,7 @@ const Equipment = () => {
                             <TableCell>Action</TableCell>
                           </TableRow>
                         </TableHead>
-                        <TableBody>
+                        <TableBody className=" bg-white">
                           {myData
                             .slice(page * rowperpage, page * rowperpage + rowperpage)
                             .reverse().filter((item) =>{

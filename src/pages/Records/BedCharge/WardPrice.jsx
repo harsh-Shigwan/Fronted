@@ -33,7 +33,7 @@ const WardPrice = ({ items, deleteItem, patientId }) => {
                 <TableCell>{item.price * item.quantity}</TableCell>
                 <TableCell>
                   <Button
-                    className="top-[13px] left-[71px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue w-28 mt-3 gap-[6px] leading-[10px] bg-btn font-medium text-white"
+                    className="top-[5px] mr-12  rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue w-28 mt-3 gap-[6px] leading-[10px] bg-btn font-medium text-white"
                     onClick={() => deleteItem(idx)}
                   >
                     Delete

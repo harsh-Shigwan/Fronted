@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 
 const ItemList = ({ items, selectedPatient, onDeleteItem , total }) => {
-console.log(items)
+console.log("itmelist",items)
   return (
     <div>
     
@@ -29,10 +29,10 @@ console.log(items)
 		  <TableBody className=" bg-white">
 		  {items.reverse().map((item, index) => (
 			  <TableRow key={index}>
-			  <TableCell>{item.selectedItem}</TableCell>
-			  <TableCell>{item.quantity}</TableCell>
-        <TableCell>{item.selectedPatient}</TableCell>
-			  <TableCell>{item.price*item.quantity}</TableCell>
+			  <TableCell>{item.equipment}</TableCell>
+			  <TableCell>{item.quantity_used}</TableCell>
+        <TableCell>{item.unit_price}</TableCell>
+			  <TableCell>{item.unit_price*item.quantity_used}</TableCell>
 			  <buttons
 			  className=" top-[13px] left-[71px] rounded flex flex-col items-center justify-start py-2 px-4 border-[1px] border-solid border-royalblue  w-28 mt-3 gap-[6px] leading-[10px] bg-btn font-medium text-white "
 			  onClick={() => onDeleteItem(index)}

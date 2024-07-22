@@ -45,13 +45,13 @@ const EquipmentTable = ({ groupedEquipments, totalPrice, generateFinalBill }) =>
                 {equipment.name}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {equipment.unit_price}
+               {equipment.quantity_used}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {equipment.quantity_used}
+              {equipment.usage_date}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {equipment.usage_date}
+              {equipment.unit_price}  
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {equipment.total_price.toFixed(2)}

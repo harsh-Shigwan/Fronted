@@ -149,11 +149,10 @@ const Generate_Bill = () => {
     event.preventDefault();
     try {
       const token = JSON.parse(localStorage.getItem("Token"));
-      const newAmount =
-        parseFloat(totalPrice) +
-        parseFloat(mediTotal) +
-        parseFloat(totalAmount)+ parseFloat(visitTotal);
-      const createResponse = await axios.post(
+      
+      // Calculate new amount
+      const newAmount = parseFloat(totalPrice) + parseFloat(mediTotal) + parseFloat(totalAmount) + parseFloat(visitTotal);
+      await axios.post(
         `${baseURL}/patient/api/patient-billings/`,
         {
           InvoiceDetails: newAmount.toFixed(0),
@@ -165,35 +164,11 @@ const Generate_Bill = () => {
           },
         }
       );
-
-      console.log("Total amount stored successfully:", createResponse.data);
+  
+      console.log("Total amount stored successfully");
       alert("Total amount stored successfully");
-      const equipmentUsageResponse = await axios.get(
-        `${baseURL}/inventory/api/patient-equipment-usage/`,
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        }
-      );
-
-      const patientEquipmentUsages = equipmentUsageResponse.data.filter(
-        (usage) => usage.patient === parseInt(patientId)
-      );
-
-      for (const usage of patientEquipmentUsages) {
-        await axios.delete(
-          `${baseURL}/inventory/api/patient-equipment-usage/${usage.id}/`,
-          {
-            headers: {
-              Authorization: `Token ${token}`,
-            },
-          }
-        );
-      }
-
-      console.log("Equipment usage data deleted successfully");
-     
+  
+      // Fetch and process patient medicine usages
       const medicineUsageResponse = await axios.get(
         `${baseURL}/inventory/api/patient-medicine-usage/`,
         {
@@ -202,10 +177,44 @@ const Generate_Bill = () => {
           },
         }
       );
-
+  
       const patientMedicineUsages = medicineUsageResponse.data.filter(
         (usage) => usage.patient === parseInt(patientId)
       );
+  
+      // Deduct quantity from medicines API
+      for (const usage of patientMedicineUsages) {
+        // Fetch the current medicine details
+        const medicineDetails = await axios.get(
+          `${baseURL}/inventory/api/medicines/${usage.medicine}/`,
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+  
+        const { expiration_date, manufacturer, name, unit_price, quantity } = medicineDetails.data;
+  
+        // Update the medicine quantity
+        await axios.put(
+          `${baseURL}/inventory/api/medicines/${usage.medicine}/`,
+          {
+            expiration_date,
+            manufacturer,
+            name,
+            unit_price,
+            quantity: quantity - usage.quantity_used,
+          },
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+      }
+  
+      // Delete patient medicine usages
       for (const usage of patientMedicineUsages) {
         await axios.delete(
           `${baseURL}/inventory/api/patient-medicine-usage/${usage.id}/`,
@@ -216,18 +225,65 @@ const Generate_Bill = () => {
           }
         );
       }
-
-    
-
-      const patientDataResponse = await axios.get(
-        `${baseURL}/patient/api/patients/${patientId}/`,
+  
+      console.log("Medicine usage data deleted successfully");
+  
+      // Fetch and delete patient equipment usages
+      const equipmentUsageResponse = await axios.get(
+        `${baseURL}/inventory/api/patient-equipment-usage/`,
         {
           headers: {
             Authorization: `Token ${token}`,
           },
         }
       );
+  
+      const patientEquipmentUsages = equipmentUsageResponse.data.filter(
+        (usage) => usage.patient === parseInt(patientId)
+      );
+  
+      for (const usage of patientEquipmentUsages) {
+       const equipmentDetails = await axios.get(
+         `${baseURL}/inventory/api/equipment/${usage.equipment}/`,{
+           headers: {
+             Authorization: `Token ${token}`,
+           }
+         }
+       );
 
+       const { purchase_date,manufacturer ,name ,unit_price ,quantity } = equipmentDetails.data;
+
+       await axios.put(
+         `${baseURL}/inventory/api/equipment/${usage.equipment}/`,
+         {
+           purchase_date,
+           manufacturer,
+           name,
+           unit_price,
+           quantity: quantity - usage.quantity_used,
+         },
+         {
+           headers: {
+             Authorization: `Token ${token}`,
+           },
+         }
+       )
+
+      }
+      for( const usage of patientEquipmentUsages){
+        await axios.delete(
+          `${baseURL}/inventory/api/patient-equipment-usage/${usage.id}/`,
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        )
+      }
+  
+      console.log("Equipment usage data deleted successfully");
+  
+      // Fetch and delete patient doctor visits
       const VisitDocResponse = await axios.get(
         `${baseURL}/patient/api/patient-doctorvists/`,
         {
@@ -236,10 +292,11 @@ const Generate_Bill = () => {
           },
         }
       );
-
+  
       const VisitDocUsages = VisitDocResponse.data.filter(
         (usage) => usage.patient === parseInt(patientId)
       );
+  
       for (const usage of VisitDocUsages) {
         await axios.delete(
           `${baseURL}/patient/api/patient-doctorvists/${usage.id}/`,
@@ -250,12 +307,20 @@ const Generate_Bill = () => {
           }
         );
       }
-
-
-      const { DOB, fullname, Gender, Register_Date } =
-        patientDataResponse.data;
-
-      const updateResponse = await axios.put(
+  
+      // Fetch patient data and update initial balance
+      const patientDataResponse = await axios.get(
+        `${baseURL}/patient/api/patients/${patientId}/`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+  
+      const { DOB, fullname, Gender, Register_Date } = patientDataResponse.data;
+  
+      await axios.put(
         `${baseURL}/patient/api/patients/${patientId}/`,
         {
           ...patientDataResponse.data,
@@ -271,18 +336,17 @@ const Generate_Bill = () => {
           },
         }
       );
-
-      console.log(
-        "Patient's initial balance updated to 0:",
-        updateResponse.data
-      );
-      
+  
+      console.log("Patient's initial balance updated to 0");
+  
     } catch (error) {
       console.error("Error storing or updating total amount:", error);
       console.log("Error response data:", error.response?.data);
       alert("Error storing or updating !!");
     }
   };
+  
+  
 
   useEffect(() => {
     const fetchMedicineUsage = async () => {

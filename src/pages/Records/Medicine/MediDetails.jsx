@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import baseURL from '../../../assets/API_URL';
 
-const MediDetails = ({ addItem , patientId }) => {
+const MediDetails = ({ addItem, patientId }) => {
   const [itemName, setItemName] = useState('');
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState(0);
+  const [availableQuantity, setAvailableQuantity] = useState(0); 
   const [wardData, setWardData] = useState([]);
   const [wardInput, setWardInput] = useState('');
   const [selectedWardId, setSelectedWardId] = useState(null);
@@ -32,6 +33,25 @@ const MediDetails = ({ addItem , patientId }) => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (selectedWardId) {
+      const fetchWardDetails = async () => {
+        try {
+          const response = await axios.get(`${WardAPI}${selectedWardId}/`, {
+            headers: {
+              Authorization: `Token ${token}`
+            }
+          });
+          setAvailableQuantity(response.data.quantity); 
+        } catch (error) {
+          console.error("Error fetching ward details:", error);
+        }
+      };
+
+      fetchWardDetails();
+    }
+  }, [selectedWardId]);
+
   const handleItemChange = (itemName) => {
     setItemName(itemName);
     setWardInput(itemName);
@@ -45,6 +65,7 @@ const MediDetails = ({ addItem , patientId }) => {
     } else {
       setPrice(0);
       setSelectedWardId(null); // Reset the ward ID
+      setAvailableQuantity(0); // Reset the available quantity
     }
   };
 
@@ -57,6 +78,11 @@ const MediDetails = ({ addItem , patientId }) => {
   };
 
   const handleAddItem = async () => {
+    if (quantity > availableQuantity) {
+      alert(`Quantity cannot be more than available quantity (${availableQuantity})`);
+      return;
+    }
+
     const item = { 
       patient: patientId, 
       medicine: selectedWardId, // Send ward ID
@@ -81,6 +107,7 @@ const MediDetails = ({ addItem , patientId }) => {
     setItemName('');
     setQuantity(1);
     setPrice(0);
+    setAvailableQuantity(0); // Reset the available quantity
     setSelectedWardId(null); // Reset the ward ID
   };
 
@@ -119,16 +146,19 @@ const MediDetails = ({ addItem , patientId }) => {
           )}
         </div>
         <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
-          <div className="text-sm text-slate-600 font-medium max-md:max-w-full">
-            Quantity
+          <div className=" flex text-sm text-slate-600 font-medium max-md:max-w-full">
+            Quantity   <h1 className=' text-sm font-normal text-gray-500  ml-[300px]'>Available: {availableQuantity}</h1>
           </div>
-          <input
-            type="number"
-            className="w-[450px] p-4 mt-2 text-base text-gray-500 border-transparent font-medium leading-4 bg-slate-100 rounded-md max-md:pr-5"
-            placeholder="Enter days"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-          />
+          <div className="flex items-center">
+            <input
+              type="number"
+              className="w-[450px] p-4 mt-2 text-base text-gray-500 border-transparent font-medium leading-4 bg-slate-100 rounded-md max-md:pr-5"
+              placeholder="Enter quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+            />
+            
+          </div>
         </div>
       </div>
       <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap">
@@ -136,7 +166,7 @@ const MediDetails = ({ addItem , patientId }) => {
           <div className="text-sm text-slate-600 font-medium max-md:max-w-full mt-8 ml-2">
             Medicine Price
           </div>
-          <div className="p-4 mt-5 text-base text-gray-500 bg-slate-100 rounded-md max-md:pr-5 w-[500px]">
+          <div className="p-4 mt-5 text-base text-gray-500 bg-slate-100 rounded-md max-md:pr-5 w-[450px]">
             {price > 0 ? ` ${price} Rupees` : "Select a ward to see the price"}
           </div>
         </div>

@@ -294,7 +294,8 @@ const Patient_Detail = () => {
                                     src=""
                                   />
                                   <Link
-                                    to={`/Patient/PatientPdf/${user.PatientID}`}
+                                    to={`/Patient/PatientPdf/${user.
+                                      PatientID}`}
                                   >
                                     <img
                                       className="absolute top-[13px] left-[0px] w-6 h-6 overflow-hidden"
