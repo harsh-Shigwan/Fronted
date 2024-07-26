@@ -12,7 +12,7 @@ import axios from "axios";
 import CustomDropdown from "../../components/DropDown/CustomDropdown";
 const steps = [
   "Basic Details",
-  "Emgergency Datails",
+  "Emergency Datails",
   "Insurance Details",
   "Deposit Details",
 ];
@@ -380,7 +380,7 @@ export default function Add_Patient() {
                     <div className="flex flex-col items-stretch w-6/12 max-md:w-full max-md:ml-0">
                       <div className="items-stretch flex grow flex-col pt-7 max-md:max-w-full max-md:mt-10">
                         <div className="text-slate-600 text-sm font-medium max-md:max-w-full">
-                          Emgergency Contact name{" "}
+                        Emergency Contact name{" "}
                           <span style={{ color: "red" }}>*</span>
                         </div>
                         <div>

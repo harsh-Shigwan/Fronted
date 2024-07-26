@@ -3,7 +3,13 @@ import axios from 'axios';
 import Breadcrumb from '../../components/Breadcrumb';
 import baseURL from '../../assets/API_URL';
 import CustomDropdown from '../../components/DropDown/CustomDropdown';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 
 const AppointmentID = () => {
   const { DoctorID } = useParams();
@@ -18,6 +24,7 @@ const AppointmentID = () => {
   const [date, setDate] = useState('');
   const [timeSlot, setTimeSlot] = useState('');
   const [status, setStatus] = useState('');
+  const [selectedDate, setSelectedDate] = useState(dayjs());
   const token = JSON.parse(localStorage.getItem('Token'));
 
   useEffect(() => {
@@ -65,6 +72,10 @@ const AppointmentID = () => {
 //     }
 //   }, [DoctorID, doctorList]);
 
+const handleDateChange = (newValue) => {
+  setSelectedDate(newValue);
+};
+
   const handlePatientInputChange = (e) => {
     setPatientInput(e.target.value);
     setSelectedPatient('');
@@ -87,10 +98,11 @@ const AppointmentID = () => {
     setSelectedDoctor(doctor.DoctorID);
     setShowDoctorDropdown(false);
   };
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const formattedTimeSlot = `${timeSlot}-${addMinutesToTime(timeSlot, 10)}`; // Adjust the end time as needed
+    const formattedDate = selectedDate.format('YYYY-MM-DDTHH:mm:ssZ'); 
   
     axios
       .post(
@@ -98,8 +110,8 @@ const AppointmentID = () => {
         {
           patient: selectedPatient,
           doctor: selectedDoctor,
-          date: date,
-          time_slot: formattedTimeSlot,
+          
+          time_slot: formattedDate,
           status: status,
         },
         {
@@ -111,6 +123,7 @@ const AppointmentID = () => {
       .then((response) => {
         console.log('API Response:', response.data);
         console.log('Item added successfully!');
+        navigate('/Appointment');
       })
       .catch((error) => {
         console.error('API Error:', error);
@@ -157,7 +170,7 @@ const AppointmentID = () => {
                   placeholder="Type or select the patient"
                 />
                 {showPatientDropdown && (
-                  <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[500px] absolute text-slate-600 mt-[86px] rounded-md">
+                  <div className=" dropdown-menu  flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[500px] absolute text-slate-600 mt-[86px] rounded-md">
                     {patientsList
                       .filter((patient) =>
                         patient.fullname.toLowerCase().includes(patientInput.toLowerCase())
@@ -189,41 +202,52 @@ const AppointmentID = () => {
                 
               </div>
             </div>
+           
             <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap max-md:max-w-full">
-              <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
-                <div className="text-sm text-slate-600 max-md:max-w-full">Date*</div>
-                <input
-                  className="justify-center items-start py-4 pr-16 pl-4 mt-3 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 max-md:max-w-full"
-                  name="date"
-                  type="date"
-                  onChange={(e) => setDate(e.target.value)}
-                  value={date}
-                  placeholder="enter date"
-                />
+            <div className="flex flex-col flex-1  max-md:max-w-full">
+              <div className="text-sm text-slate-600 max-md:max-w-full">
+              Select TimeSlot*
               </div>
-              <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
-                <div className="text-sm text-slate-600 max-md:max-w-full">Time Slot*</div>
-                <input
-                  className="justify-center items-start py-4 pr-16 pl-4 mt-2 text-base leading-4 text-gray-500 whitespace-nowrap rounded-md bg-slate-100 max-md:pr-5 max-md:max-w-full"
-                  name="time_slot"
-                  type="text"
-                  onChange={(e) => setTimeSlot(e.target.value)}
-                  value={timeSlot}
-                  placeholder="enter the time slot"
-                />
-              </div>
+              <div className=" bg-slate-100 mt-3 ">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div className="date-time-picker-wrapper">
+                  <DemoContainer
+                    components={["DateTimePicker", "DateTimePicker"]}
+                  >
+                    <DateTimePicker
+                      
+                      value={selectedDate}
+                      onChange={handleDateChange}
+                      renderInput={(params) => (
+                        <input
+                          {...params}
+                          className="input input-bordered w-full max-w-xs"
+                        />
+                      )}
+                      viewRenderers={{
+                        hours: renderTimeViewClock,
+                        minutes: renderTimeViewClock,
+                        seconds: renderTimeViewClock,
+                      }}
+                    />
+                  </DemoContainer>
+                </div>
+              </LocalizationProvider>
             </div>
+            </div>
+            <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full ">
+              <div className="text-sm text-slate-600 max-md:max-w-full">
+                Status
+              </div>
+              <div className=" mt-4">
+              <CustomDropdown
+                options={statusOptions}
+                value={status}
+                onChange={setStatus}
+              /></div>
+            </div>
+          </div>
 
-            <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap w-[500px]">
-              <div className="flex flex-col flex-1 self-start max-md:max-w-full">
-                <div className="text-sm text-slate-600 max-md:max-w-full">Status</div>
-                <CustomDropdown
-                  options={statusOptions}
-                  value={status}
-                  onChange={setStatus}
-                />
-              </div>
-            </div>
           </div>
           <div className="flex gap-5 justify-between self-end mt-14 mr-8 mb-9 text-base font-semibold leading-4 whitespace-nowrap max-md:mt-10 max-md:mr-2.5">
             <Link to="/Appointment" className="grow justify-center px-8 py-4 text-blue-700 rounded-lg border border-blue-700 border-solid max-md:px-5">Cancel</Link>

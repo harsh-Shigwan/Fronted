@@ -135,7 +135,7 @@ const VisitDetail = ({ addItem, patientId }) => {
       <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap">
         <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
           <div className="text-sm text-slate-600 font-medium max-md:max-w-full mt-8 ml-2">
-            Medicine Price
+            Visit Price
           </div>
           <input
             type="number"

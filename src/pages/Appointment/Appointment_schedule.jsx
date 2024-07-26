@@ -165,7 +165,7 @@ const AppointmentSchedule = () => {
                   placeholder="Type or select the patient"
                 />
                 {showPatientDropdown && (
-                  <div className="flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[500px] position: absolute text-slate-600 mt-[86px] rounded-md">
+                  <div className="  dropdown-menu flex flex-col max-h-48 overflow-y-auto bg-white border border-gray-300 w-[500px] position: absolute text-slate-600 mt-[86px] rounded-md">
                     {patientsList
                       .filter((patient) =>
                         patient.fullname.toLowerCase().includes(patientInput.toLowerCase())||

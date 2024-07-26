@@ -567,7 +567,7 @@ const Generate_Bill = () => {
             />
             <div className="flex flex-col self-end px-2 mt-5 mr-12">
               <div className="self-end mt-2.5">
-                Total Bill Amount : {totalSum}
+                Total Bill Amount : {totalSum.toFixed(2)}
               </div>
              {/*} <div className="self-end mt-2.5">
                 GST ( 5%) : {gstAmount}

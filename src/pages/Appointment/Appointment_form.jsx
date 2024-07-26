@@ -147,7 +147,7 @@ const Appointment_form = () => {
                   placeholder="Type or select the patient"
                 />
                 {showPatientDropdown && (
-                  <div className="flex flex-col  max-h-48 overflow-y-auto bg-white border border-gray-300  w-[500px]	position: absolute text-slate-600   mt-[86px]  rounded-md">
+                  <div className=" dropdown-menu flex flex-col  max-h-48 overflow-y-auto bg-white border border-gray-300  w-[500px]	position: absolute text-slate-600   mt-[86px]  rounded-md">
                     {patientsList
                       .filter(
                         (patient) =>
@@ -183,7 +183,7 @@ const Appointment_form = () => {
                   placeholder="Type or select the doctor"
                 />
                 {showDoctorDropdown && (
-                  <div className="flex flex-col mt-[86px]  max-h-48 overflow-y-auto bg-white border border-gray-300  w-[500px]	position: absolute text-slate-600  rounded-md">
+                  <div className=" flex flex-col mt-[86px]  max-h-48 overflow-y-auto bg-white border border-gray-300  w-[500px]	position: absolute text-slate-600  rounded-md">
                     {doctorList
                       .filter((doctor) =>
                         doctor.name
@@ -204,18 +204,18 @@ const Appointment_form = () => {
               </div>
             </div>
             <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap max-md:max-w-full">
-              <div className="flex flex-col flex-1 py-0.5 max-md:max-w-full">
+              <div className="flex flex-col flex-1  max-md:max-w-full">
                 <div className="text-sm text-slate-600 max-md:max-w-full">
                 Select TimeSlot*
                 </div>
-                <div className=" bg-slate-50 mt-3">
+                <div className=" bg-slate-100 mt-3 ">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <div className="date-time-picker-wrapper">
                     <DemoContainer
                       components={["DateTimePicker", "DateTimePicker"]}
                     >
                       <DateTimePicker
-                        label="Select Date and Time"
+                        
                         value={selectedDate}
                         onChange={handleDateChange}
                         renderInput={(params) => (

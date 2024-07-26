@@ -14,38 +14,43 @@ const Doctor_Profile = () => {
     const [todayCount, setTodayCount] = useState(1);
     useEffect(() => {
       const fetchAppointments = async () => {
-          try {
-              const response = await axios.get(`${baseURL}/api/appointment/appointments/`,
-                {
-                  headers: {
-                    Authorization: `Token ${token}`,
-                  },
-                }
-              );
-              const filteredAppointments = response.data.filter(appointment => appointment.doctor === parseInt(DoctorID));
-              setAppointments(filteredAppointments);
-              const today = new Date().toISOString().split('T')[0];
-              console.log(today)
-              let past = 0, future = 0, todayAppointments = 0;
-              filteredAppointments.forEach(appointment => {
-                if (appointment.date < today) {
-                    past++;
-                } else if (appointment.date > today) {
-                    future++;
-                } else if (appointment.date === today) {
-                    todayAppointments++;
-                }
-            });
-            setPastCount(past);
-            setFutureCount(future);
-            setTodayCount(todayAppointments);
-          } catch (error) {
-              console.error('Error fetching appointments:', error);
-          }
+        try {
+          const response = await axios.get(`${baseURL}/api/appointment/appointments/`, {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          });
+  
+          const filteredAppointments = response.data.filter(appointment => appointment.doctor === parseInt(DoctorID));
+  
+          // Convert time_slot to the required format and filter
+          const today = new Date().toISOString().split('T')[0];
+          let past = 0, future = 0, todayAppointments = 0;
+  
+          filteredAppointments.forEach(appointment => {
+            // Extract date from time_slot and format it
+            const appointmentDate = new Date(appointment.time_slot).toISOString().split('T')[0];
+  
+            if (appointmentDate < today) {
+              past++;
+            } else if (appointmentDate > today) {
+              future++;
+            } else if (appointmentDate === today) {
+              todayAppointments++;
+            }
+          });
+  
+          setAppointments(filteredAppointments);
+          setPastCount(past);
+          setFutureCount(future);
+          setTodayCount(todayAppointments);
+        } catch (error) {
+          console.error('Error fetching appointments:', error);
+        }
       };
-
+  
       fetchAppointments();
-  }, [DoctorID]);
+    }, [DoctorID]);
 
  const PieData = [pastCount, futureCount, todayCount];
   const PieDataSum = parseFloat(pastCount)+parseFloat(futureCount)+parseFloat(todayCount);
@@ -197,7 +202,7 @@ const Doctor_Profile = () => {
               <div className="shrink-0 h-5 rounded-sm bg-neutral-200" />
             </div>
             <div className="grow text-sm ml-5 leading-6 whitespace-nowrap text-slate-600">
-              Mattis vel amet dui arcu turpis malesuada.
+            
             </div>
           </div>
      
@@ -263,7 +268,7 @@ const Doctor_Profile = () => {
                 }}
               />
             </div>
-            <div className='text-slate-500 h-10 w-10 absolute inset-0 flex items-center justify-center z-40 top-[200px] left-[1150px] bg-slate-100 text-lg font-bold rounded-full shadow-md'>
+            <div className='text-slate-500 h-10 w-10 absolute inset-0 flex items-center justify-center z-40 top-[180px] left-[1150px] bg-slate-100 text-lg font-bold rounded-full shadow-md'>
             {PieDataSum}
           </div>
           

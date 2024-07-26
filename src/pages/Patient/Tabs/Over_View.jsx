@@ -157,29 +157,41 @@ console.log("opd",opdData)
               }
             );
             const filteredAppointments = response.data.filter(appointment => appointment.patient === parseInt(PatientID));
-            setAppointments(filteredAppointments);
+
+            // Convert time_slot to YYYY-MM-DD format
+            const formattedAppointments = filteredAppointments.map(appointment => {
+                const date = new Date(appointment.time_slot).toISOString().split('T')[0];
+                return { ...appointment, date };
+            });
+
+            setAppointments(formattedAppointments);
+
             const today = new Date().toISOString().split('T')[0];
-            console.log(today)
+            console.log(today);
+
             let past = 0, future = 0, todayAppointments = 0;
-            filteredAppointments.forEach(appointment => {
-              if (appointment.date < today) {
-                  past++;
-              } else if (appointment.date > today) {
-                  future++;
-              } else if (appointment.date === today) {
-                  todayAppointments++;
-              }
-          });
-          setPastCount(past);
-          setFutureCount(future);
-          setTodayCount(todayAppointments);
+
+            formattedAppointments.forEach(appointment => {
+                if (appointment.date < today) {
+                    past++;
+                } else if (appointment.date > today) {
+                    future++;
+                } else if (appointment.date === today) {
+                    todayAppointments++;
+                }
+            });
+
+            setPastCount(past);
+            setFutureCount(future);
+            setTodayCount(todayAppointments);
         } catch (error) {
             console.error('Error fetching appointments:', error);
         }
     };
 
     fetchAppointments();
-}, [PatientID]);
+}, [PatientID, token]);
+
 
 const PieData = [pastCount, futureCount, todayCount];
 const PieDataSum = parseFloat(pastCount)+parseFloat(futureCount)+parseFloat(todayCount);

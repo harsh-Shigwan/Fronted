@@ -155,3 +155,7 @@ main {
   position: absolute !important;
 }
 
+.dropdown-menu {
+  position: absolute;
+  z-index: 50; /* Ensure it's above other elements */
+}
